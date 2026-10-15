@@ -62,6 +62,9 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .titlerow .group-title{margin:0}
 .smallbtn{border:1.5px solid var(--line);background:#fff;border-radius:8px;width:30px;height:28px;font-size:18px;line-height:1;cursor:pointer;color:var(--accent-d)}
 .smallbtn:hover{background:#e3ebff}
+.collapsebtn{width:22px;height:22px;border:1.5px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;color:var(--accent-d);padding:0;display:flex;align-items:center;justify-content:center;flex:none}
+.collapsebtn:hover{background:#e3ebff}
+.collapsebtn svg{display:block}
 .puzcols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .coltitle{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted);margin:0 0 4px 2px}
 .puzcols>div{display:flex;flex-direction:column;min-width:0}
@@ -108,7 +111,6 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .toolbtn:hover{background:#e3ebff}
 .toolbtn:disabled{opacity:.4;cursor:not-allowed}
 .toolbtn svg{display:block;width:16px;height:16px}
-/* Ряд: сегмент "Плитка/Башня" + кнопки копирования/вставки */
 .tier-row{display:flex;gap:6px;align-items:stretch}
 .tier-row .seg{flex:1;min-width:0}
 .tier-row .toolbtn{height:auto;align-self:stretch}
@@ -150,10 +152,9 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .mod.m-bars{border-left-color:#e0802c}
 .mod.m-bars2{border-left-color:#8a4fd6}
 .modt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--txt);margin-bottom:8px}
-.modhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
-.modhead .modt{margin:0}
-.minibtn{flex:none;width:24px;height:22px;border:1.5px solid var(--line);background:#fff;border-radius:6px;font-size:12px;font-weight:800;line-height:1;color:var(--bad);cursor:pointer;padding:0}
-.minibtn:hover{background:#fbe5e5}
+.modhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.modhead .modt{margin:0;flex:1;min-width:0}
+.modhead .minibtn,.modhead .collapsebtn{flex:none}
 .mod .group-title{margin-top:8px}
 .mod .hint{margin-top:6px;font-size:12px}
 .sub label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
@@ -375,82 +376,108 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
               <button data-mod="bars" style="grid-column:span 3" data-i18n="bars">✚ Выступы по центру</button>
               <button data-mod="bars2" style="grid-column:span 3" data-i18n="bars2">⌗ Выступы со сдвигом</button>
             </div>
+
             <div id="circleBox" class="mod m-circle">
-              <div class="modt" data-i18n="circle">● Круг</div>
-              <div class="sub">
-                <label for="crRange"><span data-i18n="bodySize">Размер (ширина плитки = 100%)</span><b id="crVal"></b></label>
-                <input type="range" id="crRange" min="50" max="150" step="5">
+              <div class="modhead">
+                <button class="collapsebtn" data-mod-toggle="circle" type="button" aria-expanded="true"></button>
+                <div class="modt" data-i18n="circle">● Круг</div>
+              </div>
+              <div class="modbody">
+                <div class="sub">
+                  <label for="crRange"><span data-i18n="bodySize">Размер (ширина плитки = 100%)</span><b id="crVal"></b></label>
+                  <input type="range" id="crRange" min="50" max="150" step="5">
+                </div>
               </div>
             </div>
+
             <div id="squareBox" class="mod m-square">
               <div class="modhead">
+                <button class="collapsebtn" data-mod-toggle="square" type="button" aria-expanded="true"></button>
                 <div class="modt" data-i18n="square">■ Квадрат</div>
                 <button class="minibtn" id="cutClear" type="button" title="Убрать срезы" data-i18n-title="clearCuts" aria-label="Убрать срезы" data-i18n-aria-label="clearCuts">Х</button>
               </div>
-              <div class="sub">
-                <label for="sqRange"><span data-i18n="bodySize">Размер (ширина плитки = 100%)</span><b id="sqVal"></b></label>
-                <input type="range" id="sqRange" min="50" max="150" step="5">
-              </div>
-              <div class="group-title" data-i18n="sideShift">Сдвиг сторон</div>
-              <div class="sides" id="chamf">
-                <button data-ch="0" title="Сдвиг сверху" data-i18n-title="shiftTop">↑</button><button data-ch="1" title="Сдвиг справа" data-i18n-title="shiftRight">→</button>
-                <button data-ch="2" title="Сдвиг снизу" data-i18n-title="shiftBottom">↓</button><button data-ch="3" title="Сдвиг слева" data-i18n-title="shiftLeft">←</button>
-              </div>
-              <div class="sub" style="margin-top:8px">
-                <label for="cutRange"><span data-i18n="shift">Сдвиг (% стороны)</span><b id="cutVal"></b></label>
-                <input type="range" id="cutRange" min="-50" max="50" step="5">
+              <div class="modbody">
+                <div class="sub">
+                  <label for="sqRange"><span data-i18n="bodySize">Размер (ширина плитки = 100%)</span><b id="sqVal"></b></label>
+                  <input type="range" id="sqRange" min="50" max="150" step="5">
+                </div>
+                <div class="group-title" data-i18n="sideShift">Сдвиг сторон</div>
+                <div class="sides cross4" id="chamf">
+                  <button data-ch="0" title="Сдвиг сверху" data-i18n-title="shiftTop" style="grid-area:1/2">↑</button>
+                  <button data-ch="3" title="Сдвиг слева" data-i18n-title="shiftLeft" style="grid-area:2/1">←</button>
+                  <button data-ch="1" title="Сдвиг справа" data-i18n-title="shiftRight" style="grid-area:2/3">→</button>
+                  <button data-ch="2" title="Сдвиг снизу" data-i18n-title="shiftBottom" style="grid-area:3/2">↓</button>
+                </div>
+                <div class="sub" style="margin-top:8px">
+                  <label for="cutRange"><span data-i18n="shift">Сдвиг (% стороны)</span><b id="cutVal"></b></label>
+                  <input type="range" id="cutRange" min="-50" max="50" step="5">
+                </div>
               </div>
             </div>
+
             <div id="starBox" class="mod m-square">
-              <div class="modt" data-i18n="star">✦ Звезда</div>
-              <div class="sub">
-                <label for="starRange"><span data-i18n="bodySize">Размер (ширина плитки = 100%)</span><b id="starVal"></b></label>
-                <input type="range" id="starRange" min="50" max="150" step="5">
+              <div class="modhead">
+                <button class="collapsebtn" data-mod-toggle="star" type="button" aria-expanded="true"></button>
+                <div class="modt" data-i18n="star">✦ Звезда</div>
+              </div>
+              <div class="modbody">
+                <div class="sub">
+                  <label for="starRange"><span data-i18n="bodySize">Размер (ширина плитки = 100%)</span><b id="starVal"></b></label>
+                  <input type="range" id="starRange" min="50" max="150" step="5">
+                </div>
               </div>
             </div>
+
             <div id="barsBox" class="mod m-bars">
               <div class="modhead">
+                <button class="collapsebtn" data-mod-toggle="bars" type="button" aria-expanded="true"></button>
                 <div class="modt" data-i18n="bars">✚ Выступы по центру</div>
                 <button class="minibtn" id="barsClear" type="button" title="Убрать выступы" data-i18n-title="clearTabs" aria-label="Убрать выступы" data-i18n-aria-label="clearTabs">Х</button>
               </div>
-              <div class="sides cross4" id="sides">
-                <button data-side="0" title="Сверху" data-i18n-title="top" style="grid-area:1/2">↑</button>
-                <button data-side="3" title="Слева" data-i18n-title="left" style="grid-area:2/1">←</button>
-                <button data-side="1" title="Справа" data-i18n-title="right" style="grid-area:2/3">→</button>
-                <button data-side="2" title="Снизу" data-i18n-title="bottom" style="grid-area:3/2">↓</button>
-              </div>
-              <div class="sub" style="margin-top:8px">
-                <label for="blRange"><span data-i18n="length">Длина от центра</span><b id="blVal"></b></label>
-                <input type="range" id="blRange" min="40" max="100" step="5">
-              </div>
-              <div class="sub" style="margin-top:8px">
-                <label for="barWidthRange"><span data-i18n="thickness">Толщина</span><b id="barWidthVal"></b></label>
-                <input type="range" id="barWidthRange" min="30" max="80" step="5">
+              <div class="modbody">
+                <div class="sides cross4" id="sides">
+                  <button data-side="0" title="Сверху" data-i18n-title="top" style="grid-area:1/2">↑</button>
+                  <button data-side="3" title="Слева" data-i18n-title="left" style="grid-area:2/1">←</button>
+                  <button data-side="1" title="Справа" data-i18n-title="right" style="grid-area:2/3">→</button>
+                  <button data-side="2" title="Снизу" data-i18n-title="bottom" style="grid-area:3/2">↓</button>
+                </div>
+                <div class="sub" style="margin-top:8px">
+                  <label for="blRange"><span data-i18n="length">Длина от центра</span><b id="blVal"></b></label>
+                  <input type="range" id="blRange" min="40" max="100" step="5">
+                </div>
+                <div class="sub" style="margin-top:8px">
+                  <label for="barWidthRange"><span data-i18n="thickness">Толщина</span><b id="barWidthVal"></b></label>
+                  <input type="range" id="barWidthRange" min="30" max="80" step="5">
+                </div>
               </div>
             </div>
+
             <div id="bars2Box" class="mod m-bars2">
               <div class="modhead">
+                <button class="collapsebtn" data-mod-toggle="bars2" type="button" aria-expanded="true"></button>
                 <div class="modt" data-i18n="offsetWidth">⌗ Выступы со сдвигом (ширина 40%)</div>
                 <button class="minibtn" id="s2Clear" type="button" title="Убрать выступы" data-i18n-title="clearTabs" aria-label="Убрать выступы" data-i18n-aria-label="clearTabs">Х</button>
               </div>
-              <div class="sides cross8" id="sides2">
-                <button data-s2="0" title="Сверху, левый" data-i18n-title="topLeft" style="grid-area:1/2">↑◂</button>
-                <button data-s2="1" title="Сверху, правый" data-i18n-title="topRight" style="grid-area:1/3">↑▸</button>
-                <button data-s2="6" title="Слева, верхний" data-i18n-title="leftUpper" style="grid-area:2/1">←▴</button>
-                <button data-s2="2" title="Справа, верхний" data-i18n-title="rightUpper" style="grid-area:2/4">→▴</button>
-                <button data-s2="7" title="Слева, нижний" data-i18n-title="leftLower" style="grid-area:3/1">←▾</button>
-                <button data-s2="3" title="Справа, нижний" data-i18n-title="rightLower" style="grid-area:3/4">→▾</button>
-                <button data-s2="4" title="Снизу, левый" data-i18n-title="bottomLeft" style="grid-area:4/2">↓◂</button>
-                <button data-s2="5" title="Снизу, правый" data-i18n-title="bottomRight" style="grid-area:4/3">↓▸</button>
-              </div>
-              <div class="hint" data-i18n="tabsHint">Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.</div>
-              <div class="sub" style="margin-top:8px">
-                <label for="bl2Range"><span data-i18n="length">Длина от центра</span><b id="bl2Val"></b></label>
-                <input type="range" id="bl2Range" min="40" max="100" step="5">
-              </div>
-              <div class="sub" style="margin-top:8px">
-                <label for="thickRange"><span data-i18n="thickness">Толщина</span><b id="thickVal"></b></label>
-                <input type="range" id="thickRange" min="40" max="150" step="5">
+              <div class="modbody">
+                <div class="sides cross8" id="sides2">
+                  <button data-s2="0" title="Сверху, левый" data-i18n-title="topLeft" style="grid-area:1/2">↑◂</button>
+                  <button data-s2="1" title="Сверху, правый" data-i18n-title="topRight" style="grid-area:1/3">↑▸</button>
+                  <button data-s2="6" title="Слева, верхний" data-i18n-title="leftUpper" style="grid-area:2/1">←▴</button>
+                  <button data-s2="2" title="Справа, верхний" data-i18n-title="rightUpper" style="grid-area:2/4">→▴</button>
+                  <button data-s2="7" title="Слева, нижний" data-i18n-title="leftLower" style="grid-area:3/1">←▾</button>
+                  <button data-s2="3" title="Справа, нижний" data-i18n-title="rightLower" style="grid-area:3/4">→▾</button>
+                  <button data-s2="4" title="Снизу, левый" data-i18n-title="bottomLeft" style="grid-area:4/2">↓◂</button>
+                  <button data-s2="5" title="Снизу, правый" data-i18n-title="bottomRight" style="grid-area:4/3">↓▸</button>
+                </div>
+                <div class="hint" data-i18n="tabsHint">Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.</div>
+                <div class="sub" style="margin-top:8px">
+                  <label for="bl2Range"><span data-i18n="length">Длина от центра</span><b id="bl2Val"></b></label>
+                  <input type="range" id="bl2Range" min="40" max="100" step="5">
+                </div>
+                <div class="sub" style="margin-top:8px">
+                  <label for="thickRange"><span data-i18n="thickness">Толщина</span><b id="thickVal"></b></label>
+                  <input type="range" id="thickRange" min="40" max="150" step="5">
+                </div>
               </div>
             </div>
           </div>
@@ -468,7 +495,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
   <section class="about-block" id="aboutBlock" aria-labelledby="aboutTitle">
     <div class="about-head">
       <h2 id="aboutTitle" data-i18n="aboutTitle">О Программе</h2>
-      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 1.50</div>
+      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 1.52</div>
       <div class="language-control lang-top">
         <span data-i18n="chooseLanguage">выберите язык</span>
         <div class="seg" id="languageSeg" aria-label="Язык / Language">
@@ -510,6 +537,7 @@ var STORE_KEY = 'fifteenPro.v4';
 var OLD_STORE_KEY = 'fifteenPro.v3';
 var PULSE_KEY = 'fifteenPro.pulse';
 var EDIT_CLIP_KEY = 'fifteenPro.editClip';
+var MOD_COLLAPSED_KEY = 'fifteenPro.modCollapsed';
 var UP_DEFAULT = '#2fb4ff';
 var FMT = 'PYATNASHKI';
 
@@ -523,15 +551,16 @@ var BUILTIN_TEXTS = [
   "PYATNASHKI\nname: SKY\nsize: 3\ncell:  | f=ff4d4d u=ffd93d star=140\ncell: 🌞 | f=ff4d4d\ncell: Y | f=3b6fd8 u=2fb4ff square=80\ncell: ⚡ | f=ff4d4d\ncell: K | f=3b6fd8 u=2fb4ff square=80\ncell: ⚡ | f=ff4d4d\ncell: S | f=3b6fd8 u=2fb4ff square=80\ncell: 🌟 | f=ff4d4d\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Lattice\nsize: 4\ncell: 1 | u=ff4d4d bars2=40:00010100\ncell: 2 |\ncell: 3 |\ncell: 4 | u=ff4d4d bars2=40:00001001\ncell: 5 |\ncell: 6 | u=ffd93d bars2=95:10000010\ncell: 7 | u=ffd93d bars2=95:01100000\ncell: 8 |\ncell: 9 |\ncell: 10 | u=ffd93d bars2=95:00001001\ncell: 11 | u=ffd93d bars2=95:00010100\ncell: 12 |\ncell: 13 | u=ff4d4d bars2=40:01100000\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Frame\nsize: 4\ncell: 1 | u=3b6fd8 bars2=95:00010100\ncell: 2 | u=2fb4ff bars2=40:00010100\ncell: 3 | u=2fb4ff bars2=40:00001001\ncell: 4 | u=3b6fd8 bars2=95:00001001\ncell: 5 | u=2fb4ff bars2=40:00010100\ncell: 6 |\ncell: 7 |\ncell: 8 | u=2fb4ff bars2=40:00000001\ncell: 9 | u=2fb4ff bars2=40:01000000\ncell: 10 |\ncell: 11 |\ncell: 12 | u=2fb4ff bars2=40:10000000\ncell: 13 | u=3b6fd8 bars2=95:01100000\ncell: 14 | u=2fb4ff bars2=40:01000000\ncell: 15 | u=2fb4ff bars2=40:10000000\ncell: EMPTY",
-  "PYATNASHKI\nname: Fifteen Pocket\nsize: 4\ncell: 1 |\ncell: 2 | u=4cd964 bars=75:B barwidth=30\ncell: 3 |\ncell: 4 | u=4cd964 bars=75:B barwidth=30\ncell: 5 |\ncell: 6 | u=2fb4ff bars=40:B barwidth=80 bars2=40:11000000 thick=50\ncell: 7 |\ncell: 8 | u=2fb4ff bars=40:B barwidth=80 bars2=40:11000000 thick=50\ncell: 9 | u=4cd964 bars=40:T barwidth=80 bars2=40:00001100 thick=50\ncell: 10 |\ncell: 11 | u=4cd964 bars=40:T barwidth=80 bars2=40:00001100 thick=50\ncell: 12 |\ncell: 13 | u=2fb4ff bars=75:T barwidth=30\ncell: 14 |\ncell: 15 | u=2fb4ff bars=75:T barwidth=30\ncell: EMPTY"
+  "PYATNASHKI\nname: Fifteen Star\nsize: 4\ncell: 1 | u=ff5fb0 bars=40:T barwidth=80 bars2=95:00001000\ncell: 2 | u=ff9a3c bars2=40:10000000\ncell: 3 | u=ff5fb0 bars=40:R barwidth=80 bars2=95:00000010\ncell: 4 |\ncell: 5 | u=ff9a3c bars2=40:00001000\ncell: 6 | u=ff4d4d star=145\ncell: 7 | u=ff9a3c bars2=40:01000000\ncell: 8 |\ncell: 9 | u=ff5fb0 bars=40:L barwidth=80 bars2=95:00010000\ncell: 10 | u=ff9a3c bars2=40:00000100\ncell: 11 | u=ff5fb0 bars=40:B barwidth=80 bars2=95:01000000\ncell: 12 |\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY"
 ];
 
 var UI_LANG = detectLanguage();
-var rus_eng = {"ru": {"moves": "Ходы", "time": "Время", "congrats": "Поздравляем!", "again": "🎲 Ещё раз", "close": "Закрыть", "puzzles": "Головоломки", "scramble": "🎲 Перемешать", "editor": "✎ Редактор", "undo": "↶ Назад", "redo": "↷ Вперёд", "reset": "↺ Сброс", "name": "Название", "size": "Размер поля", "clear": "Очистить", "launch": "▶ Запустить", "cancel": "Отмена", "editNone": "Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.", "editHole": "Это пустая клетка. Перетащите на неё любую плитку, чтобы поменять их местами.", "marker": "Маркер", "tier": "Башня", "tile": "Плитка", "upper": "Башня", "palette": "Палитра", "upperShape": "Форма башни", "circle": "● Круг", "square": "■ Квадрат", "star": "✦ Звезда", "bars": "✚ Выступы по центру", "bars2": "⌗ Выступы со сдвигом", "bodySize": "Размер (ширина плитки = 100%)", "sideShift": "Сдвиг сторон", "shift": "Сдвиг (% стороны)", "length": "Длина от центра", "thickness": "Толщина", "offsetWidth": "⌗ Выступы со сдвигом (ширина 40%)", "tabsHint": "Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.", "copy": "Скопировать в буфер", "paste": "Вставить из буфера", "delete": "Удалить", "load": "Загрузить", "hint": "Подсказка", "newPuzzle": "Новая головоломка", "clearBoard": "Сбросить все плитки к обычной доске", "clearMarker": "Очистить маркер", "clearCuts": "Убрать срезы", "clearTabs": "Убрать выступы", "shiftTop": "Сдвиг сверху", "shiftRight": "Сдвиг справа", "shiftBottom": "Сдвиг снизу", "shiftLeft": "Сдвиг слева", "top": "Сверху", "right": "Справа", "bottom": "Снизу", "left": "Слева", "topLeft": "Сверху, левый", "topRight": "Сверху, правый", "rightUpper": "Справа, верхний", "rightLower": "Справа, нижний", "bottomLeft": "Снизу, левый", "bottomRight": "Снизу, правый", "leftUpper": "Слева, верхний", "leftLower": "Слева, нижний", "appName": "Про Пятнашки", "versionLine": "Про Пятнашки · версия 1.50", "aboutTitle": "О Программе", "chooseLanguage": "выберите язык", "pulseLabel": "Пульсация", "pulseOn": "Вкл", "pulseOff": "Выкл", "copyTileParams": "Скопировать параметры плитки", "pasteTileParams": "Вставить параметры", "copyTileDone": "Параметры плитки скопированы.", "pasteTileDone": "Параметры вставлены.", "nothingToPaste": "Буфер пуст — сначала скопируйте параметры плитки.", "developers": "Разработчики:", "puzzleAuthors": "Авторские головоломки:", "puzzleNumber": "Головоломка {number}", "defaultPuzzle": "Головоломка", "importName": "Импорт", "winSummary": "«{name}» собрана", "plainStatus": "Тяните плитку к пустой клетке или кликните по ней.", "playNamed": "«{name}». Тяните плитку к пустой клетке или кликните по ней.", "editorConflict": "Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.", "editorReady": "Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».", "editorLoaded": "Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.", "copyDone": "Головоломка «{name}» скопирована в буфер обмена.", "copyFallback": "Скопируйте текст головоломки вручную (Ctrl+C)", "pastePrompt": "Вставьте текст головоломки (Ctrl+V)", "pasteError": "Не удалось вставить: {error}.", "deleteAsk": "Удалить головоломку «{name}» из хранилища?", "deleteTitle": "Удалить головоломку?", "newBoard": "Новая головоломка", "assembled": "Собрано! Ходов: {moves}, время: {time}.", "noMoves": "Нет ни одного возможного хода — нажмите «Назад» или «Сброс».", "notNeighbor": "Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.", "undoDone": "Ход отменён.", "redoDone": "Ход возвращён.", "scrambleNone": "На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.", "scrambleDone": "Перемешано легальными ходами ({moves}). Позицию всегда можно собрать обратно.", "resetDone": "Сброс: доска собрана.", "solve": "✓ Решить", "stop": "✕ Стоп", "solveRunning": "Поиск решения…", "solveProgress": "Поиск решения… {phase}Позиций: {count}, время: {time}", "solveDone": "Решение найдено: {moves} ходов.", "solveFailed": "Не удалось найти решение. Доска оставлена в текущем состоянии.", "solveAborted": "Решение отменено. Доска оставлена в текущем состоянии.", "computingRest": "Досчитываю решение…", "retryAttempt": "Попытка {n} из {total}. Откат…", "retryHeuristic": "Переключение на эвристику…", "alreadySolvedTitle": "Головоломка уже собрана", "alreadySolvedText": "Перемешать её?", "scrambleShort": "🎲 Перемешать", "pause": "Пауза", "play": "Продолжить", "toStart": "В начало", "toEnd": "В конец", "stepBack": "Шаг назад", "stepFwd": "Шаг вперёд", "phaseTopRow": "верхний ряд", "phaseLeftCol": "левый столбик", "phaseBlock": "финальный блок", "phaseIda": "IDA*", "phaseInit": "подготовка"}, "en": {"moves": "Moves", "time": "Time", "congrats": "Congratulations!", "again": "🎲 Play again", "close": "Close", "puzzles": "Puzzles", "scramble": "🎲 Scramble", "editor": "✎ Editor", "undo": "↶ Undo", "redo": "↷ Redo", "reset": "↺ Reset", "name": "Name", "size": "Board size", "clear": "Clear", "launch": "▶ Start", "cancel": "Cancel", "editNone": "Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.", "editHole": "This is the empty cell. Drag any tile onto it to swap their positions.", "marker": "Marker", "tier": "Tower", "tile": "Tile", "upper": "Tower", "palette": "Palette", "upperShape": "Tower shape", "circle": "● Circle", "square": "■ Square", "star": "✦ Star", "bars": "✚ Centered tabs", "bars2": "⌗ Offset tabs", "bodySize": "Size (cell width = 100%)", "sideShift": "Side shifts", "shift": "Shift (% of side)", "length": "Length from center", "thickness": "Thickness", "offsetWidth": "⌗ Offset tabs (width 40%)", "tabsHint": "Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.", "copy": "Copy to clipboard", "paste": "Paste from clipboard", "delete": "Delete", "load": "Load", "hint": "Hint", "newPuzzle": "New puzzle", "clearBoard": "Reset all tiles to a plain board", "clearMarker": "Clear marker", "clearCuts": "Remove side shifts", "clearTabs": "Remove tabs", "shiftTop": "Shift top", "shiftRight": "Shift right", "shiftBottom": "Shift bottom", "shiftLeft": "Shift left", "top": "Top", "right": "Right", "bottom": "Bottom", "left": "Left", "topLeft": "Top, left", "topRight": "Top, right", "rightUpper": "Right, upper", "rightLower": "Right, lower", "bottomLeft": "Bottom, left", "bottomRight": "Bottom, right", "leftUpper": "Left, upper", "leftLower": "Left, lower", "appName": "Fifteen Pro", "versionLine": "Fifteen Pro · version 1.50", "aboutTitle": "About", "chooseLanguage": "Choose language", "pulseLabel": "Pulsation", "pulseOn": "On", "pulseOff": "Off", "copyTileParams": "Copy tile parameters", "pasteTileParams": "Paste parameters", "copyTileDone": "Tile parameters copied.", "pasteTileDone": "Parameters pasted.", "nothingToPaste": "Clipboard is empty — copy tile parameters first.", "developers": "Developers:", "puzzleAuthors": "Puzzle authors:", "puzzleNumber": "Puzzle {number}", "defaultPuzzle": "Puzzle", "importName": "Imported puzzle", "winSummary": "“{name}” solved", "plainStatus": "Drag a tile into the empty cell or click it.", "playNamed": "“{name}”. Drag a tile into the empty cell or click it.", "editorConflict": "Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.", "editorReady": "Edit the tiles. No conflicts detected — press “Start” when ready.", "editorLoaded": "Puzzle “{name}” loaded in the editor. Press “Start” to save it.", "copyDone": "Puzzle “{name}” copied to the clipboard.", "copyFallback": "Copy the puzzle text manually (Ctrl+C)", "pastePrompt": "Paste puzzle text (Ctrl+V)", "pasteError": "Could not paste: {error}.", "deleteAsk": "Delete puzzle “{name}” from storage?", "deleteTitle": "Delete puzzle?", "newBoard": "New puzzle", "assembled": "Solved! Moves: {moves}, time: {time}.", "noMoves": "No legal moves. Press “Undo” or “Reset”.", "notNeighbor": "This tile is not next to the empty cell, and its row/column cannot be shifted.", "undoDone": "Move undone.", "redoDone": "Move restored.", "scrambleNone": "This board has no legal moves. Change tile shapes in the editor.", "scrambleDone": "Shuffled with {moves} legal moves. Reverse them to solve.", "resetDone": "Reset: board solved.", "solve": "✓ Solve", "stop": "✕ Stop", "solveRunning": "Solving…", "solveProgress": "Solving… {phase}Positions: {count}, time: {time}", "solveDone": "Solution found: {moves} moves.", "solveFailed": "Could not find a solution. Board left in its current state.", "solveAborted": "Solving aborted. Board left in its current state.", "computingRest": "Finishing the solution…", "retryAttempt": "Attempt {n} of {total}. Rolling back…", "retryHeuristic": "Switching to heuristic…", "alreadySolvedTitle": "Puzzle is already solved", "alreadySolvedText": "Scramble it?", "scrambleShort": "🎲 Scramble", "pause": "Pause", "play": "Play", "toStart": "To start", "toEnd": "To end", "stepBack": "Step back", "stepFwd": "Step forward", "phaseTopRow": "top row", "phaseLeftCol": "left column", "phaseBlock": "final block", "phaseIda": "IDA*", "phaseInit": "init"}};
+var rus_eng = {"ru": {"moves": "Ходы", "time": "Время", "congrats": "Поздравляем!", "again": "🎲 Ещё раз", "close": "Закрыть", "puzzles": "Головоломки", "scramble": "🎲 Перемешать", "editor": "✎ Редактор", "undo": "↶ Назад", "redo": "↷ Вперёд", "reset": "↺ Сброс", "name": "Название", "size": "Размер поля", "clear": "Очистить", "launch": "▶ Запустить", "cancel": "Отмена", "editNone": "Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.", "editHole": "Это пустая клетка. Перетащите на неё любую плитку, чтобы поменять их местами.", "marker": "Маркер", "tier": "Башня", "tile": "Плитка", "upper": "Башня", "palette": "Палитра", "upperShape": "Форма башни", "circle": "● Круг", "square": "■ Квадрат", "star": "✦ Звезда", "bars": "✚ Выступы по центру", "bars2": "⌗ Выступы со сдвигом", "bodySize": "Размер (ширина плитки = 100%)", "sideShift": "Сдвиг сторон", "shift": "Сдвиг (% стороны)", "length": "Длина от центра", "thickness": "Толщина", "offsetWidth": "⌗ Выступы со сдвигом (ширина 40%)", "tabsHint": "Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.", "copy": "Скопировать в буфер", "paste": "Вставить из буфера", "delete": "Удалить", "load": "Загрузить", "hint": "Подсказка", "newPuzzle": "Новая головоломка", "clearBoard": "Сбросить все плитки к обычной доске", "clearMarker": "Очистить маркер", "clearCuts": "Убрать срезы", "clearTabs": "Убрать выступы", "shiftTop": "Сдвиг сверху", "shiftRight": "Сдвиг справа", "shiftBottom": "Сдвиг снизу", "shiftLeft": "Сдвиг слева", "top": "Сверху", "right": "Справа", "bottom": "Снизу", "left": "Слева", "topLeft": "Сверху, левый", "topRight": "Сверху, правый", "rightUpper": "Справа, верхний", "rightLower": "Справа, нижний", "bottomLeft": "Снизу, левый", "bottomRight": "Снизу, правый", "leftUpper": "Слева, верхний", "leftLower": "Слева, нижний", "appName": "Про Пятнашки", "versionLine": "Про Пятнашки · версия 1.52", "aboutTitle": "О Программе", "chooseLanguage": "выберите язык", "pulseLabel": "Пульсация", "pulseOn": "Вкл", "pulseOff": "Выкл", "copyTileParams": "Скопировать параметры плитки", "pasteTileParams": "Вставить параметры", "copyTileDone": "Параметры плитки скопированы.", "pasteTileDone": "Параметры вставлены.", "nothingToPaste": "Буфер пуст — сначала скопируйте параметры плитки.", "collapseSection": "Свернуть блок", "expandSection": "Развернуть блок", "developers": "Разработчики:", "puzzleAuthors": "Авторские головоломки:", "puzzleNumber": "Головоломка {number}", "defaultPuzzle": "Головоломка", "importName": "Импорт", "winSummary": "«{name}» собрана", "plainStatus": "Тяните плитку к пустой клетке или кликните по ней.", "playNamed": "«{name}». Тяните плитку к пустой клетке или кликните по ней.", "editorConflict": "Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.", "editorReady": "Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».", "editorLoaded": "Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.", "copyDone": "Головоломка «{name}» скопирована в буфер обмена.", "copyFallback": "Скопируйте текст головоломки вручную (Ctrl+C)", "pastePrompt": "Вставьте текст головоломки (Ctrl+V)", "pasteError": "Не удалось вставить: {error}.", "deleteAsk": "Удалить головоломку «{name}» из хранилища?", "deleteTitle": "Удалить головоломку?", "newBoard": "Новая головоломка", "assembled": "Собрано! Ходов: {moves}, время: {time}.", "noMoves": "Нет ни одного возможного хода — нажмите «Назад» или «Сброс».", "notNeighbor": "Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.", "undoDone": "Ход отменён.", "redoDone": "Ход возвращён.", "scrambleNone": "На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.", "scrambleDone": "Перемешано легальными ходами ({moves}). Позицию всегда можно собрать обратно.", "resetDone": "Сброс: доска собрана.", "solve": "✓ Решить", "stop": "✕ Стоп", "solveRunning": "Поиск решения…", "solveProgress": "Поиск решения… {phase}Позиций: {count}, время: {time}", "solveDone": "Решение найдено: {moves} ходов.", "solveFailed": "Не удалось найти решение. Доска оставлена в текущем состоянии.", "solveAborted": "Решение отменено. Доска оставлена в текущем состоянии.", "computingRest": "Досчитываю решение…", "retryAttempt": "Попытка {n} из {total}. Откат…", "retryHeuristic": "Переключение на эвристику…", "alreadySolvedTitle": "Головоломка уже собрана", "alreadySolvedText": "Перемешать её?", "scrambleShort": "🎲 Перемешать", "pause": "Пауза", "play": "Продолжить", "toStart": "В начало", "toEnd": "В конец", "stepBack": "Шаг назад", "stepFwd": "Шаг вперёд", "phaseTopRow": "верхний ряд", "phaseLeftCol": "левый столбик", "phaseBlock": "финальный блок", "phaseIda": "IDA*", "phaseInit": "подготовка"}, "en": {"moves": "Moves", "time": "Time", "congrats": "Congratulations!", "again": "🎲 Play again", "close": "Close", "puzzles": "Puzzles", "scramble": "🎲 Scramble", "editor": "✎ Editor", "undo": "↶ Undo", "redo": "↷ Redo", "reset": "↺ Reset", "name": "Name", "size": "Board size", "clear": "Clear", "launch": "▶ Start", "cancel": "Cancel", "editNone": "Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.", "editHole": "This is the empty cell. Drag any tile onto it to swap their positions.", "marker": "Marker", "tier": "Tower", "tile": "Tile", "upper": "Tower", "palette": "Palette", "upperShape": "Tower shape", "circle": "● Circle", "square": "■ Square", "star": "✦ Star", "bars": "✚ Centered tabs", "bars2": "⌗ Offset tabs", "bodySize": "Size (cell width = 100%)", "sideShift": "Side shifts", "shift": "Shift (% of side)", "length": "Length from center", "thickness": "Thickness", "offsetWidth": "⌗ Offset tabs (width 40%)", "tabsHint": "Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.", "copy": "Copy to clipboard", "paste": "Paste from clipboard", "delete": "Delete", "load": "Load", "hint": "Hint", "newPuzzle": "New puzzle", "clearBoard": "Reset all tiles to a plain board", "clearMarker": "Clear marker", "clearCuts": "Remove side shifts", "clearTabs": "Remove tabs", "shiftTop": "Shift top", "shiftRight": "Shift right", "shiftBottom": "Shift bottom", "shiftLeft": "Shift left", "top": "Top", "right": "Right", "bottom": "Bottom", "left": "Left", "topLeft": "Top, left", "topRight": "Top, right", "rightUpper": "Right, upper", "rightLower": "Right, lower", "bottomLeft": "Bottom, left", "bottomRight": "Bottom, right", "leftUpper": "Left, upper", "leftLower": "Left, lower", "appName": "Fifteen Pro", "versionLine": "Fifteen Pro · version 1.52", "aboutTitle": "About", "chooseLanguage": "Choose language", "pulseLabel": "Pulsation", "pulseOn": "On", "pulseOff": "Off", "copyTileParams": "Copy tile parameters", "pasteTileParams": "Paste parameters", "copyTileDone": "Tile parameters copied.", "pasteTileDone": "Parameters pasted.", "nothingToPaste": "Clipboard is empty — copy tile parameters first.", "collapseSection": "Collapse section", "expandSection": "Expand section", "developers": "Developers:", "puzzleAuthors": "Puzzle authors:", "puzzleNumber": "Puzzle {number}", "defaultPuzzle": "Puzzle", "importName": "Imported puzzle", "winSummary": "“{name}” solved", "plainStatus": "Drag a tile into the empty cell or click it.", "playNamed": "“{name}”. Drag a tile into the empty cell or click it.", "editorConflict": "Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.", "editorReady": "Edit the tiles. No conflicts detected — press “Start” when ready.", "editorLoaded": "Puzzle “{name}” loaded in the editor. Press “Start” to save it.", "copyDone": "Puzzle “{name}” copied to the clipboard.", "copyFallback": "Copy the puzzle text manually (Ctrl+C)", "pastePrompt": "Paste puzzle text (Ctrl+V)", "pasteError": "Could not paste: {error}.", "deleteAsk": "Delete puzzle “{name}” from storage?", "deleteTitle": "Delete puzzle?", "newBoard": "New puzzle", "assembled": "Solved! Moves: {moves}, time: {time}.", "noMoves": "No legal moves. Press “Undo” or “Reset”.", "notNeighbor": "This tile is not next to the empty cell, and its row/column cannot be shifted.", "undoDone": "Move undone.", "redoDone": "Move restored.", "scrambleNone": "This board has no legal moves. Change tile shapes in the editor.", "scrambleDone": "Shuffled with {moves} legal moves. Reverse them to solve.", "resetDone": "Reset: board solved.", "solve": "✓ Solve", "stop": "✕ Stop", "solveRunning": "Solving…", "solveProgress": "Solving… {phase}Positions: {count}, time: {time}", "solveDone": "Solution found: {moves} moves.", "solveFailed": "Could not find a solution. Board left in its current state.", "solveAborted": "Solving aborted. Board left in its current state.", "computingRest": "Finishing the solution…", "retryAttempt": "Attempt {n} of {total}. Rolling back…", "retryHeuristic": "Switching to heuristic…", "alreadySolvedTitle": "Puzzle is already solved", "alreadySolvedText": "Scramble it?", "scrambleShort": "🎲 Scramble", "pause": "Pause", "play": "Play", "toStart": "To start", "toEnd": "To end", "stepBack": "Step back", "stepFwd": "Step forward", "phaseTopRow": "top row", "phaseLeftCol": "left column", "phaseBlock": "final block", "phaseIda": "IDA*", "phaseInit": "init"}};
 
 var LAST_STATUS = null, LAST_DIALOG = null;
 var pulseOn = true;
 var editClip = null;
+var modCollapsed = {circle:false, square:false, star:false, bars:false, bars2:false};
 
 function detectLanguage() {
   var systemLanguage = navigator.language || navigator.userLanguage || ((navigator.languages || [])[0]) || '';
@@ -575,6 +604,7 @@ function applyLanguage(language) {
     b.setAttribute('aria-pressed', b.dataset.lang === UI_LANG ? 'true' : 'false');
   });
   updatePulseSeg();
+  updateModCollapse();
   if (LAST_STATUS) setStatus(LAST_STATUS.message, LAST_STATUS.kind);
   else setStatus(msg('plainStatus'), '');
   if (cfg) $('winName').textContent = tr('winSummary', {name: cfg.name || tr('defaultPuzzle')});
@@ -1313,6 +1343,39 @@ function saveEditClip() {
     if (editClip) localStorage.setItem(EDIT_CLIP_KEY, JSON.stringify(editClip));
     else localStorage.removeItem(EDIT_CLIP_KEY);
   } catch (e) {}
+}
+
+function loadModCollapsed() {
+  try {
+    var s = localStorage.getItem(MOD_COLLAPSED_KEY);
+    if (s) {
+      var obj = JSON.parse(s);
+      ['circle','square','star','bars','bars2'].forEach(function(k){
+        if (obj && typeof obj[k] === 'boolean') modCollapsed[k] = obj[k];
+      });
+    }
+  } catch (e) {}
+}
+function saveModCollapsed() {
+  try { localStorage.setItem(MOD_COLLAPSED_KEY, JSON.stringify(modCollapsed)); } catch (e) {}
+}
+var ICON_MOD_COLLAPSE = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var ICON_MOD_EXPAND = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
+function updateModCollapse() {
+  document.querySelectorAll('[data-mod-toggle]').forEach(function(btn){
+    var key = btn.dataset.modToggle;
+    var box = btn.closest('.mod');
+    if (!box) return;
+    var body = box.querySelector('.modbody');
+    if (!body) return;
+    var collapsed = !!modCollapsed[key];
+    body.classList.toggle('hidden', collapsed);
+    btn.innerHTML = collapsed ? ICON_MOD_EXPAND : ICON_MOD_COLLAPSE;
+    var title = collapsed ? tr('expandSection') : tr('collapseSection');
+    btn.title = title;
+    btn.setAttribute('aria-label', title);
+    btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  });
 }
 
 var board = document.getElementById('board');
@@ -3457,6 +3520,14 @@ $('pulseSeg').addEventListener('click', function (e) {
   updatePulseSeg();
   updateUI();
 });
+document.querySelectorAll('[data-mod-toggle]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var key = this.dataset.modToggle;
+    modCollapsed[key] = !modCollapsed[key];
+    saveModCollapsed();
+    updateModCollapse();
+  });
+});
 $('scrambleBtn').addEventListener('click', scramble);
 $('solveBtn').addEventListener('click', function () {
   if (solveRunning) { abortSolve(); return; }
@@ -3708,12 +3779,14 @@ document.addEventListener('keydown', function (e) {
 loadStore();
 loadPulsePref();
 loadEditClip();
+loadModCollapsed();
 cfg = puzzles[cur];
 n = cfg.n;
 layout = cfg.layout.slice();
 build();
 renderList();
 applyLanguage(UI_LANG);
+updateModCollapse();
 updateSolveButtonLabel();
 showTime();
 </script>
