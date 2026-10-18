@@ -47,6 +47,9 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .base,.up,.mk{position:absolute;left:0;top:0;transition:transform .16s ease;will-change:transform}
 .base{margin:3px;border-radius:12px;background-color:#fff;background-image:linear-gradient(165deg,rgba(255,255,255,.55),rgba(255,255,255,0) 55%);border:2px solid #5f6d8c;box-shadow:0 4px 0 rgba(30,42,78,.55),0 12px 14px -6px rgba(15,25,60,.55)}
 .base.sel{border-color:var(--accent)!important}
+.tile-frame{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68%;height:68%;border:2px solid;pointer-events:none}
+.tile-frame.circle{border-radius:50%}
+.tile-frame.square{border-radius:22%}
 .up{--upline:#2a4a80;--side:#2a4a80;overflow:visible;filter:drop-shadow(1.2px 0 0 var(--upline)) drop-shadow(-1.2px 0 0 var(--upline)) drop-shadow(0 -1.2px 0 var(--upline)) drop-shadow(0 1px 0 var(--side)) drop-shadow(0 1px 0 var(--side)) drop-shadow(0 1px 0 var(--side)) drop-shadow(0 1px 0 var(--side)) drop-shadow(0 1px 0 var(--side)) drop-shadow(0 7px 5px rgba(10,20,50,.5))}
 .up .u{position:absolute;border-radius:4px;background-repeat:no-repeat}
 .up .circ{border-radius:50%}
@@ -70,6 +73,9 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .puzcols>div{display:flex;flex-direction:column;min-width:0}
 .puzlist{display:flex;flex:1;flex-direction:column;gap:5px;max-height:none;min-height:180px;overflow:visible;padding-right:2px}
 .puzlist .puz{flex:1 0 auto}
+.puzlist.scrollable{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+#puzList3.scrollable{max-height:405px}
+#puzList4.scrollable{max-height:345px}
 #puzList4 .puz{min-height:30px;padding:5px 9px}
 .puz{position:relative;display:flex;align-items:center;flex:0 0 auto;min-height:36px;line-height:1.25;width:100%;text-align:left;border:1.5px solid var(--line);background:#e1e6f0;border-radius:10px;padding:8px 9px;font:inherit;font-size:13px;font-weight:700;color:var(--txt);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .puz.user{padding-right:22px}
@@ -151,6 +157,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .mod.m-square{border-left-color:#2e9d5b}
 .mod.m-bars{border-left-color:#e0802c}
 .mod.m-bars2{border-left-color:#8a4fd6}
+.mod.m-hook{border-left-color:#c0392b}
 .modt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--txt);margin-bottom:8px}
 .modhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .modhead .modt{margin:0;flex:1;min-width:0}
@@ -183,7 +190,15 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .language-control{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);white-space:nowrap}
 .language-control.lang-top{grid-area:lang;justify-self:end}
 .language-control.pulse-row{grid-area:pulse;justify-self:end}
-#languageSeg,#pulseSeg{width:170px;flex:0 0 auto}
+#languageSeg,#pulseSeg{width:104px;flex:0 0 104px}
+#languageSeg button,#pulseSeg button{min-width:0;padding:6px 9px;flex:1 1 0}
+.hook-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin:4px 0 10px;min-width:0}
+.hook-controls .sides.cross8{margin:0;flex:0 0 156px}
+.toolbtn.on{background:var(--accent);color:#fff;border-color:var(--accent-d)}
+.hook-reflection-row{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0;min-width:0}
+#hookTurnState{text-align:left;margin:0;min-width:0}
+#hookTurnBtn.on svg{transform:scaleX(-1)}
+.create-tile-row{margin:8px 0 12px}
 @media(max-width:760px){
   .about-head{
     grid-template-columns:1fr;
@@ -342,13 +357,14 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
         <div id="statusSlotEdit"></div>
         <hr class="sep" style="margin-top:12px">
         <div id="editNone" class="hint" style="margin:10px 0" data-i18n="editNone">Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.</div>
-        <div id="editHole" class="hint hidden" style="margin:10px 0" data-i18n="editHole">Это пустая клетка. Перетащите на неё любую плитку, чтобы поменять их местами.</div>
+        <div id="editHole" class="hint hidden" style="margin:10px 0" data-i18n="editHole">Это пустая клетка. Можно создать плитку или перетащить сюда существующую.</div>
+        <div id="createTileRow" class="create-tile-row hidden"><button id="createTileBtn" class="btn" type="button" data-i18n="createTile">＋ Создать плитку</button></div>
         <div id="editTile" class="hidden" style="margin-top:10px">
           <div class="inline">
             <div><div class="group-title" data-i18n="marker">Маркер</div>
               <div class="markwrap">
                 <input type="text" class="txt mark" id="markInp" maxlength="3" autocomplete="off">
-                <button class="clearbtn" id="markClear" type="button" title="Очистить маркер" data-i18n-title="clearMarker" aria-label="Очистить маркер" data-i18n-aria-label="clearMarker">✕</button>
+                
               </div>
             </div>
             <div class="grow"><div class="group-title" data-i18n="tier">Башня</div>
@@ -360,6 +376,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
                 <button class="toolbtn" id="pasteTileBtn" type="button" title="Вставить параметры" data-i18n-title="pasteTileParams" aria-label="Вставить параметры" data-i18n-aria-label="pasteTileParams">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
                 </button>
+                <button class="toolbtn" id="deleteTileBtn" type="button" title="Удалить плитку" data-i18n-title="deleteTile" aria-label="Удалить плитку" data-i18n-aria-label="deleteTile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
               </div>
             </div>
           </div>
@@ -367,14 +384,23 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
             <div class="group-title" data-i18n="palette">Палитра</div>
             <div class="palette" id="palette"></div>
           </div>
+          <div id="frameBlock">
+            <div class="group-title" data-i18n="frameLabel">Рамка плитки</div>
+            <div class="seg" id="frameSeg" style="margin-bottom:10px">
+              <button data-frame="none" data-i18n="frameNone">Нет</button>
+              <button data-frame="circle" data-i18n="frameCircle">● Круг</button>
+              <button data-frame="square" data-i18n="frameSquare">■ Квадрат</button>
+            </div>
+          </div>
           <div id="shapeBox">
             <div class="group-title" data-i18n="upperShape">Форма башни</div>
             <div class="shapes" id="shapeSeg" style="grid-template-columns:repeat(6,minmax(0,1fr))">
               <button data-mod="circle" style="grid-column:span 2" data-i18n="circle">● Круг</button>
               <button data-mod="square" style="grid-column:span 2" data-i18n="square">■ Квадрат</button>
               <button data-mod="star" style="grid-column:span 2" data-i18n="star">✦ Звезда</button>
-              <button data-mod="bars" style="grid-column:span 3" data-i18n="bars">✚ Выступы по центру</button>
-              <button data-mod="bars2" style="grid-column:span 3" data-i18n="bars2">⌗ Выступы со сдвигом</button>
+              <button data-mod="bars" style="grid-column:span 2" data-i18n="bars">✚ Выступы по центру</button>
+              <button data-mod="bars2" style="grid-column:span 2" data-i18n="bars2">⌗ Выступы со сдвигом</button>
+              <button data-mod="hook" style="grid-column:span 2" data-i18n="hook">Γ Крюк</button>
             </div>
 
             <div id="circleBox" class="mod m-circle">
@@ -432,7 +458,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
               <div class="modhead">
                 <button class="collapsebtn" data-mod-toggle="bars" type="button" aria-expanded="true"></button>
                 <div class="modt" data-i18n="bars">✚ Выступы по центру</div>
-                <button class="minibtn" id="barsClear" type="button" title="Убрать выступы" data-i18n-title="clearTabs" aria-label="Убрать выступы" data-i18n-aria-label="clearTabs">Х</button>
+                <button class="toolbtn" id="barsClear" type="button" title="Убрать выступы" data-i18n-title="clearTabs" aria-label="Убрать выступы" data-i18n-aria-label="clearTabs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
               </div>
               <div class="modbody">
                 <div class="sides cross4" id="sides">
@@ -456,7 +482,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
               <div class="modhead">
                 <button class="collapsebtn" data-mod-toggle="bars2" type="button" aria-expanded="true"></button>
                 <div class="modt" data-i18n="offsetWidth">⌗ Выступы со сдвигом (ширина 40%)</div>
-                <button class="minibtn" id="s2Clear" type="button" title="Убрать выступы" data-i18n-title="clearTabs" aria-label="Убрать выступы" data-i18n-aria-label="clearTabs">Х</button>
+                <button class="toolbtn" id="s2Clear" type="button" title="Убрать выступы" data-i18n-title="clearTabs" aria-label="Убрать выступы" data-i18n-aria-label="clearTabs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
               </div>
               <div class="modbody">
                 <div class="sides cross8" id="sides2">
@@ -480,6 +506,44 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
                 </div>
               </div>
             </div>
+
+            <div id="hookBox" class="mod m-hook">
+              <div class="modhead">
+                <button class="collapsebtn" data-mod-toggle="hook" type="button" aria-expanded="true"></button>
+                <div class="modt" data-i18n="hook">Γ Крюк</div>
+                <button class="toolbtn" id="hookClear" type="button" title="Убрать крюки" data-i18n-title="clearHooks" aria-label="Убрать крюки" data-i18n-aria-label="clearHooks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              </div>
+              <div class="modbody">
+                
+                <div class="hook-controls">
+                <div class="sides cross8" id="sidesH">
+                  <button data-hk="0" title="Сверху, левый" data-i18n-title="topLeft" style="grid-area:1/2">↑◂</button>
+                  <button data-hk="1" title="Сверху, правый" data-i18n-title="topRight" style="grid-area:1/3">↑▸</button>
+                  <button data-hk="6" title="Слева, верхний" data-i18n-title="leftUpper" style="grid-area:2/1">←▴</button>
+                  <button data-hk="2" title="Справа, верхний" data-i18n-title="rightUpper" style="grid-area:2/4">→▴</button>
+                  <button data-hk="7" title="Слева, нижний" data-i18n-title="leftLower" style="grid-area:3/1">←▾</button>
+                  <button data-hk="3" title="Справа, нижний" data-i18n-title="rightLower" style="grid-area:3/4">→▾</button>
+                  <button data-hk="4" title="Снизу, левый" data-i18n-title="bottomLeft" style="grid-area:4/2">↓◂</button>
+                  <button data-hk="5" title="Снизу, правый" data-i18n-title="bottomRight" style="grid-area:4/3">↓▸</button>
+                </div>
+                  
+                </div>
+                <div class="hook-reflection-row"><button id="hookTurnBtn" class="toolbtn" type="button" aria-pressed="false" title="Отразить крюк" data-i18n-title="turnHook" aria-label="Отразить крюк" data-i18n-aria-label="turnHook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20V4h12v4h-8v12z" fill="currentColor"/></svg></button><span class="hint" id="hookTurnState" data-i18n="hookInward">Перекладины внутрь</span></div>
+                <div class="hint" data-i18n="hookHint">При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.</div>
+                <div class="sub" style="margin-top:8px">
+                  <label for="hookWidthRange"><span data-i18n="hookWidth">Ширина выступа</span><b id="hookWidthVal"></b></label>
+                  <input type="range" id="hookWidthRange" min="30" max="100" step="5">
+                </div>
+                <div class="sub" style="margin-top:8px">
+                  <label for="hookLengthRange"><span data-i18n="hookStemLength">Длина ножки</span><b id="hookLengthVal"></b></label>
+                  <input type="range" id="hookLengthRange" min="50" max="110" step="5">
+                </div>
+                <div class="sub" style="margin-top:8px">
+                  <label for="hookThickRange"><span data-i18n="thickness">Толщина</span><b id="hookThickVal"></b></label>
+                  <input type="range" id="hookThickRange" min="30" max="60" step="5">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <hr class="sep" style="margin:14px 0 12px">
@@ -495,7 +559,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
   <section class="about-block" id="aboutBlock" aria-labelledby="aboutTitle">
     <div class="about-head">
       <h2 id="aboutTitle" data-i18n="aboutTitle">О Программе</h2>
-      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 1.52</div>
+      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 1.80</div>
       <div class="language-control lang-top">
         <span data-i18n="chooseLanguage">выберите язык</span>
         <div class="seg" id="languageSeg" aria-label="Язык / Language">
@@ -541,6 +605,30 @@ var MOD_COLLAPSED_KEY = 'fifteenPro.modCollapsed';
 var UP_DEFAULT = '#2fb4ff';
 var FMT = 'PYATNASHKI';
 
+// Positive edgeward offset: mirrored for the two halves of every side.
+var HOOK_EDGE_SHIFT = G.OW * 0.06;
+var HOOK_TH_BASE = 0.5;
+var HOOK_TH_MIN = 0.30;
+var HOOK_TH_MAX = 0.60;
+var HOOK_LENGTH_MIN = 0.50;
+var HOOK_LENGTH_MAX = 1.10;
+var HOOK_WIDTH_MIN = 0.30;
+var HOOK_WIDTH_MAX = 1.00;
+function hookLengthOf(t) {
+  var value = t && typeof t.hookLength === 'number' && Number.isFinite(t.hookLength) ? t.hookLength : 1;
+  return Math.max(HOOK_LENGTH_MIN, Math.min(HOOK_LENGTH_MAX, Math.round(value * 20) / 20));
+}
+function hookWidthOf(t) {
+  var value = t && typeof t.hookWidth === 'number' && Number.isFinite(t.hookWidth) ? t.hookWidth : 0.70;
+  return Math.max(HOOK_WIDTH_MIN, Math.min(HOOK_WIDTH_MAX, Math.round(value * 20) / 20));
+}
+var HOOK_ADJUST_MM = 1;
+var HOOK_REFERENCE_WIDTH = 596;
+function hookGeometryDelta() {
+  var referenceCell = HOOK_REFERENCE_WIDTH * 0.93 / n;
+  return (HOOK_ADJUST_MM * 96 / 25.4) / referenceCell;
+}
+
 var BUILTIN_TEXTS = [
   "PYATNASHKI\nname: Coin-15 ver 1\nsize: 4\ncell: 1 |\ncell: 2 | u=ff4d4d circle=120\ncell: 3 |\ncell: 4 |\ncell: 5 | u=1f9d3a circle=120\ncell: 6 |\ncell: 7 | u=2fb4ff circle=120\ncell: 8 |\ncell: 9 |\ncell: 10 | u=ffd93d circle=120\ncell: 11 |\ncell: 12 |\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
   "PYATNASHKI\nname: Coin-15 ver 2\nsize: 4\ncell: 1 |\ncell: 2 |\ncell: 3 |\ncell: 4 |\ncell: 5 | u=1f9d3a circle=120\ncell: 6 |\ncell: 7 | u=2fb4ff circle=120\ncell: 8 |\ncell: 9 |\ncell: 10 | u=ffd93d circle=120\ncell: 11 |\ncell: 12 |\ncell: 13 | u=9b5cf6 circle=120\ncell: 14 |\ncell: 15 | u=ff5fb0 circle=120\ncell: EMPTY",
@@ -551,16 +639,18 @@ var BUILTIN_TEXTS = [
   "PYATNASHKI\nname: SKY\nsize: 3\ncell:  | f=ff4d4d u=ffd93d star=140\ncell: 🌞 | f=ff4d4d\ncell: Y | f=3b6fd8 u=2fb4ff square=80\ncell: ⚡ | f=ff4d4d\ncell: K | f=3b6fd8 u=2fb4ff square=80\ncell: ⚡ | f=ff4d4d\ncell: S | f=3b6fd8 u=2fb4ff square=80\ncell: 🌟 | f=ff4d4d\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Lattice\nsize: 4\ncell: 1 | u=ff4d4d bars2=40:00010100\ncell: 2 |\ncell: 3 |\ncell: 4 | u=ff4d4d bars2=40:00001001\ncell: 5 |\ncell: 6 | u=ffd93d bars2=95:10000010\ncell: 7 | u=ffd93d bars2=95:01100000\ncell: 8 |\ncell: 9 |\ncell: 10 | u=ffd93d bars2=95:00001001\ncell: 11 | u=ffd93d bars2=95:00010100\ncell: 12 |\ncell: 13 | u=ff4d4d bars2=40:01100000\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Frame\nsize: 4\ncell: 1 | u=3b6fd8 bars2=95:00010100\ncell: 2 | u=2fb4ff bars2=40:00010100\ncell: 3 | u=2fb4ff bars2=40:00001001\ncell: 4 | u=3b6fd8 bars2=95:00001001\ncell: 5 | u=2fb4ff bars2=40:00010100\ncell: 6 |\ncell: 7 |\ncell: 8 | u=2fb4ff bars2=40:00000001\ncell: 9 | u=2fb4ff bars2=40:01000000\ncell: 10 |\ncell: 11 |\ncell: 12 | u=2fb4ff bars2=40:10000000\ncell: 13 | u=3b6fd8 bars2=95:01100000\ncell: 14 | u=2fb4ff bars2=40:01000000\ncell: 15 | u=2fb4ff bars2=40:10000000\ncell: EMPTY",
-  "PYATNASHKI\nname: Fifteen Star\nsize: 4\ncell: 1 | u=ff5fb0 bars=40:T barwidth=80 bars2=95:00001000\ncell: 2 | u=ff9a3c bars2=40:10000000\ncell: 3 | u=ff5fb0 bars=40:R barwidth=80 bars2=95:00000010\ncell: 4 |\ncell: 5 | u=ff9a3c bars2=40:00001000\ncell: 6 | u=ff4d4d star=145\ncell: 7 | u=ff9a3c bars2=40:01000000\ncell: 8 |\ncell: 9 | u=ff5fb0 bars=40:L barwidth=80 bars2=95:00010000\ncell: 10 | u=ff9a3c bars2=40:00000100\ncell: 11 | u=ff5fb0 bars=40:B barwidth=80 bars2=95:01000000\ncell: 12 |\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY"
+  "PYATNASHKI\nname: Fifteen Star\nsize: 4\ncell: 1 | u=ff5fb0 bars=40:T barwidth=80 bars2=95:00001000\ncell: 2 | f=ff9a3c frame=circle u=ff9a3c bars2=40:10000000\ncell: 3 | u=ff5fb0 bars=40:R barwidth=80 bars2=95:00000010\ncell: 4 |\ncell: 5 | f=ff9a3c frame=circle u=ff9a3c bars2=40:00001000\ncell: 6 | u=ff4d4d star=145\ncell: 7 | f=ff9a3c frame=circle u=ff9a3c bars2=40:01000000\ncell: 8 |\ncell: 9 | u=ff5fb0 bars=40:L barwidth=80 bars2=95:00010000\ncell: 10 | f=ff9a3c frame=circle u=ff9a3c bars2=40:00000100\ncell: 11 | u=ff5fb0 bars=40:B barwidth=80 bars2=95:01000000\ncell: 12 |\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
+  "PYATNASHKI\nname: Fifteen Tetris\nsize: 4\ncell: 1 |\ncell: 2 | u=2fb4ff square=80 cut=25:TB bars2=75:01001000 thick=95\ncell: 3 | u=2fb4ff square=80 cut=25:TB bars2=75:10000100\ncell: 4 |\ncell: 5 |\ncell: 6 | f=4cd964 frame=circle u=4cd964 bars=100:L barwidth=30\ncell: 7 | f=4cd964 frame=circle u=4cd964 bars=100:R barwidth=30\ncell: 8 |\ncell: 9 | f=ffd93d frame=square u=ffd93d bars=100:R barwidth=30\ncell: 10 |\ncell: 11 |\ncell: 12 | f=ffd93d frame=square u=ffd93d bars=100:L barwidth=30\ncell: 13 |\ncell: 14 | u=ff4d4d square=80 cut=25:TB bars2=75:10000000\ncell: 15 | u=ff4d4d square=80 cut=25:TB bars2=75:01000000 thick=95\ncell: EMPTY",
+  "PYATNASHKI\nname: Fifteen Golf\nsize: 4\ncell: 1 |\ncell: 2 | u=ffd93d hook=00001000:50 hookout=1 hookwidth=80\ncell: 3 | u=ff4d4d hook=00010000:50 hookout=1 hookwidth=80\ncell: 4 |\ncell: 5 | u=ff4d4d hook=01000000:50 hookout=1 hookwidth=80\ncell: 6 | u=9b5cf6 bars2=40:00000100\ncell: 7 | u=9b5cf6 bars2=40:00001000\ncell: 8 | u=ffd93d hook=00000010:50 hookout=1 hookwidth=80\ncell: 9 | u=ffd93d hook=00010000:50 hookout=1 hookwidth=80\ncell: 10 | u=9b5cf6 bars2=40:01000000\ncell: 11 | u=9b5cf6 bars2=40:10000000\ncell: 12 | u=ff4d4d hook=00001000:50 hookout=1 hookwidth=80\ncell: 13 |\ncell: 14 | u=ff4d4d hook=00000010:50 hookout=1 hookwidth=80\ncell: 15 | u=ffd93d hook=01000000:50 hookout=1 hookwidth=80\ncell: EMPTY"
 ];
 
 var UI_LANG = detectLanguage();
-var rus_eng = {"ru": {"moves": "Ходы", "time": "Время", "congrats": "Поздравляем!", "again": "🎲 Ещё раз", "close": "Закрыть", "puzzles": "Головоломки", "scramble": "🎲 Перемешать", "editor": "✎ Редактор", "undo": "↶ Назад", "redo": "↷ Вперёд", "reset": "↺ Сброс", "name": "Название", "size": "Размер поля", "clear": "Очистить", "launch": "▶ Запустить", "cancel": "Отмена", "editNone": "Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.", "editHole": "Это пустая клетка. Перетащите на неё любую плитку, чтобы поменять их местами.", "marker": "Маркер", "tier": "Башня", "tile": "Плитка", "upper": "Башня", "palette": "Палитра", "upperShape": "Форма башни", "circle": "● Круг", "square": "■ Квадрат", "star": "✦ Звезда", "bars": "✚ Выступы по центру", "bars2": "⌗ Выступы со сдвигом", "bodySize": "Размер (ширина плитки = 100%)", "sideShift": "Сдвиг сторон", "shift": "Сдвиг (% стороны)", "length": "Длина от центра", "thickness": "Толщина", "offsetWidth": "⌗ Выступы со сдвигом (ширина 40%)", "tabsHint": "Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.", "copy": "Скопировать в буфер", "paste": "Вставить из буфера", "delete": "Удалить", "load": "Загрузить", "hint": "Подсказка", "newPuzzle": "Новая головоломка", "clearBoard": "Сбросить все плитки к обычной доске", "clearMarker": "Очистить маркер", "clearCuts": "Убрать срезы", "clearTabs": "Убрать выступы", "shiftTop": "Сдвиг сверху", "shiftRight": "Сдвиг справа", "shiftBottom": "Сдвиг снизу", "shiftLeft": "Сдвиг слева", "top": "Сверху", "right": "Справа", "bottom": "Снизу", "left": "Слева", "topLeft": "Сверху, левый", "topRight": "Сверху, правый", "rightUpper": "Справа, верхний", "rightLower": "Справа, нижний", "bottomLeft": "Снизу, левый", "bottomRight": "Снизу, правый", "leftUpper": "Слева, верхний", "leftLower": "Слева, нижний", "appName": "Про Пятнашки", "versionLine": "Про Пятнашки · версия 1.52", "aboutTitle": "О Программе", "chooseLanguage": "выберите язык", "pulseLabel": "Пульсация", "pulseOn": "Вкл", "pulseOff": "Выкл", "copyTileParams": "Скопировать параметры плитки", "pasteTileParams": "Вставить параметры", "copyTileDone": "Параметры плитки скопированы.", "pasteTileDone": "Параметры вставлены.", "nothingToPaste": "Буфер пуст — сначала скопируйте параметры плитки.", "collapseSection": "Свернуть блок", "expandSection": "Развернуть блок", "developers": "Разработчики:", "puzzleAuthors": "Авторские головоломки:", "puzzleNumber": "Головоломка {number}", "defaultPuzzle": "Головоломка", "importName": "Импорт", "winSummary": "«{name}» собрана", "plainStatus": "Тяните плитку к пустой клетке или кликните по ней.", "playNamed": "«{name}». Тяните плитку к пустой клетке или кликните по ней.", "editorConflict": "Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.", "editorReady": "Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».", "editorLoaded": "Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.", "copyDone": "Головоломка «{name}» скопирована в буфер обмена.", "copyFallback": "Скопируйте текст головоломки вручную (Ctrl+C)", "pastePrompt": "Вставьте текст головоломки (Ctrl+V)", "pasteError": "Не удалось вставить: {error}.", "deleteAsk": "Удалить головоломку «{name}» из хранилища?", "deleteTitle": "Удалить головоломку?", "newBoard": "Новая головоломка", "assembled": "Собрано! Ходов: {moves}, время: {time}.", "noMoves": "Нет ни одного возможного хода — нажмите «Назад» или «Сброс».", "notNeighbor": "Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.", "undoDone": "Ход отменён.", "redoDone": "Ход возвращён.", "scrambleNone": "На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.", "scrambleDone": "Перемешано легальными ходами ({moves}). Позицию всегда можно собрать обратно.", "resetDone": "Сброс: доска собрана.", "solve": "✓ Решить", "stop": "✕ Стоп", "solveRunning": "Поиск решения…", "solveProgress": "Поиск решения… {phase}Позиций: {count}, время: {time}", "solveDone": "Решение найдено: {moves} ходов.", "solveFailed": "Не удалось найти решение. Доска оставлена в текущем состоянии.", "solveAborted": "Решение отменено. Доска оставлена в текущем состоянии.", "computingRest": "Досчитываю решение…", "retryAttempt": "Попытка {n} из {total}. Откат…", "retryHeuristic": "Переключение на эвристику…", "alreadySolvedTitle": "Головоломка уже собрана", "alreadySolvedText": "Перемешать её?", "scrambleShort": "🎲 Перемешать", "pause": "Пауза", "play": "Продолжить", "toStart": "В начало", "toEnd": "В конец", "stepBack": "Шаг назад", "stepFwd": "Шаг вперёд", "phaseTopRow": "верхний ряд", "phaseLeftCol": "левый столбик", "phaseBlock": "финальный блок", "phaseIda": "IDA*", "phaseInit": "подготовка"}, "en": {"moves": "Moves", "time": "Time", "congrats": "Congratulations!", "again": "🎲 Play again", "close": "Close", "puzzles": "Puzzles", "scramble": "🎲 Scramble", "editor": "✎ Editor", "undo": "↶ Undo", "redo": "↷ Redo", "reset": "↺ Reset", "name": "Name", "size": "Board size", "clear": "Clear", "launch": "▶ Start", "cancel": "Cancel", "editNone": "Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.", "editHole": "This is the empty cell. Drag any tile onto it to swap their positions.", "marker": "Marker", "tier": "Tower", "tile": "Tile", "upper": "Tower", "palette": "Palette", "upperShape": "Tower shape", "circle": "● Circle", "square": "■ Square", "star": "✦ Star", "bars": "✚ Centered tabs", "bars2": "⌗ Offset tabs", "bodySize": "Size (cell width = 100%)", "sideShift": "Side shifts", "shift": "Shift (% of side)", "length": "Length from center", "thickness": "Thickness", "offsetWidth": "⌗ Offset tabs (width 40%)", "tabsHint": "Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.", "copy": "Copy to clipboard", "paste": "Paste from clipboard", "delete": "Delete", "load": "Load", "hint": "Hint", "newPuzzle": "New puzzle", "clearBoard": "Reset all tiles to a plain board", "clearMarker": "Clear marker", "clearCuts": "Remove side shifts", "clearTabs": "Remove tabs", "shiftTop": "Shift top", "shiftRight": "Shift right", "shiftBottom": "Shift bottom", "shiftLeft": "Shift left", "top": "Top", "right": "Right", "bottom": "Bottom", "left": "Left", "topLeft": "Top, left", "topRight": "Top, right", "rightUpper": "Right, upper", "rightLower": "Right, lower", "bottomLeft": "Bottom, left", "bottomRight": "Bottom, right", "leftUpper": "Left, upper", "leftLower": "Left, lower", "appName": "Fifteen Pro", "versionLine": "Fifteen Pro · version 1.52", "aboutTitle": "About", "chooseLanguage": "Choose language", "pulseLabel": "Pulsation", "pulseOn": "On", "pulseOff": "Off", "copyTileParams": "Copy tile parameters", "pasteTileParams": "Paste parameters", "copyTileDone": "Tile parameters copied.", "pasteTileDone": "Parameters pasted.", "nothingToPaste": "Clipboard is empty — copy tile parameters first.", "collapseSection": "Collapse section", "expandSection": "Expand section", "developers": "Developers:", "puzzleAuthors": "Puzzle authors:", "puzzleNumber": "Puzzle {number}", "defaultPuzzle": "Puzzle", "importName": "Imported puzzle", "winSummary": "“{name}” solved", "plainStatus": "Drag a tile into the empty cell or click it.", "playNamed": "“{name}”. Drag a tile into the empty cell or click it.", "editorConflict": "Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.", "editorReady": "Edit the tiles. No conflicts detected — press “Start” when ready.", "editorLoaded": "Puzzle “{name}” loaded in the editor. Press “Start” to save it.", "copyDone": "Puzzle “{name}” copied to the clipboard.", "copyFallback": "Copy the puzzle text manually (Ctrl+C)", "pastePrompt": "Paste puzzle text (Ctrl+V)", "pasteError": "Could not paste: {error}.", "deleteAsk": "Delete puzzle “{name}” from storage?", "deleteTitle": "Delete puzzle?", "newBoard": "New puzzle", "assembled": "Solved! Moves: {moves}, time: {time}.", "noMoves": "No legal moves. Press “Undo” or “Reset”.", "notNeighbor": "This tile is not next to the empty cell, and its row/column cannot be shifted.", "undoDone": "Move undone.", "redoDone": "Move restored.", "scrambleNone": "This board has no legal moves. Change tile shapes in the editor.", "scrambleDone": "Shuffled with {moves} legal moves. Reverse them to solve.", "resetDone": "Reset: board solved.", "solve": "✓ Solve", "stop": "✕ Stop", "solveRunning": "Solving…", "solveProgress": "Solving… {phase}Positions: {count}, time: {time}", "solveDone": "Solution found: {moves} moves.", "solveFailed": "Could not find a solution. Board left in its current state.", "solveAborted": "Solving aborted. Board left in its current state.", "computingRest": "Finishing the solution…", "retryAttempt": "Attempt {n} of {total}. Rolling back…", "retryHeuristic": "Switching to heuristic…", "alreadySolvedTitle": "Puzzle is already solved", "alreadySolvedText": "Scramble it?", "scrambleShort": "🎲 Scramble", "pause": "Pause", "play": "Play", "toStart": "To start", "toEnd": "To end", "stepBack": "Step back", "stepFwd": "Step forward", "phaseTopRow": "top row", "phaseLeftCol": "left column", "phaseBlock": "final block", "phaseIda": "IDA*", "phaseInit": "init"}};
+var rus_eng = {"ru": {"moves": "Ходы", "time": "Время", "congrats": "Поздравляем!", "again": "🎲 Ещё раз", "close": "Закрыть", "puzzles": "Головоломки", "scramble": "🎲 Перемешать", "editor": "✎ Редактор", "undo": "↶ Назад", "redo": "↷ Вперёд", "reset": "↺ Сброс", "name": "Название", "size": "Размер поля", "clear": "Очистить", "launch": "▶ Запустить", "cancel": "Отмена", "editNone": "Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.", "editHole": "Это пустая клетка. Можно создать плитку или перетащить сюда существующую.", "marker": "Маркер", "tier": "Башня", "tile": "Плитка", "upper": "Башня", "palette": "Палитра", "upperShape": "Форма башни", "circle": "● Круг", "square": "■ Квадрат", "star": "✦ Звезда", "bars": "✚ Выступы по центру", "bars2": "⌗ Выступы со сдвигом", "hook": "Γ Крюк", "bodySize": "Размер (ширина плитки = 100%)", "sideShift": "Сдвиг сторон", "shift": "Сдвиг (% стороны)", "length": "Длина от центра", "thickness": "Толщина", "offsetWidth": "⌗ Выступы со сдвигом (ширина 40%)", "tabsHint": "Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.", "hookHint": "При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.", "copy": "Скопировать в буфер", "paste": "Вставить из буфера", "delete": "Удалить", "load": "Загрузить", "hint": "Подсказка", "newPuzzle": "Новая головоломка", "clearBoard": "Сбросить все плитки к обычной доске", "clearCuts": "Убрать срезы", "clearTabs": "Убрать выступы", "clearHooks": "Убрать крюки", "shiftTop": "Сдвиг сверху", "shiftRight": "Сдвиг справа", "shiftBottom": "Сдвиг снизу", "shiftLeft": "Сдвиг слева", "top": "Сверху", "right": "Справа", "bottom": "Снизу", "left": "Слева", "topLeft": "Сверху, левый", "topRight": "Сверху, правый", "rightUpper": "Справа, верхний", "rightLower": "Справа, нижний", "bottomLeft": "Снизу, левый", "bottomRight": "Снизу, правый", "leftUpper": "Слева, верхний", "leftLower": "Слева, нижний", "appName": "Про Пятнашки", "versionLine": "Про Пятнашки · версия 1.80", "aboutTitle": "О Программе", "chooseLanguage": "выберите язык", "pulseLabel": "Пульсация", "pulseOn": "Вкл", "pulseOff": "Выкл", "copyTileParams": "Скопировать параметры плитки", "pasteTileParams": "Вставить параметры", "copyTileDone": "Параметры плитки скопированы без маркера.", "pasteTileDone": "Параметры вставлены. Маркер плитки сохранён.", "nothingToPaste": "Буфер пуст — сначала скопируйте параметры плитки.", "collapseSection": "Свернуть блок", "expandSection": "Развернуть блок", "frameLabel": "Рамка плитки", "frameNone": "Нет", "frameCircle": "● Круг", "frameSquare": "■ Квадрат", "developers": "Разработчики:", "puzzleAuthors": "Авторские головоломки:", "puzzleNumber": "Головоломка {number}", "defaultPuzzle": "Головоломка", "importName": "Импорт", "winSummary": "«{name}» собрана", "plainStatus": "Тяните плитку к пустой клетке или кликните по ней.", "playNamed": "«{name}». Тяните плитку к пустой клетке или кликните по ней.", "editorConflict": "Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.", "editorReady": "Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».", "editorLoaded": "Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.", "copyDone": "Головоломка «{name}» скопирована в буфер обмена.", "copyFallback": "Скопируйте текст головоломки вручную (Ctrl+C)", "pastePrompt": "Вставьте текст головоломки (Ctrl+V)", "pasteError": "Не удалось вставить: {error}.", "deleteAsk": "Удалить головоломку «{name}» из хранилища?", "deleteTitle": "Удалить головоломку?", "newBoard": "Новая головоломка", "assembled": "Собрано! Ходов: {moves}, время: {time}.", "noMoves": "Нет ни одного возможного хода — нажмите «Назад» или «Сброс».", "notNeighbor": "Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.", "shiftBlocked": "Групповой ход заблокирован: один из участников не может продолжить движение.", "undoDone": "Ход отменён.", "redoDone": "Ход возвращён.", "scrambleNone": "На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.", "scrambleDone": "Перемешивание выполнено за {moves} шагов.", "resetDone": "Сброс: доска собрана.", "solve": "✓ Решить", "stop": "✕ Стоп", "solveRunning": "Поиск решения…", "solveProgress": "Поиск решения… {phase}Позиций: {count}, время: {time}", "solveDone": "Решение найдено: {moves} ходов.", "solveFailed": "Не удалось найти решение. Доска оставлена в текущем состоянии.", "solveAborted": "Решение отменено. Доска оставлена в текущем состоянии.", "computingRest": "Досчитываю решение…", "retryAttempt": "Попытка {n} из {total}. Откат…", "retryHeuristic": "Переключение на эвристику…", "alreadySolvedTitle": "Головоломка уже собрана", "alreadySolvedText": "Перемешать её?", "scrambleShort": "🎲 Перемешать", "pause": "Пауза", "play": "Продолжить", "toStart": "В начало", "toEnd": "В конец", "stepBack": "Шаг назад", "stepFwd": "Шаг вперёд", "phaseTopRow": "верхний ряд", "phaseLeftCol": "левый столбик", "phaseBlock": "финальный блок", "phaseIda": "IDA*", "phaseInit": "подготовка", "deleteTile": "Удалить плитку", "createTile": "＋ Создать плитку", "turnHook": "Отразить крюк", "hookInward": "Перекладины внутрь", "hookOutward": "Перекладины наружу", "tileDeleted": "Плитка удалена. На её месте — пустая клетка.", "tileCreated": "Плитка создана.", "noHole": "Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.", "solverOneHole": "Автоматический решатель пока работает только с одной пустой клеткой.", "hookStemLength": "Длина ножки", "hookWidth": "Ширина выступа"}, "en": {"moves": "Moves", "time": "Time", "congrats": "Congratulations!", "again": "🎲 Play again", "close": "Close", "puzzles": "Puzzles", "scramble": "🎲 Scramble", "editor": "✎ Editor", "undo": "↶ Undo", "redo": "↷ Redo", "reset": "↺ Reset", "name": "Name", "size": "Board size", "clear": "Clear", "launch": "▶ Start", "cancel": "Cancel", "editNone": "Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.", "editHole": "This cell is empty. Create a tile or drag an existing tile here.", "marker": "Marker", "tier": "Tower", "tile": "Tile", "upper": "Tower", "palette": "Palette", "upperShape": "Tower shape", "circle": "● Circle", "square": "■ Square", "star": "✦ Star", "bars": "✚ Centered tabs", "bars2": "⌗ Offset tabs", "hook": "Γ Hook", "bodySize": "Size (cell width = 100%)", "sideShift": "Side shifts", "shift": "Shift (% of side)", "length": "Length from center", "thickness": "Thickness", "offsetWidth": "⌗ Offset tabs (width 40%)", "tabsHint": "Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.", "hookHint": "Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.", "copy": "Copy to clipboard", "paste": "Paste from clipboard", "delete": "Delete", "load": "Load", "hint": "Hint", "newPuzzle": "New puzzle", "clearBoard": "Reset all tiles to a plain board", "clearCuts": "Remove side shifts", "clearTabs": "Remove tabs", "clearHooks": "Remove hooks", "shiftTop": "Shift top", "shiftRight": "Shift right", "shiftBottom": "Shift bottom", "shiftLeft": "Shift left", "top": "Top", "right": "Right", "bottom": "Bottom", "left": "Left", "topLeft": "Top, left", "topRight": "Top, right", "rightUpper": "Right, upper", "rightLower": "Right, lower", "bottomLeft": "Bottom, left", "bottomRight": "Bottom, right", "leftUpper": "Left, upper", "leftLower": "Left, lower", "appName": "Fifteen Pro", "versionLine": "Fifteen Pro · version 1.80", "aboutTitle": "About", "chooseLanguage": "Choose language", "pulseLabel": "Pulsation", "pulseOn": "On", "pulseOff": "Off", "copyTileParams": "Copy tile parameters", "pasteTileParams": "Paste parameters", "copyTileDone": "Tile parameters copied without the marker.", "pasteTileDone": "Parameters pasted. The tile marker was preserved.", "nothingToPaste": "Clipboard is empty — copy tile parameters first.", "collapseSection": "Collapse section", "expandSection": "Expand section", "frameLabel": "Tile frame", "frameNone": "None", "frameCircle": "● Circle", "frameSquare": "■ Square", "developers": "Developers:", "puzzleAuthors": "Puzzle authors:", "puzzleNumber": "Puzzle {number}", "defaultPuzzle": "Puzzle", "importName": "Imported puzzle", "winSummary": "“{name}” solved", "plainStatus": "Drag a tile into the empty cell or click it.", "playNamed": "“{name}”. Drag a tile into the empty cell or click it.", "editorConflict": "Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.", "editorReady": "Edit the tiles. No conflicts detected — press “Start” when ready.", "editorLoaded": "Puzzle “{name}” loaded in the editor. Press “Start” to save it.", "copyDone": "Puzzle “{name}” copied to the clipboard.", "copyFallback": "Copy the puzzle text manually (Ctrl+C)", "pastePrompt": "Paste puzzle text (Ctrl+V)", "pasteError": "Could not paste: {error}.", "deleteAsk": "Delete puzzle “{name}” from storage?", "deleteTitle": "Delete puzzle?", "newBoard": "New puzzle", "assembled": "Solved! Moves: {moves}, time: {time}.", "noMoves": "No legal moves. Press “Undo” or “Reset”.", "notNeighbor": "This tile is not next to the empty cell, and its row/column cannot be shifted.", "shiftBlocked": "Group move blocked: a required tile cannot continue moving.", "undoDone": "Move undone.", "redoDone": "Move restored.", "scrambleNone": "This board has no legal moves. Change tile shapes in the editor.", "scrambleDone": "Shuffling completed in {moves} steps.", "resetDone": "Reset: board solved.", "solve": "✓ Solve", "stop": "✕ Stop", "solveRunning": "Solving…", "solveProgress": "Solving… {phase}Positions: {count}, time: {time}", "solveDone": "Solution found: {moves} moves.", "solveFailed": "Could not find a solution. Board left in its current state.", "solveAborted": "Solving aborted. Board left in its current state.", "computingRest": "Finishing the solution…", "retryAttempt": "Attempt {n} of {total}. Rolling back…", "retryHeuristic": "Switching to heuristic…", "alreadySolvedTitle": "Puzzle is already solved", "alreadySolvedText": "Scramble it?", "scrambleShort": "🎲 Scramble", "pause": "Pause", "play": "Play", "toStart": "To start", "toEnd": "To end", "stepBack": "Step back", "stepFwd": "Step forward", "phaseTopRow": "top row", "phaseLeftCol": "left column", "phaseBlock": "final block", "phaseIda": "IDA*", "phaseInit": "init", "deleteTile": "Delete tile", "createTile": "＋ Create tile", "turnHook": "Mirror hook", "hookInward": "Heads inward", "hookOutward": "Heads outward", "tileDeleted": "Tile deleted. Its cell is now empty.", "tileCreated": "Tile created.", "noHole": "Leave at least one empty cell so tiles can move.", "solverOneHole": "The automatic solver currently requires exactly one empty cell.", "hookStemLength": "Stem length", "hookWidth": "Protrusion width"}};
 
 var LAST_STATUS = null, LAST_DIALOG = null;
 var pulseOn = true;
 var editClip = null;
-var modCollapsed = {circle:false, square:false, star:false, bars:false, bars2:false};
+var modCollapsed = {circle:false, square:false, star:false, bars:false, bars2:false, hook:false};
 
 function detectLanguage() {
   var systemLanguage = navigator.language || navigator.userLanguage || ((navigator.languages || [])[0]) || '';
@@ -590,6 +680,9 @@ function translateError(text) {
   if ((m = /^цвет «(.*)» должен быть в формате RRGGBB$/.exec(text))) return 'color “' + m[1] + '” must use RRGGBB format';
   if ((m = /^в параметре «(.*)» нет числа$/.exec(text))) return 'parameter “' + m[1] + '” requires a number';
   if (text === 'bars2 требует 8 цифр 0/1') return 'bars2 requires eight 0/1 digits';
+  if (text === 'hooklength должен быть числом') return 'hooklength must be a number';
+  if (text === 'hookwidth должен быть числом') return 'hookwidth must be a number';
+  if (text === 'hook требует 8 цифр 0/1') return 'hook requires eight 0/1 digits';
   return text;
 }
 function applyLanguage(language) {
@@ -621,14 +714,21 @@ var n = 4, puzzles = [], cur = 0, cfg = null, layout = [];
 var hist = [], redo = [], mode = 'play', sel = -1;
 var deletedBuiltinNames = [];
 
-function syncUpper(t) { t.upper = t.body !== 'none' || !!t.bars || !!t.bars2; }
+function syncUpper(t) {
+  var hasHook = false;
+  if (t.hooks) for (var i = 0; i < 8; i++) if (t.hooks[i]) { hasHook = true; break; }
+  t.hookEnabled = hasHook || !!t.hookEnabled;
+  t.upper = t.body !== 'none' || !!t.bars || !!t.bars2 || hasHook;
+}
 
 function newTile(marker) {
   return {
     marker: marker, color: '#ffffff', upColor: UP_DEFAULT, upper: false,
     body: 'none', cr: 0.60, sq: 0.70, star: 1.20, thick: 1.00, ch: [0, 0, 0, 0], cut: 0.30,
     bars: false, bl: 0.60, barWidth: 0.70, bars2: false, bl2: 0.60,
-    sides: [1, 1, 1, 1], sides2: [1, 1, 1, 1, 1, 1, 1, 1]
+    sides: [1, 1, 1, 1], sides2: [1, 1, 1, 1, 1, 1, 1, 1],
+    frame: 'none',
+    hooks: [0, 0, 0, 0, 0, 0, 0, 0], hookThick: 0.50, hookLength: 1.00, hookWidth: 0.70, hookOut: false, hookEnabled: false
   };
 }
 
@@ -666,6 +766,7 @@ function puzzleToText(p) {
     if (id < 0) { L.push('cell: EMPTY'); return; }
     var t = p.tiles[id], o = [];
     if (t.color.toLowerCase() !== '#ffffff') o.push('f=' + t.color.slice(1).toLowerCase());
+    if (t.frame && t.frame !== 'none') o.push('frame=' + t.frame);
     if (t.upper) {
       o.push('u=' + t.upColor.slice(1).toLowerCase());
       if (t.body === 'circle') o.push('circle=' + Math.round(t.cr * 200));
@@ -682,6 +783,20 @@ function puzzleToText(p) {
         o.push('bars2=' + Math.round(t.bl2 * 100) + ':' + t.sides2.join(''));
         if (Math.abs((t.thick === undefined ? 1 : t.thick) - 1) > EPS) o.push('thick=' + Math.round(t.thick * 100));
       }
+      if (t.hooks && t.hooks.some(function(x){return x;})) {
+        o.push('hook=' + t.hooks.join('') + ':' + Math.round((t.hookThick || 0.5) * 100));
+        if (t.hookOut) o.push('hookout=1');
+      }
+    }
+    if (t.hookEnabled && !(t.hooks && t.hooks.some(function(v){return !!v;}))) {
+      o.push('hook=00000000:' + Math.round((t.hookThick || 0.5) * 100));
+      if (t.hookOut) o.push('hookout=1');
+    }
+    if ((t.hookEnabled || (t.hooks && t.hooks.some(function(v){return !!v;}))) && Math.abs(hookLengthOf(t)-1)>EPS) {
+      o.push('hooklength=' + Math.round(hookLengthOf(t)*100));
+    }
+    if ((t.hookEnabled || (t.hooks && t.hooks.some(function(v){return !!v;}))) && Math.abs(hookWidthOf(t)-0.70)>EPS) {
+      o.push('hookwidth=' + Math.round(hookWidthOf(t)*100));
     }
     L.push('cell: ' + t.marker + ' |' + (o.length ? ' ' + o.join(' ') : ''));
   });
@@ -700,6 +815,31 @@ function applyOpts(t, optStr) {
       if (k === 'f') t.color = '#' + v.toLowerCase(); else t.upColor = '#' + v.toLowerCase();
       return;
     }
+    if (k === 'frame') {
+      var fv = String(v).toLowerCase();
+      t.frame = (fv === 'circle' || fv === 'square') ? fv : 'none';
+      return;
+    }
+    if (k === 'hooklength') {
+      if (!Number.isFinite(num)) {err = 'hooklength должен быть числом'; return;}
+      t.hookLength = clampN(Math.round(num / 5) * 5,50,110)/100;
+      return;
+    }
+    if (k === 'hookwidth') {
+      if (!Number.isFinite(num)) {err = 'hookwidth должен быть числом'; return;}
+      t.hookWidth = clampN(Math.round(num / 5) * 5,30,100)/100;
+      return;
+    }
+    if (k === 'hookout') { t.hookOut = v === '1' || v.toLowerCase() === 'true'; return; }
+    if (k === 'hook') {
+      t.hookEnabled = true;
+      var bits = String(parts[0] || '').replace(/[^01]/g, '');
+      if (bits.length !== 8) { err = 'hook требует 8 цифр 0/1'; return; }
+      t.hooks = bits.split('').map(Number);
+      var th = parseInt(parts[1], 10);
+      if (!isNaN(th)) t.hookThick = clampN(th, 30, 60) / 100;
+      return;
+    }
     if (isNaN(num)) { err = 'в параметре «' + tok + '» нет числа'; return; }
     if (k === 'circle') { t.body = 'circle'; t.cr = clampN(num, 50, 150) / 200; }
     else if (k === 'square') { t.body = 'square'; t.sq = clampN(num, 50, 150) / 100; }
@@ -709,9 +849,9 @@ function applyOpts(t, optStr) {
     else if (k === 'cut') { t.cut = clampN(num, -50, 50) / 100; t.ch = lettersToSides(parts[1]); }
     else if (k === 'bars') { t.bars = true; t.bl = clampN(num, 40, 100) / 100; t.sides = lettersToSides(parts[1]); }
     else if (k === 'bars2') {
-      var bits = String(parts[1] || '').replace(/[^01]/g, '');
-      if (bits.length !== 8) { err = 'bars2 требует 8 цифр 0/1'; return; }
-      t.bars2 = true; t.bl2 = clampN(num, 40, 100) / 100; t.sides2 = bits.split('').map(Number);
+      var b2 = String(parts[1] || '').replace(/[^01]/g, '');
+      if (b2.length !== 8) { err = 'bars2 требует 8 цифр 0/1'; return; }
+      t.bars2 = true; t.bl2 = clampN(num, 40, 100) / 100; t.sides2 = b2.split('').map(Number);
     } else err = 'неизвестный параметр «' + k + '»';
   });
   syncUpper(t);
@@ -743,7 +883,6 @@ function textToPuzzle(text) {
     lay.push(tiles.length);
     tiles.push(t);
   }
-  if (empties !== 1) return { error: 'должна быть ровно одна пустая клетка (EMPTY), найдено ' + empties };
   return { puzzle: { name:name||tr('importName'), n: size, tiles: tiles, layout: lay } };
 }
 
@@ -767,6 +906,59 @@ function starShape(cx, cy, size) {
     pts.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr]);
   }
   return { k: 'p', pts: pts, cx: cx, cy: cy };
+}
+
+function hookShapes(t, cx, cy) {
+  if (!t || !t.hooks) return [];
+  var any = false;
+  for (var i = 0; i < 8; i++) if (t.hooks[i]) { any = true; break; }
+  if (!any) return [];
+  var o = [];
+  var th = Math.max(HOOK_TH_MIN, Math.min(HOOK_TH_MAX, t.hookThick || 0.5));
+  var tW = G.OW * th;
+  var tWBase = G.OW * HOOK_TH_BASE;
+  var adjust = hookGeometryDelta();
+  var reach = (G.OW * 2 + adjust) * hookLengthOf(t);
+  var arm = G.OW * hookWidthOf(t) + adjust;
+
+  for (var side = 0; side < 4; side++) {
+    for (var k = 0; k < 2; k++) {
+      if (!t.hooks[side * 2 + k]) continue;
+      // Both outer stem edges use the same distance from the tile edge.
+      // Thickness changes only the inner edge, not the edgeward anchor.
+      var uStem = (k === 0 ? -1 : 1) * (G.OW * 0.5 + HOOK_EDGE_SHIFT + adjust);
+      var uFix = (k === 0) ? (uStem - tWBase / 2) : (uStem + tWBase / 2);
+      var uStemLeft, uStemRight;
+      if (k === 0) { uStemLeft = uFix; uStemRight = uFix + tW; }
+      else         { uStemLeft = uFix - tW; uStemRight = uFix; }
+      var uBarLeft, uBarRight;
+      if (k === 0) { uBarLeft = uFix; uBarRight = uStem + arm; }
+      else         { uBarLeft = uStem - arm; uBarRight = uFix; }
+
+      if (t.hookOut) {
+        var mirror = uStemLeft + uStemRight;
+        var oldLeft = uBarLeft;
+        uBarLeft = mirror - uBarRight;
+        uBarRight = mirror - oldLeft;
+      }
+      var stem, bar;
+      if (side === 0) {
+        stem = R(cx + uStemLeft, cx + uStemRight, cy - reach, cy);
+        bar  = R(cx + uBarLeft, cx + uBarRight, cy - reach, cy - reach + tW);
+      } else if (side === 1) {
+        stem = R(cx, cx + reach, cy + uStemLeft, cy + uStemRight);
+        bar  = R(cx + reach - tW, cx + reach, cy + uBarLeft, cy + uBarRight);
+      } else if (side === 2) {
+        stem = R(cx + uStemLeft, cx + uStemRight, cy, cy + reach);
+        bar  = R(cx + uBarLeft, cx + uBarRight, cy + reach - tW, cy + reach);
+      } else {
+        stem = R(cx - reach, cx, cy + uStemLeft, cy + uStemRight);
+        bar  = R(cx - reach, cx - reach + tW, cy + uBarLeft, cy + uBarRight);
+      }
+      o.push(stem, bar);
+    }
+  }
+  return o;
 }
 
 function shapesOf(t, cx, cy) {
@@ -797,6 +989,8 @@ function shapesOf(t, cx, cy) {
       }
     }
   }
+  var hk = hookShapes(t, cx, cy);
+  for (var h = 0; h < hk.length; h++) o.push(hk[h]);
   return o;
 }
 
@@ -840,9 +1034,11 @@ function contourShape(s, env) {
   return [contourHull(points)];
 }
 function geometryKey(t) {
+  var hk = t.hooks ? t.hooks.join('') : '00000000';
   return [t.upper ? 1 : 0, t.body, t.cr, t.sq, t.star, t.cut, t.ch.join(''),
     t.bars ? 1 : 0, t.bl, t.barWidth === undefined ? 0.70 : t.barWidth, t.sides.join(''),
-    t.bars2 ? 1 : 0, t.bl2, t.thick === undefined ? 1 : t.thick, t.sides2.join('')].join('|');
+    t.bars2 ? 1 : 0, t.bl2, t.thick === undefined ? 1 : t.thick, t.sides2.join(''),
+    t.frame || 'none', hk, t.hookThick === undefined ? 0.5 : t.hookThick, t.hookOut ? 1 : 0, 'hook-178', hookLengthOf(t), hookWidthOf(t), HOOK_EDGE_SHIFT, hookGeometryDelta()].join('|');
 }
 function shapeBounds(s) {
   if (s._bounds) return s._bounds;
@@ -906,6 +1102,8 @@ function cshapesOf(t, cx, cy) {
   entry.positions.set(position,out);
   return out;
 }
+
+
 
 function starParts(s) {
   if (s.k !== 'p' || s.pts.length === 3 || s.convex) return [s];
@@ -1109,9 +1307,8 @@ function travel(from, to) {
 function travelInState(from, to, state) {
   var saved = layout;
   layout = state;
-  var r = travel(from, to);
-  layout = saved;
-  return r;
+  try { return travel(from, to); }
+  finally { layout = saved; }
 }
 function simulateApply(state, cell) {
   var h = -1;
@@ -1135,13 +1332,15 @@ function legalCells() {
   return neighborsOf(h).filter(function (cell) { return travel(cell, h) >= 1; });
 }
 
+
 function tileSig(t) {
-  var s = [t.marker, t.color.toLowerCase()];
+  var s = [t.marker, t.color.toLowerCase(), t.frame || 'none'];
   if (t.upper) {
     s.push(t.upColor.toLowerCase(), t.body,
       t.body === 'circle' ? t.cr : t.body === 'star' ? t.star : t.body === 'square' ? t.sq + '/' + t.ch.join('') + '/' + t.cut : 0,
       t.bars ? t.sides.join('') + '@' + t.bl + '@' + (t.barWidth === undefined ? 0.70 : t.barWidth) : '-',
-      t.bars2 ? t.sides2.join('') + '@' + t.bl2 + '@' + (t.thick === undefined ? 1 : t.thick) : '-');
+      t.bars2 ? t.sides2.join('') + '@' + t.bl2 + '@' + (t.thick === undefined ? 1 : t.thick) : '-',
+      t.hooks ? t.hooks.join('') + '@' + (t.hookThick === undefined ? 0.5 : t.hookThick) + '@' + (t.hookOut ? 1 : 0) + '@' + hookLengthOf(t) + '@' + hookWidthOf(t) : '-');
   } else s.push('-');
   return s.join('|');
 }
@@ -1238,13 +1437,14 @@ function saveStore() {
 }
 function validCfg(c, size) {
   if (!c || !c.tiles || !c.layout) return false;
-  if (c.tiles.length !== size * size - 1 || c.layout.length !== size * size) return false;
+  if (!Array.isArray(c.tiles) || !Array.isArray(c.layout) || c.tiles.length > size*size || c.layout.length !== size*size) return false;
   var seen = {}, i;
   for (i = 0; i < c.layout.length; i++) {
     var v = c.layout[i];
-    if (v < -1 || v >= c.tiles.length || seen[v]) return false;
-    seen[v] = true;
+    if (!Number.isInteger(v) || v < -1 || v >= c.tiles.length) return false;
+    if (v >= 0) { if (seen[v]) return false; seen[v] = true; }
   }
+  if (Object.keys(seen).length !== c.tiles.length) return false;
   var hexRe = /^#[0-9a-fA-F]{6}$/;
   for (i = 0; i < c.tiles.length; i++) {
     var t = c.tiles[i];
@@ -1260,7 +1460,15 @@ function validCfg(c, size) {
     if (typeof t.thick !== 'number') t.thick = 1.00;
     if (typeof t.barWidth !== 'number') t.barWidth = 0.70;
     t.bars = !!t.bars; t.bars2 = !!t.bars2;
-    if (!t.upper) { t.body = 'none'; t.bars = false; t.bars2 = false; }
+    if (!t.hooks || t.hooks.length !== 8) t.hooks = [0,0,0,0,0,0,0,0];
+    t.hookOut = !!t.hookOut;
+    t.hookLength = hookLengthOf(t);
+    t.hookWidth = hookWidthOf(t);
+    if (typeof t.hookThick !== 'number') t.hookThick = 0.50;
+    if (t.hookThick < HOOK_TH_MIN) t.hookThick = HOOK_TH_MIN;
+    if (t.hookThick > HOOK_TH_MAX) t.hookThick = HOOK_TH_MAX;
+    if (t.frame !== 'circle' && t.frame !== 'square') t.frame = 'none';
+    if (!t.upper && t.frame === 'none') { t.body = 'none'; t.bars = false; t.bars2 = false; }
     syncUpper(t);
   }
   return true;
@@ -1335,7 +1543,7 @@ function savePulsePref() {
 function loadEditClip() {
   try {
     var s = localStorage.getItem(EDIT_CLIP_KEY);
-    if (s) editClip = JSON.parse(s);
+    if (s) { editClip = JSON.parse(s); if (editClip) delete editClip.marker; }
   } catch (e) { editClip = null; }
 }
 function saveEditClip() {
@@ -1350,7 +1558,7 @@ function loadModCollapsed() {
     var s = localStorage.getItem(MOD_COLLAPSED_KEY);
     if (s) {
       var obj = JSON.parse(s);
-      ['circle','square','star','bars','bars2'].forEach(function(k){
+      ['circle','square','star','bars','bars2','hook'].forEach(function(k){
         if (obj && typeof obj[k] === 'boolean') modCollapsed[k] = obj[k];
       });
     }
@@ -1391,9 +1599,17 @@ var UPK = 3;
 var dragPaintFrame=0,pendingDragPaint=null;
 function scheduleDragPaint(id,gx,gy) {
   pendingDragPaint={owner:drag,id:id,gx:gx,gy:gy};
+  requestDragPaint();
+}
+function scheduleMotionPaint(plan,progress) {
+  pendingDragPaint={owner:drag,plan:plan,progress:progress};
+  requestDragPaint();
+}
+function requestDragPaint() {
   if(!dragPaintFrame)dragPaintFrame=requestAnimationFrame(function(){
     dragPaintFrame=0;var p=pendingDragPaint;pendingDragPaint=null;
-    if(p&&drag===p.owner)put(p.id,p.gx,p.gy,false);
+    if(!p || drag!==p.owner)return;
+    if(p.plan)paintMotion(p.plan,p.progress);else put(p.id,p.gx,p.gy,false);
   });
 }
 function cancelDragPaint() {
@@ -1567,14 +1783,31 @@ function refreshTile(id) {
   syncUpper(t);
   var markerLayer = t.upper ? mkLayer : mkLowLayer;
   if (e.m.parentNode !== markerLayer) markerLayer.appendChild(e.m);
-  e.b.style.backgroundColor = t.color;
+
+  if (t.frame && t.frame !== 'none') {
+    e.b.style.backgroundColor = '#ffffff';
+    e.b.style.backgroundImage = 'linear-gradient(165deg,rgba(255,255,255,.55),rgba(255,255,255,0) 55%)';
+    if (!e.frameEl) {
+      e.frameEl = document.createElement('div');
+      e.b.appendChild(e.frameEl);
+    }
+    e.frameEl.className = 'tile-frame ' + t.frame;
+    e.frameEl.style.backgroundColor = t.color;
+    e.frameEl.style.borderColor = shade(t.color, -0.5);
+  } else {
+    e.b.style.backgroundColor = t.color;
+    e.b.style.backgroundImage = 'linear-gradient(165deg,rgba(255,255,255,.55),rgba(255,255,255,0) 55%)';
+    if (e.frameEl) { e.frameEl.parentNode.removeChild(e.frameEl); e.frameEl = null; }
+  }
   e.b.style.borderColor = shade(t.color, -0.5);
+
   if (t.upper) {
     if (!e.u) {
       e.u = document.createElement('div');
       e.u.className = 'up';
       upLayer.appendChild(e.u);
     }
+    e.u._tileId = id;
     fillUp(e.u, t);
     setUpline(id);
   } else if (e.u) {
@@ -1627,7 +1860,7 @@ function build() {
     var b = document.createElement('div'); b.className = 'base'; baseLayer.appendChild(b);
     var m = document.createElement('div'); m.className = 'mk'; mkLayer.appendChild(m);
     var mb = document.createElement('div'); mb.className = 'mkb'; m.appendChild(mb);
-    els[id] = { b: b, u: null, m: m, mb: mb };
+    els[id] = { b: b, u: null, m: m, mb: mb, frameEl: null };
     refreshTile(id);
   });
   renderAll(false);
@@ -1707,9 +1940,12 @@ function renderList() {
     b.addEventListener('click', function () { if (mode === 'play' && !solveRunning && !pb && i !== cur) selectPuzzle(i); });
     boxes[p.n].appendChild(b);
   });
+  boxes[3].classList.toggle('scrollable', boxes[3].children.length > 10);
+  boxes[4].classList.toggle('scrollable', boxes[4].children.length > 10);
 }
 
 function selectPuzzle(i) {
+  if(busy || drag)return;
   closeHint();
   closeWin();
   exitPlayback();
@@ -1735,103 +1971,6 @@ function addPuzzle() {
   openEditor(true);
 }
 
-function tryRowShift(cell) {
-  var r = Math.floor(cell / n), c = cell % n;
-  var h = layout.indexOf(-1);
-  if (Math.floor(h / n) !== r) return null;
-  var hc = h % n;
-  if (hc === c) return null;
-  var dir = hc > c ? 1 : -1;
-  var moves = [];
-  if (dir > 0) {
-    for (var cc = hc - 1; cc >= c; cc--) moves.push({ from: r * n + cc, to: r * n + cc + 1 });
-  } else {
-    for (var cc2 = hc + 1; cc2 <= c; cc2++) moves.push({ from: r * n + cc2, to: r * n + cc2 - 1 });
-  }
-  return { moves: moves, axis: 'row', dir: dir };
-}
-function tryColShift(cell) {
-  var r = Math.floor(cell / n), c = cell % n;
-  var h = layout.indexOf(-1);
-  if (h % n !== c) return null;
-  var hr = Math.floor(h / n);
-  if (hr === r) return null;
-  var dir = hr > r ? 1 : -1;
-  var moves = [];
-  if (dir > 0) {
-    for (var rr = hr - 1; rr >= r; rr--) moves.push({ from: rr * n + c, to: (rr + 1) * n + c });
-  } else {
-    for (var rr2 = hr + 1; rr2 <= r; rr2++) moves.push({ from: rr2 * n + c, to: (rr2 - 1) * n + c });
-  }
-  return { moves: moves, axis: 'col', dir: dir };
-}
-function validateShift(moves) {
-  var saved = layout.slice();
-  var ok = true;
-  for (var i = 0; i < moves.length; i++) {
-    var m = moves[i];
-    if (travel(m.from, m.to) < 1 - 1e-9) { ok = false; break; }
-    layout[m.to] = layout[m.from];
-    layout[m.from] = -1;
-  }
-  layout = saved;
-  return ok;
-}
-function paintShiftFrac(shift, frac) {
-  var dirX = shift.axis === 'row' ? shift.dir : 0;
-  var dirY = shift.axis === 'col' ? shift.dir : 0;
-  shift.moves.forEach(function(m) {
-    var id = layout[m.from];
-    if (id < 0) return;
-    var e = els[id];
-    if (!e) return;
-    var c0 = m.from % n, r0 = Math.floor(m.from / n);
-    put(id, c0 + dirX * frac, r0 + dirY * frac, false);
-  });
-}
-function shakeShift(shift) {
-  if (busy) return;
-  busy = true;
-  paintShiftFrac(shift, 0.18);
-  setTimeout(function() {
-    busy = false;
-    renderAll(true);
-  }, 180);
-}
-function animateShift(moves) {
-  if (busy || !moves.length) return;
-  busy = true;
-  timerStart();
-  for (var i = 0; i < moves.length; i++) {
-    var m = moves[i];
-    var h = layout.indexOf(-1);
-    layout[h] = layout[m.from];
-    layout[m.from] = -1;
-    hist.push({ a: m.from, b: h });
-  }
-  redo = [];
-  moves.forEach(function(m) {
-    var id = layout[m.b];
-    if (id < 0) return;
-    var e = els[id];
-    if (!e) return;
-    e.b.style.transition = 'transform .16s ease';
-    e.m.style.transition = 'transform .16s ease';
-    if (e.u) e.u.style.transition = 'transform .16s ease';
-  });
-  void board.offsetWidth;
-  renderAll(true);
-  setTimeout(function() {
-    busy = false;
-    if (isSolved()) {
-      finished = true;
-      timerStop();
-      setStatus(msg('assembled', {moves: hist.length, time: $('timeEl').textContent}), 'ok');
-      openWin();
-    } else if (!legalCells().length) setStatus(msg('noMoves'), 'err');
-    else setStatus(msg('plainStatus'), '');
-  }, 220);
-}
 
 function rrect(ctx, x, y, w, h, r) {
   ctx.beginPath();
@@ -1858,8 +1997,22 @@ function drawMini() {
     rrect(ctx, pad + c * s + g, pad + r * s + g, s - 2 * g, s - 2 * g, s * 0.14);
     if (id < 0) { ctx.fillStyle = 'rgba(255,255,255,.28)'; ctx.fill(); continue; }
     t = cfg.tiles[id];
-    ctx.fillStyle = t.color; ctx.fill();
-    ctx.strokeStyle = shade(t.color, -0.5); ctx.lineWidth = 1.5; ctx.stroke();
+    if (t.frame && t.frame !== 'none') {
+      ctx.fillStyle = '#ffffff'; ctx.fill();
+      ctx.strokeStyle = shade(t.color, -0.5); ctx.lineWidth = 1.5; ctx.stroke();
+      var fw = (s - 2 * g) * 0.68, fh = fw;
+      var fx = pad + c * s + g + (s - 2 * g - fw) / 2;
+      var fy = pad + r * s + g + (s - 2 * g - fh) / 2;
+      ctx.fillStyle = t.color;
+      if (t.frame === 'circle') {
+        ctx.beginPath(); ctx.arc(fx + fw / 2, fy + fh / 2, fw / 2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      } else {
+        rrect(ctx, fx, fy, fw, fh, fw * 0.22); ctx.fill(); ctx.stroke();
+      }
+    } else {
+      ctx.fillStyle = t.color; ctx.fill();
+      ctx.strokeStyle = shade(t.color, -0.5); ctx.lineWidth = 1.5; ctx.stroke();
+    }
   }
   var path = function (q, dy) {
     ctx.beginPath();
@@ -1989,6 +2142,7 @@ function updateEditor() {
   Array.prototype.forEach.call($('esizeSeg').children, function (b) { b.classList.toggle('on', +b.dataset.size === n); });
   $('editNone').classList.toggle('hidden', sel >= 0);
   $('editHole').classList.toggle('hidden', !(sel >= 0 && id < 0));
+  $('createTileRow').classList.toggle('hidden', !(sel >= 0 && id < 0));
   $('editTile').classList.toggle('hidden', !(sel >= 0 && id >= 0));
   if (sel >= 0 && id >= 0) {
     var t = cfg.tiles[id];
@@ -1996,14 +2150,21 @@ function updateEditor() {
     var curCol = ctarget === 'tile' ? t.color : t.upColor;
     Array.prototype.forEach.call($('colorTarget').children, function (b) { b.classList.toggle('on', b.dataset.ct === ctarget); });
     Array.prototype.forEach.call($('palette').children, function (b) { b.classList.toggle('on', b.dataset.c.toLowerCase() === curCol.toLowerCase()); });
+    Array.prototype.forEach.call($('frameSeg').children, function (b) { b.classList.toggle('on', (t.frame || 'none') === b.dataset.frame); });
+    $('frameBlock').classList.toggle('hidden', ctarget === 'up');
     $('shapeBox').classList.toggle('hidden', ctarget !== 'up');
-    var on = { circle: t.body === 'circle', square: t.body === 'square', star: t.body === 'star', bars: t.bars, bars2: t.bars2 };
+    var on = { circle: t.body === 'circle', square: t.body === 'square', star: t.body === 'star', bars: t.bars, bars2: t.bars2, hook: !!t.hookEnabled || !!(t.hooks && t.hooks.some(function(x){return x;})) };
     Array.prototype.forEach.call($('shapeSeg').children, function (b) { b.classList.toggle('on', !!on[b.dataset.mod]); });
     $('circleBox').classList.toggle('hidden', t.body !== 'circle');
     $('squareBox').classList.toggle('hidden', t.body !== 'square');
     $('starBox').classList.toggle('hidden', t.body !== 'star');
     $('barsBox').classList.toggle('hidden', !t.bars);
     $('bars2Box').classList.toggle('hidden', !t.bars2);
+    $('hookBox').classList.toggle('hidden', !on.hook);
+    $('hookTurnBtn').classList.toggle('on', !!t.hookOut);
+    $('hookTurnBtn').setAttribute('aria-pressed', t.hookOut ? 'true' : 'false');
+    $('hookTurnState').dataset.i18n = t.hookOut ? 'hookOutward' : 'hookInward';
+    $('hookTurnState').textContent = tr(t.hookOut ? 'hookOutward' : 'hookInward');
     $('crRange').value = Math.round(t.cr * 200); $('crVal').textContent = Math.round(t.cr * 200) + '%';
     $('sqRange').value = Math.round(t.sq * 100); $('sqVal').textContent = Math.round(t.sq * 100) + '%';
     $('starRange').value = Math.round(t.star * 100); $('starVal').textContent = Math.round(t.star * 100) + '%';
@@ -2012,16 +2173,21 @@ function updateEditor() {
     $('blRange').value = Math.round(t.bl * 100); $('blVal').textContent = Math.round(t.bl * 100) + '%';
     $('barWidthRange').value = Math.round((t.barWidth === undefined ? 0.70 : t.barWidth) * 100); $('barWidthVal').textContent = Math.round((t.barWidth === undefined ? 0.70 : t.barWidth) * 100) + '%';
     $('bl2Range').value = Math.round(t.bl2 * 100); $('bl2Val').textContent = Math.round(t.bl2 * 100) + '%';
+    $('hookWidthRange').value = Math.round(hookWidthOf(t) * 100); $('hookWidthVal').textContent = Math.round(hookWidthOf(t) * 100) + '%';
+    $('hookLengthRange').value = Math.round(hookLengthOf(t) * 100); $('hookLengthVal').textContent = Math.round(hookLengthOf(t) * 100) + '%';
+    $('hookThickRange').value = Math.round((t.hookThick || 0.5) * 100); $('hookThickVal').textContent = Math.round((t.hookThick || 0.5) * 100) + '%';
     Array.prototype.forEach.call($('chamf').children, function (b) { b.classList.toggle('on', !!t.ch[+b.dataset.ch]); });
     Array.prototype.forEach.call($('sides').children, function (b) { b.classList.toggle('on', !!t.sides[+b.dataset.side]); });
     Array.prototype.forEach.call($('sides2').children, function (b) { b.classList.toggle('on', !!t.sides2[+b.dataset.s2]); });
+    Array.prototype.forEach.call($('sidesH').children, function (b) { b.classList.toggle('on', !!(t.hooks && t.hooks[+b.dataset.hk])); });
     $('pasteTileBtn').disabled = !editClip;
     $('copyTileBtn').disabled = false;
   } else {
     $('pasteTileBtn').disabled = !editClip;
     $('copyTileBtn').disabled = true;
   }
-  if (Object.keys(badIds).length) setStatus(msg('editorConflict'),'err');
+  if (layout.indexOf(-1) < 0) setStatus(msg('noHole'),'err');
+  else if (Object.keys(badIds).length) setStatus(msg('editorConflict'),'err');
   else if (!editMsg) setStatus(msg('editorReady'),'');
   editMsg = false;
 }
@@ -2033,70 +2199,383 @@ function applyMove(cell) {
   return h;
 }
 
-function doPlayerMove(cell) {
-  timerStart();
-  var h = applyMove(cell);
-  hist.push({ a: cell, b: h });
-  redo = [];
+function finishMoveCommon() {
   renderAll(true);
   if (isSolved()) {
     finished = true;
     timerStop();
     setStatus(msg('assembled',{moves:hist.length,time:$('timeEl').textContent}),'ok');
     openWin();
-  } else if (!legalCells().length) setStatus(msg('noMoves'),'err');
+  } else if (!playablePlans().length) setStatus(msg('noMoves'),'err');
   else setStatus(msg('plainStatus'),'');
 }
 
+
+/* ===== Movement v1.71: shape contact, not hook-specific linkage ===== */
+var MOTION_EPS = 1e-9;
+var motionFrame = 0;
+var motionSerial = 0;
+
+function cellStep(cell, dx, dy) {
+  var r = Math.floor(cell / n) + dy, c = cell % n + dx;
+  return r < 0 || r >= n || c < 0 || c >= n ? -1 : r * n + c;
+}
+
+function upperPairLimit(from, other, dx, dy, state) {
+  var a = cfg.tiles[state[from]], b = cfg.tiles[state[other]];
+  if (!a || !b || !a.upper || !b.upper) return Infinity;
+  var A = cshapesOf(a, from % n, Math.floor(from / n));
+  var B = cshapesOf(b, other % n, Math.floor(other / n));
+  if (!A.length || !B.length || !boundsOverlap(sweptBounds(groupBounds(A), dx, dy), groupBounds(B))) return Infinity;
+  var best = Infinity;
+  for (var i = 0; i < A.length; i++) {
+    var swept = sweptBounds(shapeBounds(A[i]), dx, dy);
+    for (var j = 0; j < B.length; j++) {
+      if (!boundsOverlap(swept, shapeBounds(B[j]))) continue;
+      best = Math.min(best, axisLimit(A[i], B[j], dx, dy));
+      if (best <= 0) return 0;
+    }
+  }
+  return best;
+}
+
+function upperContacts(from, dx, dy, state, ignored) {
+  var hits = [];
+  for (var i = 0; i < state.length; i++) {
+    if (i === from || state[i] < 0 || (ignored && ignored[i])) continue;
+    var t = upperPairLimit(from, i, dx, dy, state);
+    if (t < 1 - MOTION_EPS) hits.push({cell:i, time:Math.max(0,t)});
+  }
+  hits.sort(function(a,b){ return a.time - b.time || a.cell - b.cell; });
+  return hits;
+}
+
+function stationaryLimit(from, dx, dy, state, ignored) {
+  var hits = upperContacts(from, dx, dy, state, ignored);
+  return hits.length ? hits[0].time : 1;
+}
+
+function motionPart(from, dx, dy, state, delay) {
+  return {from:from, to:cellStep(from,dx,dy), id:state[from], delay:delay || 0};
+}
+
+function makeMotionPlan(cell, dx, dy, state, parts, end, limit) {
+  return {cell:cell, dx:dx, dy:dy, parts:parts, end:end,
+    limit:Math.max(0,Math.min(end,limit)), ok:limit >= end - MOTION_EPS,
+    state:state.slice(), owner:cfg, size:n};
+}
+
+function buildMovePlan(cell, state, dx, dy) {
+  state=state||layout;
+  if(dx!==undefined)return buildDirectedMovePlan(cell,state,dx,dy);
+  var dirs=[[0,-1],[0,1],[-1,0],[1,0]],plans=[];
+  function distance(plan){
+    var target=cellStep(cell,plan.dx,plan.dy),d=1;
+    while(target>=0 && state[target]>=0){target=cellStep(target,plan.dx,plan.dy);d++;}
+    return target<0?Infinity:d;
+  }
+  for(var i=0;i<dirs.length;i++){
+    var p=buildDirectedMovePlan(cell,state,dirs[i][0],dirs[i][1]);
+    if(p)plans.push(p);
+  }
+  plans.sort(function(a,b){
+    if(a.ok!==b.ok)return a.ok?-1:1;
+    var da=distance(a),db=distance(b);
+    if(da!==db)return da<db?-1:1;
+    if(!a.ok && a.limit!==b.limit)return b.limit-a.limit;
+    return a.parts.length-b.parts.length;
+  });
+  return plans.length?plans[0]:null;
+}
+
+/* v1.75: directional contact graph; independent of tile/shape kinds.
+   Offset of tile i: clamp(progress - delay[i], 0, 1).
+   Contact clearance g from A to B imposes delay[B] <= delay[A] + g.
+   Shortest paths supply the latest safe start delays for all required tiles.
+   Edges for both ordered tile pairs bound relative motion during final catch-up. */
+var groupContactCache = new Map();
+var GROUP_CONTACT_CACHE_LIMIT = 24;
+
+function directionalContactGraph(state, dx, dy) {
+  collisionEnvelope();
+  var key = [n, dx, dy, collisionEnvKey, state.join(','),
+    cfg.tiles.map(geometryKey).join(';')].join('|');
+  if (groupContactCache.has(key)) {
+    var cached = groupContactCache.get(key);
+    groupContactCache.delete(key); groupContactCache.set(key,cached);
+    return cached;
+  }
+  var cells = [], edges = {}, destinations = {};
+  for (var i = 0; i < state.length; i++) if (state[i] >= 0) cells.push(i);
+  for (var a = 0; a < cells.length; a++) {
+    var from = cells[a], to = cellStep(from,dx,dy);
+    destinations[from] = to; edges[from] = [];
+    for (var b = 0; b < cells.length; b++) {
+      var other = cells[b];
+      if (other === from) continue;
+      // First tier: a cell cannot be entered before its occupant starts leaving.
+      // Second tier: exact primitive sweeps, including compound hook shapes.
+      var gap = other === to ? 0 : upperPairLimit(from,other,dx,dy,state);
+      if (gap < 1 - MOTION_EPS) edges[from].push({cell:other, gap:Math.max(0,gap)});
+    }
+  }
+  var graph = {cells:cells, edges:edges, destinations:destinations};
+  groupContactCache.set(key,graph);
+  if (groupContactCache.size > GROUP_CONTACT_CACHE_LIMIT) {
+    groupContactCache.delete(groupContactCache.keys().next().value);
+  }
+  return graph;
+}
+
+function buildDirectedMovePlan(cell, state, dx, dy) {
+  state = state || layout;
+  if (cell < 0 || cell >= state.length || state[cell] < 0 || Math.abs(dx)+Math.abs(dy)!==1) return null;
+  var graph = directionalContactGraph(state,dx,dy), delays = {}, visited = {};
+  delays[cell] = 0;
+  for (var pass = 0; pass < graph.cells.length; pass++) {
+    var current = -1, earliest = Infinity;
+    for (var j = 0; j < graph.cells.length; j++) {
+      var candidate = graph.cells[j];
+      if (!visited[candidate] && delays[candidate] !== undefined && delays[candidate] < earliest) {
+        current = candidate; earliest = delays[candidate];
+      }
+    }
+    if (current < 0) break;
+    visited[current] = true;
+    var contacts = graph.edges[current];
+    for (var e = 0; e < contacts.length; e++) {
+      var hit = contacts[e], at = earliest + hit.gap;
+      if (delays[hit.cell] === undefined || at < delays[hit.cell]) delays[hit.cell] = at;
+    }
+  }
+  var parts = [], end = 1, stop = Infinity;
+  for (var i = 0; i < graph.cells.length; i++) {
+    var from = graph.cells[i];
+    if (delays[from] === undefined) continue;
+    var part = motionPart(from,dx,dy,state,delays[from]);
+    parts.push(part); end = Math.max(end,part.delay+1);
+    // A boundary arrests the whole gesture at the instant this tile must start.
+    if (part.to < 0) stop = Math.min(stop,part.delay);
+  }
+  parts.sort(function(a,b){return a.delay-b.delay || a.from-b.from;});
+  // Defensive final-state check. Occupied destinations must be vacated in this move.
+  for (var p = 0; p < parts.length; p++) {
+    var m = parts[p];
+    if (m.to >= 0 && state[m.to] >= 0 && delays[m.to] === undefined) stop = Math.min(stop,m.delay);
+  }
+  var plan = makeMotionPlan(cell,dx,dy,state,parts,end,Math.min(stop,end));
+  plan.group = true;
+  return plan;
+}
+
+function motionOffsets(plan, progress) {
+  return plan.parts.map(function(m){ return Math.max(0,Math.min(1,progress-m.delay)); });
+}
+
+function paintMotion(plan, progress) {
+  var offsets = motionOffsets(plan,progress);
+  plan.parts.forEach(function(m,i){
+    if (els[m.id]) put(m.id,m.from%plan.size+plan.dx*offsets[i],Math.floor(m.from/plan.size)+plan.dy*offsets[i],false);
+  });
+}
+
+function motionStateMatches(plan) {
+  if (cfg !== plan.owner || n !== plan.size || layout.length !== plan.state.length) return false;
+  for (var i=0;i<layout.length;i++) if(layout[i] !== plan.state[i]) return false;
+  return true;
+}
+
+function animateMotion(plan, from, to, ms, done) {
+  var serial = ++motionSerial, start = null;
+  if (motionFrame) cancelAnimationFrame(motionFrame);
+  function frame(now) {
+    if (serial !== motionSerial) return;
+    if (!motionStateMatches(plan)) {motionFrame=0;busy=false;done(false);return;}
+    if (start === null) start = now;
+    var t = Math.min(1,(now-start)/Math.max(1,ms));
+    // The same scalar drives all layers; contact delays never rescale speed.
+    var eased = 1-Math.pow(1-t,3);
+    paintMotion(plan,from+(to-from)*eased);
+    if (t < 1) motionFrame=requestAnimationFrame(frame);
+    else {motionFrame=0;done(true);}
+  }
+  motionFrame=requestAnimationFrame(frame);
+}
+
+function motionRecord(plan) {
+  return {a:plan.cell,b:cellStep(plan.cell,plan.dx,plan.dy),
+    steps:plan.parts.map(function(m){return {a:m.from,b:m.to,id:m.id};}), motion:plan};
+}
+
+function applyMotionRecord(state, record, reverse) {
+  var steps = record.steps;
+  if (!steps) {
+    if(reverse){state[record.a]=state[record.b];state[record.b]=-1;}
+    else {state[record.b]=state[record.a];state[record.a]=-1;}
+    return;
+  }
+  // Read/write all sources together. No dependence on iteration order.
+  steps.forEach(function(m){state[reverse?m.b:m.a]=-1;});
+  steps.forEach(function(m){state[reverse?m.a:m.b]=m.id;});
+}
+
+function finishMotionMove(plan, from) {
+  if (!plan.ok || busy) return;
+  busy=true; timerStart();
+  animateMotion(plan,from,plan.end,Math.max(70,180*(plan.end-from)),function(ok){
+    busy=false;
+    if(!ok)return;
+    var record=motionRecord(plan);
+    applyMotionRecord(layout,record,false);hist.push(record);redo=[];
+    finishMoveCommon();
+  });
+}
+
+function returnMotion(plan, from, approach) {
+  busy=true;
+  function back(p){
+    animateMotion(plan,p,0,160,function(ok){busy=false;if(ok)renderAll(false);});
+  }
+  var stop=Math.max(0,plan.limit-0.000001);
+  if(approach && stop>from+0.005){
+    animateMotion(plan,from,stop,140,function(ok){if(ok)back(stop);else busy=false;});
+  }else back(from);
+}
+
+function playablePlans(state) {
+  state=state||layout;
+  var out=[],dirs=[[0,-1],[0,1],[-1,0],[1,0]];
+  for(var i=0;i<state.length;i++){
+    if(state[i]<0)continue;
+    for(var d=0;d<dirs.length;d++){
+      var plan=buildDirectedMovePlan(i,state,dirs[d][0],dirs[d][1]);
+      if(plan && plan.ok)out.push(plan);
+    }
+  }
+  return out;
+}
+
+
+function doPlayerMove(cell) {
+  if (busy || solveRunning || pb) return;
+  var plan=buildMovePlan(cell);
+  if(!plan)return;
+  if(plan.ok)finishMotionMove(plan,0);
+  else {setStatus(msg('shiftBlocked'),'');returnMotion(plan,0,true);}
+}
+
 function undo() {
-  if (!hist.length || busy || solveRunning || pb) return;
+  if (!hist.length || busy || solveRunning || pb || drag) return;
   closeWin();
-  var m = hist.pop();
-  layout[m.a] = layout[m.b];
-  layout[m.b] = -1;
-  redo.push(m);
-  renderAll(true);
-  setStatus(msg('undoDone'),'');
+  var m=hist[hist.length-1];
+  function finish(){hist.pop();applyMotionRecord(layout,m,true);redo.push(m);renderAll(true);setStatus(msg('undoDone'),'');}
+  if(m.motion && m.steps.length>1){
+    var plan=m.motion, animation={};
+    Object.keys(plan).forEach(function(k){animation[k]=plan[k];});
+    animation.state=layout.slice();
+    busy=true;
+    animateMotion(animation,plan.end,0,180*plan.end,function(ok){busy=false;if(ok)finish();});
+  }else finish();
 }
 
 function redoMove() {
-  if (!redo.length || busy || solveRunning || pb) return;
+  if (!redo.length || busy || solveRunning || pb || drag) return;
   closeWin();
-  var m = redo.pop();
-  layout[m.b] = layout[m.a];
-  layout[m.a] = -1;
-  hist.push(m);
-  renderAll(true);
-  setStatus(msg('redoDone'),'');
+  var m=redo[redo.length-1];
+  function finish(){redo.pop();applyMotionRecord(layout,m,false);hist.push(m);renderAll(true);setStatus(msg('redoDone'),'');}
+  if(m.motion && m.steps.length>1){
+    busy=true;
+    animateMotion(m.motion,0,m.motion.end,180*m.motion.end,function(ok){busy=false;if(ok)finish();});
+  }else finish();
 }
 
 function scramble() {
-  if (busy || solveRunning || pb) return;
+  if (busy || solveRunning || pb || drag) return;
   closeWin();
   var depth = n === 3 ? 300 : 200;
-  layout = cfg.layout.slice();
-  var lastCell = -1, done = 0, guard = 0;
-  while ((done < depth || isSolved()) && guard < depth + 200) {
-    guard++;
-    var h = layout.indexOf(-1);
-    var opts = legalCells();
-    var filtered = opts.filter(function (c) { return c !== lastCell; });
-    if (filtered.length) opts = filtered;
-    if (!opts.length) break;
-    var c = opts[Math.floor(Math.random() * opts.length)];
-    applyMove(c);
-    lastCell = h;
-    done++;
-  }
-  hist = []; redo = [];
-  timerReset();
-  renderAll(true);
-  if (!done) setStatus(msg('scrambleNone'),'err');
-  else setStatus(msg('scrambleDone',{moves:done}),'');
-}
+  var classic = isClassic();
+  // Scramble from the board's current arrangement, not the saved solved layout.
+  // Keep a separate array so the shuffling choices cannot alias or mutate it.
+  layout = layout.slice();
+  var previous = null, done = 0, guard = 0;
 
+  // Fast single-tile step: still validate the complete swept path of the moving
+  // tile against every stationary upper shape. Only group-motion analysis is skipped.
+  function simpleStep() {
+    var hole = layout.indexOf(-1);
+    if (hole < 0) return false;
+    var neighbors = neighborsOf(hole), safeChoices = [], choices = [];
+    for (var k = 0; k < neighbors.length; k++) {
+      var cell = neighbors[k];
+      // Collision check for this one tile only; do not build a group-contact graph.
+      if (travel(cell, hole) < 1 - MOTION_EPS) continue;
+      var next = layout.slice();
+      next[hole] = next[cell];
+      next[cell] = -1;
+      safeChoices.push(next);
+      if (next.join(',') !== previous) choices.push(next);
+    }
+    // Avoid immediate reversals when alternatives exist, but never bypass collision checks.
+    if (!choices.length) choices = safeChoices;
+    if (!choices.length) return false;
+    previous = layout.join(',');
+    layout = choices[Math.floor(Math.random() * choices.length)];
+    done++;
+    return true;
+  }
+
+  // This expensive analysis is reserved for occasional group steps, or used as
+  // a recovery only when no collision-free single-tile step exists.
+  function groupStep() {
+    if (classic) return false;
+    var opts = playablePlans(layout), candidates = [];
+    for (var i = 0; i < opts.length; i++) {
+      var plan = opts[i], nextState = layout.slice();
+      applyMotionRecord(nextState, motionRecord(plan), false);
+      // Accept a group move only if a legal reverse group move restores the exact prior state.
+      var reversible = false;
+      for (var j = 0; j < plan.parts.length; j++) {
+        var part = plan.parts[j];
+        if (part.to < 0 || layout[part.to] >= 0) continue;
+        var back = buildMovePlan(part.to, nextState, -plan.dx, -plan.dy);
+        if (!back || !back.ok) continue;
+        var check = nextState.slice();
+        applyMotionRecord(check, motionRecord(back), false);
+        if (check.join(',') === layout.join(',')) { reversible = true; break; }
+      }
+      if (reversible) candidates.push({plan:plan, state:nextState});
+    }
+
+    if (!candidates.length) return false;
+    var groupChoices = candidates.filter(function (c) { return c.state.join(',') !== previous; });
+    if (groupChoices.length) candidates = groupChoices;
+    previous = layout.join(',');
+    layout = candidates[Math.floor(Math.random() * candidates.length)].state;
+    done++;
+    return true;
+  }
+
+  while ((done < depth || isSolved()) && guard++ < depth + 200) {
+    // For geometric boards, perform group-motion analysis on about 10% of steps.
+    // Classic boards always take the fast path because they have no upper geometry.
+    if (!classic && Math.random() < 0.10) {
+      if (groupStep()) continue;
+      if (simpleStep()) continue;
+      break;
+    }
+
+    if (simpleStep()) continue;
+    // Dead-end recovery: try a group move only when every adjacent single move collides.
+    if (!classic && groupStep()) continue;
+    break;
+  }
+
+  hist = []; redo = []; timerReset(); renderAll(true);
+  if (!done) setStatus(msg('scrambleNone'), 'err');
+  else setStatus(msg('scrambleDone', {moves:done}), '');
+}
 function resetGame() {
-  if (busy || solveRunning || pb) return;
+  if (busy || solveRunning || pb || drag) return;
   closeWin();
   layout = cfg.layout.slice();
   hist = []; redo = [];
@@ -3120,7 +3599,9 @@ async function runSolver() {
 }
 
 function startSolve() {
+  if(busy || drag)return;
   if (mode !== 'play' || busy || solveRunning || pb) return;
+  if(layout.filter(function(id){return id<0;}).length!==1){setStatus(msg('solverOneHole'),'err');return;}
   if (isSolved()) { openAskPop(); return; }
   closeWin(); closeHint();
   solveAbort = false;
@@ -3265,6 +3746,7 @@ function updatePlaybackUI() {
 
 /* ===== Редактор ===== */
 function openEditor(isNew) {
+  if(busy || drag)return;
   if (mode === 'edit' || solveRunning || pb) return;
   closeHint();
   closeWin();
@@ -3280,6 +3762,7 @@ function openEditor(isNew) {
 }
 
 function launchEditor() {
+  if (layout.indexOf(-1)<0) {setStatus(msg('noHole'),'err');return;}
   badIds = conflictSet();
   if (Object.keys(badIds).length) { renderAll(false); return; }
   mode = 'play';
@@ -3393,6 +3876,65 @@ function pt(e) {
   var r=drag&&drag.boardRect?drag.boardRect:board.getBoundingClientRect();
   return {x:e.clientX-r.left,y:e.clientY-r.top};
 }
+function editorPointInShape(shape, x, y, roundRadius) {
+  var bounds = shapeBounds(shape), eps = 1e-10;
+  if (x < bounds.x0-eps || x > bounds.x1+eps || y < bounds.y0-eps || y > bounds.y1+eps) return false;
+  if (shape.k === 'c') return (x-shape.x)*(x-shape.x)+(y-shape.y)*(y-shape.y) <= shape.r*shape.r+eps;
+  if (shape.k === 'r') {
+    var radius = Math.max(0,Math.min(roundRadius||0,(shape.x1-shape.x0)/2,(shape.y1-shape.y0)/2));
+    if (!radius) return true;
+    var px = Math.max(shape.x0+radius,Math.min(x,shape.x1-radius));
+    var py = Math.max(shape.y0+radius,Math.min(y,shape.y1-radius));
+    return (x-px)*(x-px)+(y-py)*(y-py) <= radius*radius+eps;
+  }
+  // Even/odd point-in-polygon also handles the concave outline of a star.
+  var inside = false, points = shape.pts;
+  for (var i=0,j=points.length-1;i<points.length;j=i++) {
+    var a=points[j],b=points[i],cross=(x-a[0])*(b[1]-a[1])-(y-a[1])*(b[0]-a[0]);
+    if (Math.abs(cross)<=eps && x>=Math.min(a[0],b[0])-eps && x<=Math.max(a[0],b[0])+eps && y>=Math.min(a[1],b[1])-eps && y<=Math.max(a[1],b[1])+eps) return true;
+    if ((a[1]>y)!==(b[1]>y) && x < (b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0]) inside=!inside;
+  }
+  return inside;
+}
+
+function editorPointInUpperShape(shape, x, y) {
+  var b=shapeBounds(shape), px=1.2/S, down=5/S;
+  if (x<b.x0-px || x>b.x1+px || y<b.y0-px || y>b.y1+down) return false;
+  if (editorPointInShape(shape,x,y,4/S)) return true;
+  // Match the solid outline and extrusion copies used by upperFilter/SVG.
+  // The final blurred cast shadow is deliberately not a selectable surface.
+  for (var ix=-1;ix<=1;ix++) for (var iy=0;iy<=5;iy++) {
+    if (editorPointInShape(shape,x-ix*px,y-iy/S,4/S) ||
+        editorPointInShape(shape,x-ix*px,y-(iy-1.2)/S,4/S)) return true;
+  }
+  return false;
+}
+
+function editorCellAt(p) {
+  if (!S || !cfg) return -1;
+  var boardRect=board.getBoundingClientRect(),layers=upLayer.children;
+  // Later siblings are painted above earlier ones. Transparent gaps stay clickable.
+  for (var i=layers.length-1;i>=0;i--) {
+    var upper=layers[i],id=upper._tileId;
+    if (!Number.isInteger(id) || !cfg.tiles[id] || !cfg.tiles[id].upper) continue;
+    var cell=layout.indexOf(id);
+    if (cell<0) continue;
+    var localX=(p.x-PAD)/S-0.5-cell%n;
+    var localY=(p.y-PAD)/S-0.5-Math.floor(cell/n);
+    // Read the rendered wrapper position so selection follows CSS transition frames too.
+    var rect=upper.getBoundingClientRect();
+    if (rect.width>0 && rect.height>0) {
+      localX=(p.x+boardRect.left-rect.left-rect.width/2)/(rect.width/UPK);
+      localY=(p.y+boardRect.top-rect.top-rect.height/2)/(rect.height/UPK);
+    }
+    var shapes=shapesOf(cfg.tiles[id],0,0);
+    for (var k=shapes.length-1;k>=0;k--) {
+      if (editorPointInUpperShape(shapes[k],localX,localY)) return cell;
+    }
+  }
+  return cellAt(p);
+}
+
 function cellAt(p) {
   var c = Math.floor((p.x - PAD) / S), r = Math.floor((p.y - PAD) / S);
   if (c < 0 || r < 0 || c >= n || r >= n) return -1;
@@ -3402,7 +3944,7 @@ function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
 board.addEventListener('pointerdown', function (e) {
   if (drag || busy || solveRunning || pb) return;
-  var p = pt(e), cell = cellAt(p);
+  var p = pt(e), cell = mode === 'edit' ? editorCellAt(p) : cellAt(p);
   if (cell < 0) return;
   var id = layout[cell];
   if (mode === 'edit') {
@@ -3411,6 +3953,10 @@ board.addEventListener('pointerdown', function (e) {
     renderAll(true);
     if (id >= 0) {
       drag = { edit: true, cell: cell, id: id, sx: p.x, sy: p.y, moved: false, target: -1 };
+      if (cellAt(p) !== cell) {
+        drag.dropOffsetX = p.x - (PAD + (cell % n + 0.5) * S);
+        drag.dropOffsetY = p.y - (PAD + (Math.floor(cell / n) + 0.5) * S);
+      }
       drag.boardRect = board.getBoundingClientRect();
   try { board.setPointerCapture(e.pointerId); } catch (_) {}
     }
@@ -3419,23 +3965,11 @@ board.addEventListener('pointerdown', function (e) {
   }
   e.preventDefault();
   if (id < 0) return;
-  var h = layout.indexOf(-1);
-  if (neighborsOf(h).indexOf(cell) >= 0) {
-    var dx = (h % n) - (cell % n), dy = Math.floor(h / n) - Math.floor(cell / n);
-    drag = { cell: cell, id: id, h: h, dx: dx, dy: dy, maxT: travel(cell, h), sx: p.x, sy: p.y, moved: false, frac: 0 };
-    drag.boardRect = board.getBoundingClientRect();
-    try { board.setPointerCapture(e.pointerId); } catch (_) {}
-    return;
-  }
-  var shift = tryRowShift(cell) || tryColShift(cell);
-  if (shift) {
-    if (validateShift(shift.moves)) {
-      drag = { cell: cell, id: id, shift: shift, sx: p.x, sy: p.y, moved: false, frac: 0 };
-      drag.boardRect = board.getBoundingClientRect();
-      try { board.setPointerCapture(e.pointerId); } catch (_) {}
-    } else {
-      shakeShift(shift);
-    }
+  var plan=buildMovePlan(cell);
+  if(plan){
+    drag={cell:cell,id:id,plan:plan,sx:p.x,sy:p.y,moved:false,frac:0,want:0};
+    drag.boardRect=board.getBoundingClientRect();
+    try{board.setPointerCapture(e.pointerId);}catch(_){}
     return;
   }
   setStatus(msg('notNeighbor'), '');
@@ -3450,7 +3984,7 @@ board.addEventListener('pointermove', function (e) {
     if (Math.abs(mx) + Math.abs(my) > 5) drag.moved = true;
     if (!drag.moved) return;
     scheduleDragPaint(drag.id, c0e + mx / S, r0e + my / S);
-    var tg = cellAt(p);
+    var tg = cellAt({x:p.x-(drag.dropOffsetX||0),y:p.y-(drag.dropOffsetY||0)});
     if (tg !== drag.target) {
       if (drag.target >= 0) slots[drag.target].classList.remove('drop');
       drag.target = tg;
@@ -3458,21 +3992,20 @@ board.addEventListener('pointermove', function (e) {
     }
     return;
   }
-  if (drag.shift) {
-    var dirX = drag.shift.axis === 'row' ? drag.shift.dir : 0;
-    var dirY = drag.shift.axis === 'col' ? drag.shift.dir : 0;
-    var ds = ((p.x - drag.sx) * dirX + (p.y - drag.sy) * dirY) / S;
-    if (Math.abs(ds) > 0.05) drag.moved = true;
-    drag.frac = clamp(ds, 0, 1);
-    paintShiftFrac(drag.shift, drag.frac);
-    return;
+  if(!drag.directionChosen && Math.hypot(p.x-drag.sx,p.y-drag.sy)>5){
+    var mx=p.x-drag.sx,my=p.y-drag.sy;
+    var dx=Math.abs(mx)>=Math.abs(my)?(mx>0?1:-1):0;
+    var dy=dx?0:(my>0?1:-1);
+    var directional=buildMovePlan(drag.cell,layout,dx,dy);
+    if(directional)drag.plan=directional;
+    drag.directionChosen=true;
   }
-  var c0 = drag.cell % n, r0 = Math.floor(drag.cell / n);
-  var d = ((p.x - drag.sx) * drag.dx + (p.y - drag.sy) * drag.dy) / S;
-  if (Math.hypot(p.x - drag.sx, p.y - drag.sy) > 5) drag.moved = true;
-  drag.frac = clamp(d, 0, Math.min(1, drag.maxT));
-  drag.want = d;
-  scheduleDragPaint(drag.id, c0 + drag.dx * drag.frac, r0 + drag.dy * drag.frac);
+  var plan=drag.plan;
+  var d=((p.x-drag.sx)*plan.dx+(p.y-drag.sy)*plan.dy)/S;
+  if(Math.hypot(p.x-drag.sx,p.y-drag.sy)>5)drag.moved=true;
+  drag.frac=clamp(d,0,plan.limit);
+  drag.want=d;
+  scheduleMotionPaint(plan,drag.frac);
 });
 
 function endDrag(e, cancel) {
@@ -3490,32 +4023,26 @@ function endDrag(e, cancel) {
     renderAll(true);
     return;
   }
-  if (d.shift) {
-    if (cancel) { renderAll(true); return; }
-    animateShift(d.shift.moves);
-    return;
+  var plan=d.plan;
+  if(cancel){returnMotion(plan,d.frac,false);return;}
+  var click=!d.moved;
+  if(plan.ok){
+    if(click || Math.min(1,d.frac)>=0.4)finishMotionMove(plan,d.frac);
+    else returnMotion(plan,d.frac,false);
+  }else{
+    var attempt=click || d.want>0.05;
+    if(attempt)setStatus(msg('shiftBlocked'),'');
+    returnMotion(plan,d.frac,attempt);
   }
-  if (cancel) { renderAll(true); return; }
-  var click = !d.moved;
-  if (d.maxT >= 1) {
-    if (click || d.frac >= 0.4) doPlayerMove(d.cell);
-    else renderAll(true);
-  } else if (click || (d.want || 0) > 0.05) {
-    var c0 = d.cell % n, r0 = Math.floor(d.cell / n), j = Math.max(0, d.maxT - 0.01);
-    busy = true;
-    put(d.id, c0 + d.dx * j, r0 + d.dy * j, true);
-    setTimeout(function () { busy = false; renderAll(true); }, 170);
-  } else renderAll(true);
 }
 board.addEventListener('pointerup', function (e) { endDrag(e, false); });
 board.addEventListener('pointercancel', function (e) { endDrag(e, true); });
 
-$('languageSeg').addEventListener('click', function (e) {
-  var b = e.target.closest('button'); if (b) applyLanguage(b.dataset.lang);
+$('languageSeg').addEventListener('click', function () {
+  applyLanguage(UI_LANG === 'ru' ? 'en' : 'ru');
 });
-$('pulseSeg').addEventListener('click', function (e) {
-  var b = e.target.closest('button'); if (!b) return;
-  pulseOn = b.dataset.pulse === 'on';
+$('pulseSeg').addEventListener('click', function () {
+  pulseOn = !pulseOn;
   savePulsePref();
   updatePulseSeg();
   updateUI();
@@ -3567,17 +4094,19 @@ $('nameInp').addEventListener('input', function () { cfg.name = this.value; });
 /* === Копирование/вставка параметров плитки === */
 function snapshotTile(t) {
   return {
-    marker: t.marker, color: t.color, upColor: t.upColor,
+    color: t.color, upColor: t.upColor,
     body: t.body, cr: t.cr, sq: t.sq, star: t.star,
     thick: t.thick, ch: t.ch.slice(), cut: t.cut,
     bars: t.bars, bl: t.bl, barWidth: t.barWidth,
     bars2: t.bars2, bl2: t.bl2,
-    sides: t.sides.slice(), sides2: t.sides2.slice()
+    sides: t.sides.slice(), sides2: t.sides2.slice(),
+    frame: t.frame || 'none',
+    hooks: t.hooks ? t.hooks.slice() : [0,0,0,0,0,0,0,0],
+    hookThick: t.hookThick || 0.5, hookLength: hookLengthOf(t), hookWidth: hookWidthOf(t), hookOut: !!t.hookOut, hookEnabled: !!t.hookEnabled
   };
 }
 function restoreTile(t, snap) {
   if (!snap) return;
-  t.marker = snap.marker;
   t.color = snap.color;
   t.upColor = snap.upColor;
   t.body = snap.body;
@@ -3594,6 +4123,13 @@ function restoreTile(t, snap) {
   t.bl2 = snap.bl2;
   t.sides = snap.sides.slice();
   t.sides2 = snap.sides2.slice();
+  t.frame = snap.frame || 'none';
+  t.hooks = snap.hooks ? snap.hooks.slice() : [0,0,0,0,0,0,0,0];
+  t.hookThick = snap.hookThick || 0.5;
+  t.hookOut = !!snap.hookOut;
+  t.hookLength = hookLengthOf(snap);
+  t.hookWidth = hookWidthOf(snap);
+  t.hookEnabled = !!snap.hookEnabled;
   syncUpper(t);
 }
 $('copyTileBtn').addEventListener('click', function () {
@@ -3695,18 +4231,48 @@ $('palette').addEventListener('click', function (e) {
   if (ctarget === 'tile') c.t.color = b.dataset.c; else c.t.upColor = b.dataset.c;
   afterEdit(c.id);
 });
+$('frameSeg').addEventListener('click', function (e) {
+  var b = e.target.closest('button'), c = curTile(); if (!b || !c) return;
+  c.t.frame = b.dataset.frame;
+  afterEdit(c.id);
+});
 $('markInp').addEventListener('input', function () {
   var c = curTile(); if (!c) return;
   c.t.marker = this.value;
   afterEdit(c.id);
 });
-$('markClear').addEventListener('click', function () {
-  var c = curTile(); if (!c) return;
-  c.t.marker = '';
-  $('markInp').value = '';
+function deleteSelectedTile() {
+  var c = curTile();
+  if (!c || busy || drag) return;
+  layout[sel] = -1;
+  cfg.tiles.splice(c.id, 1);
+  for (var i=0;i<layout.length;i++) if (layout[i]>c.id) layout[i]--;
+  cfg.layout = layout;
+  collisionTileCache = new WeakMap();
+  hist=[];redo=[];editMsg=true;
+  setStatus(msg('tileDeleted'),'ok');
+  build();
+}
+function createSelectedTile() {
+  if (mode!=='edit' || sel<0 || layout[sel]>=0 || busy || drag) return;
+  var used=Object.create(null), marker=1;
+  cfg.tiles.forEach(function(t){used[t.marker]=true;});
+  while (used[String(marker)]) marker++;
+  layout[sel]=cfg.tiles.length;
+  cfg.tiles.push(newTile(String(marker)));
+  cfg.layout=layout;
+  hist=[];redo=[];editMsg=true;
+  setStatus(msg('tileCreated'),'ok');
+  build();
+}
+function turnSelectedHooks() {
+  var c=curTile();if(!c)return;
+  c.t.hookOut=!c.t.hookOut;
   afterEdit(c.id);
-  $('markInp').focus();
-});
+}
+$('deleteTileBtn').addEventListener('click', deleteSelectedTile);
+$('createTileBtn').addEventListener('click', createSelectedTile);
+$('hookTurnBtn').addEventListener('click', turnSelectedHooks);
 $('cutClear').addEventListener('click', function () {
   var c = curTile(); if (!c) return;
   c.t.ch = [0, 0, 0, 0];
@@ -3722,6 +4288,12 @@ $('s2Clear').addEventListener('click', function () {
   c.t.sides2 = [0, 0, 0, 0, 0, 0, 0, 0];
   afterEdit(c.id);
 });
+$('hookClear').addEventListener('click', function () {
+  var c = curTile(); if (!c) return;
+  c.t.hookEnabled = true;
+  c.t.hooks = [0, 0, 0, 0, 0, 0, 0, 0];
+  afterEdit(c.id);
+});
 $('shapeSeg').addEventListener('click', function (e) {
   var b = e.target.closest('button'), c = curTile(); if (!b || !c) return;
   var m = b.dataset.mod, t = c.t;
@@ -3730,6 +4302,13 @@ $('shapeSeg').addEventListener('click', function (e) {
   else if (m === 'star') t.body = t.body === 'star' ? 'none' : 'star';
   else if (m === 'bars') t.bars = !t.bars;
   else if (m === 'bars2') t.bars2 = !t.bars2;
+  else if (m === 'hook') {
+    var enabled = !!t.hookEnabled || t.hooks.some(function(v){return !!v;});
+    t.hookEnabled = !enabled;
+    if (enabled) t.hooks = [0, 0, 0, 0, 0, 0, 0, 0];
+    else t.hooks[0] = 1;
+  }
+  syncUpper(t);
   afterEdit(c.id);
 });
 function bindRange(id, field, div) {
@@ -3747,20 +4326,46 @@ bindRange('cutRange', 'cut', 100);
 bindRange('blRange', 'bl', 100);
 bindRange('barWidthRange', 'barWidth', 100);
 bindRange('bl2Range', 'bl2', 100);
+bindRange('hookWidthRange', 'hookWidth', 100);
+bindRange('hookLengthRange', 'hookLength', 100);
+bindRange('hookThickRange', 'hookThick', 100);
 function bindToggles(id, attr, field) {
   $(id).addEventListener('click', function (e) {
     var b = e.target.closest('button'), c = curTile(); if (!b || !c) return;
     var i = +b.dataset[attr];
+    if (!c.t[field]) c.t[field] = field === 'hooks' ? [0,0,0,0,0,0,0,0] : [0,0,0,0];
+    if (field === 'hooks') c.t.hookEnabled = true;
     c.t[field][i] = c.t[field][i] ? 0 : 1;
+    syncUpper(c.t);
     afterEdit(c.id);
   });
 }
 bindToggles('chamf', 'ch', 'ch');
 bindToggles('sides', 'side', 'sides');
 bindToggles('sides2', 's2', 'sides2');
+bindToggles('sidesH', 'hk', 'hooks');
 
 window.addEventListener('scroll',function(){if(drag)drag.boardRect=board.getBoundingClientRect();},true);
 window.addEventListener('resize', function () { cancelDragPaint(); closeHint(); measure(); renderAll(false); if(drag)drag.boardRect=board.getBoundingClientRect(); });
+function handleEditorDelete(e) {
+  if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return false;
+  if (e.key !== 'Delete' && e.key !== 'Del' && e.code !== 'Delete') return false;
+  if (mode !== 'edit' || busy || drag || solveRunning || pb || hintOpen || !curTile()) return false;
+  var target = e.target || document.activeElement;
+  while (target && target !== document) {
+    if (target.isContentEditable || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') return false;
+    target = target.parentNode;
+  }
+  var dialogs = ['askPop', 'confirmPop', 'dlg', 'winPop'];
+  for (var i = 0; i < dialogs.length; i++) {
+    var dialog = $(dialogs[i]);
+    if (dialog && !dialog.classList.contains('hidden')) return false;
+  }
+  e.preventDefault();
+  deleteSelectedTile();
+  return true;
+}
+
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') {
     if (!$('askPop').classList.contains('hidden')) { closeAskPop(); return; }
@@ -3771,6 +4376,7 @@ document.addEventListener('keydown', function (e) {
     if (!$('winPop').classList.contains('hidden')) { closeWin(); return; }
     if (hintOpen) { closeHint(); return; }
   }
+  if (handleEditorDelete(e)) return;
   if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && mode === 'play' && !solveRunning && !pb) { e.preventDefault(); undo(); }
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y' && mode === 'play' && !solveRunning && !pb) { e.preventDefault(); redoMove(); }
