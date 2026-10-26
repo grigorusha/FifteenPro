@@ -68,11 +68,30 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .collapsebtn{width:22px;height:22px;border:1.5px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;color:var(--accent-d);padding:0;display:flex;align-items:center;justify-content:center;flex:none}
 .collapsebtn:hover{background:#e3ebff}
 .collapsebtn svg{display:block}
-.puzcols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.coltitle{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted);margin:0 0 4px 2px}
-.puzcols>div{display:flex;flex-direction:column;min-width:0}
-.puzlist{display:flex;flex:1;flex-direction:column;gap:5px;max-height:none;min-height:180px;overflow:visible;padding-right:2px}
-.puzlist .puz{flex:1 0 auto}
+/* Author-grouped catalogue */
+/* The author list scrolls as a whole. Its height is synchronized with the board. */
+#puzBox{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+#puzGroups{min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding-right:5px;scrollbar-gutter:stable}
+.puzgroups{display:flex;flex-direction:column;gap:12px;align-content:start}
+.puzgroup{min-width:0}
+.puz-author{margin:0 0 5px 2px;padding-bottom:4px;border-bottom:1px solid var(--line);font-size:13px;font-weight:850;color:var(--accent-d);overflow-wrap:anywhere}
+.puz-author-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 8px}
+.puz-author-grid.scrollable{align-content:start}
+.puz-author-grid>.puz{min-height:31px;padding:6px 8px;font-size:12.5px}
+/* Compact editor header: Name | Width x Height | Clear, Author below */
+.editor-top{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+.editor-main-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:end;gap:7px;min-width:0}
+.editor-name-wrap{min-width:0}
+.editor-name-wrap .txt{min-width:0}
+.editor-author-row{min-width:0}
+/* One frame for both dimensions, with native independent dropdowns. */
+.editor-size{display:flex;align-items:center;gap:0;height:34px;border:1.5px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
+.editor-size .txt{width:46px;height:31px;padding:2px 2px;border:0;border-radius:0;background:transparent;text-align:center;font-size:14px}
+.editor-size .txt:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.editor-size .size-divider{flex:0 0 1px;width:1px;height:22px;background:var(--line);margin:0 3px}
+.editor-size-wrap{flex:none}
+.editor-clear{height:34px;padding-left:8px;padding-right:8px}
+.puz{flex:1 0 auto}
 .puzlist.scrollable{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
 #puzList3.scrollable{max-height:405px}
 #puzList4.scrollable{max-height:345px}
@@ -120,6 +139,19 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .tier-row{display:flex;gap:6px;align-items:stretch}
 .tier-row .seg{flex:1;min-width:0}
 .tier-row .toolbtn{height:auto;align-self:stretch}
+/* Keep marker/tower labels aligned even when the controls differ in height. */
+#editTile > .inline > div > .group-title{display:flex;align-items:center;height:17px;line-height:17px;margin-bottom:6px}
+#editTile > .inline .markwrap,#editTile > .inline .tier-row{height:34px}
+/* A real-size circular icon rather than a small typographic bullet. */
+/* Uniform 13px geometric icons for the shape and frame buttons. */
+#shapeSeg button[data-mod]::before,#frameSeg button[data-frame="circle"]::before,#frameSeg button[data-frame="square"]::before{content:"";display:inline-block;flex:none;width:13px;height:13px;margin-right:6px;vertical-align:-2px;background:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;}
+#shapeSeg button[data-mod="circle"]::before,#frameSeg button[data-frame="circle"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2211%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2211%22%2F%3E%3C%2Fsvg%3E");}
+#shapeSeg button[data-mod="square"]::before,#frameSeg button[data-frame="square"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%2222%22%20height%3D%2222%22%20rx%3D%221.2%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%2222%22%20height%3D%2222%22%20rx%3D%221.2%22%2F%3E%3C%2Fsvg%3E");}
+#shapeSeg button[data-mod="star"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M12%200.6L15.2%208.8L23.4%2012L15.2%2015.2L12%2023.4L8.8%2015.2L0.6%2012L8.8%208.8Z%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M12%200.6L15.2%208.8L23.4%2012L15.2%2015.2L12%2023.4L8.8%2015.2L0.6%2012L8.8%208.8Z%22%2F%3E%3C%2Fsvg%3E");}
+#shapeSeg button[data-mod="bars"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M8%200h8v8h8v8h-8v8H8v-8H0V8h8Z%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M8%200h8v8h8v8h-8v8H8v-8H0V8h8Z%22%2F%3E%3C%2Fsvg%3E");}
+#shapeSeg button[data-mod="bars2"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M4%200h4v24H4zM16%200h4v24h-4zM0%204h24v4H0zM0%2016h24v4H0z%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M4%200h4v24H4zM16%200h4v24h-4zM0%204h24v4H0zM0%2016h24v4H0z%22%2F%3E%3C%2Fsvg%3E");}
+#shapeSeg button[data-mod="hook"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M3%200h18v6H9v18H3z%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M3%200h18v6H9v18H3z%22%2F%3E%3C%2Fsvg%3E");}
+
 .palrow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .palrow .group-title{margin:0;flex:none}
 .palette{flex:1;min-width:0;display:flex;flex-wrap:wrap;justify-content:center;gap:3px}
@@ -198,6 +230,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .hook-reflection-row{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0;min-width:0}
 #hookTurnState{text-align:left;margin:0;min-width:0}
 #hookTurnBtn.on svg{transform:scaleX(-1)}
+#starRotate.on svg{transform:rotate(45deg)}
 .create-tile-row{margin:8px 0 12px}
 @media(max-width:760px){
   .about-head{
@@ -234,6 +267,62 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .pbpair > .btn.pbctl:first-child{border-top-left-radius:8px;border-bottom-left-radius:8px}
 .pbpair > .btn.pbctl:last-child{border-top-right-radius:8px;border-bottom-right-radius:8px}
 .pbpair > .btn.pbctl + .btn.pbctl{border-left:none}
+
+/* v1.92 board editing and visibly irregular board contours */
+#board .cutouts{z-index:12;pointer-events:none}
+#board .cutout{position:absolute;background:var(--bg);box-shadow:inset 0 0 0 1px var(--bg)}
+#board .slot.cut-cell{opacity:0}
+#board .base.bonded{filter:saturate(1.03)}
+#board .slot.bond-anchor{outline:none} /* The Klotski group outline is the only contour. */
+.board-editor{border:1px solid var(--line);border-radius:11px;padding:9px;background:#f8f9fc}
+.board-tools{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.board-tools .board-tool{flex:1;min-width:0}
+.board-tools #clearBandage{font-size:11px;padding:0 6px}
+.board-tools .board-tool.on,#clearBandage.on{color:#fff;border-color:var(--accent-d);background:linear-gradient(var(--accent),var(--accent-d))}
+#boardOutlineLayer,#bondOverlayLayer{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+#boardOutlineLayer{z-index:1}
+#bondOverlayLayer{z-index:5}
+#bondOverlayLayer svg,#boardOutlineLayer svg{width:100%;height:100%;display:block;overflow:visible}
+#shapeSeg button[data-mod="star"]::before{width:20px;height:20px;margin-right:5px}
+#starRotate svg{display:block;width:20px;height:20px;transition:transform .16s ease}
+#starRotate.on svg{transform:rotate(45deg)}
+
+
+/* v1.97 — Klotski-style author chooser. */
+.author-select-row {display:flex;align-items:stretch;width:100%;min-width:0}
+.author-select-row #authorInp {min-width:0;flex:1 1 auto;width:0;border-top-right-radius:0;border-bottom-right-radius:0;border-right:0}
+.author-dropdown-btn {flex:0 0 30px;width:30px;min-width:30px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;font:inherit;font-weight:700;font-size:15px;line-height:1;color:var(--accent-d);background:linear-gradient(#fff,#d9e0ee);border:1.5px solid var(--line);border-radius:0 9px 9px 0;cursor:pointer;user-select:none}
+.author-dropdown-btn:hover,.author-dropdown-btn[aria-expanded="true"] {background:#d0dcf4}
+.author-dropdown-btn:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
+.author-dropdown-menu {position:fixed;z-index:300;min-width:180px;max-width:calc(100vw - 12px);max-height:min(300px,55vh);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:4px;display:flex;flex-direction:column;background:linear-gradient(180deg,#f8faff,#edf2fb);border:1.5px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(15,25,60,.22)}
+.author-dropdown-menu button {height:34px;min-height:34px;width:100%;padding:0 12px;text-align:left;display:flex;align-items:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:0;border-radius:8px;background:transparent;color:var(--txt);font:700 12.5px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}
+.author-dropdown-menu button:hover,.author-dropdown-menu button:focus-visible,.author-dropdown-menu button[aria-selected="true"] {background:#dfe9fb;outline:none;color:var(--accent-d)}
+
+/* v1.95 — Klotski contour engine and compact board-tools */
+#starBox .hook-reflection-row { display:grid; grid-template-columns:34px 140px; justify-content:center; align-items:center; gap:10px; }
+#starBox #starTurnState { display:block; width:140px; text-align:left; white-space:nowrap; }
+.board-tools { gap:5px; }
+.board-tools #boardKnife { flex:0 0 65px; width:65px; padding:0 3px; }
+.board-tools #boardBandage { flex:0 0 90px; width:90px; padding:0 3px; }
+.board-tools #clearBandage { flex:1 1 0; display:flex; align-items:center; justify-content:center; gap:4px; min-width:0; font-size:11px; padding:0 4px; }
+.board-tools #clearBandage svg { width:15px; height:15px; display:block; flex:0 0 15px; }
+/* Draw one complete silhouette instead of masking a union of rounded rectangles. */
+#board.has-cut { background:transparent; border-color:transparent; box-shadow:none!important; }
+#board.has-cut.solved { box-shadow:none!important; }
+#board.has-cut .slot.cut-cell { opacity:0; }
+#boardOutlineLayer { z-index:0!important; }
+#slotLayer { z-index:1!important; }
+#baseLayer { z-index:2!important; }
+#bondOverlayLayer { z-index:3!important; }
+#mkLowLayer { z-index:4!important; }
+#upLayer { z-index:5!important; }
+#mkLayer { z-index:6!important; }
+#cutoutLayer { display:none!important; }
+#boardOutlineLayer svg { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 10px 12px rgba(15,25,60,.24)); }
+#board .base.bonded { background:transparent!important; background-image:none!important; border-color:transparent!important; box-shadow:none!important; }
+#board .base.bonded .tile-frame { visibility:hidden; }
+#bondOverlayLayer svg { display:block; width:100%; height:100%; overflow:visible; }
+
 </style>
 </head>
 <body>
@@ -249,10 +338,13 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
       <div class="board-box">
         <div id="board">
           <div class="layer" id="slotLayer"></div>
+          <div class="layer" id="boardOutlineLayer" aria-hidden="true"></div>
           <div class="layer" id="baseLayer"></div>
           <div class="layer" id="mkLowLayer"></div>
           <div class="layer" id="upLayer"></div>
           <div class="layer" id="mkLayer"></div>
+          <div class="layer" id="bondOverlayLayer" aria-hidden="true"></div>
+          <div class="layer cutouts" id="cutoutLayer" aria-hidden="true"></div>
         </div>
         <div id="hintPop" class="hintpop hidden"><div class="card"><canvas id="miniCanvas"></canvas></div></div>
         <div id="askPop" class="winpop hidden">
@@ -338,17 +430,28 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
       </div>
       <div id="puzBox">
         <div class="titlerow"><div class="group-title" data-i18n="puzzles">Головоломки</div><button class="smallbtn" id="addPuzBtn" title="Новая головоломка" data-i18n-title="newPuzzle" aria-label="Новая головоломка" data-i18n-aria-label="newPuzzle">＋</button></div>
-        <div class="puzcols">
-          <div><div class="coltitle">3×3</div><div class="puzlist" id="puzList3"></div></div>
-          <div><div class="coltitle">4×4</div><div class="puzlist" id="puzList4"></div></div>
-        </div>
+        <div class="puzgroups" id="puzGroups"></div>
       </div>
       <div id="editPanel" class="hidden">
-        <div class="inline">
-          <div class="grow"><div class="group-title" data-i18n="name">Название</div><input type="text" class="txt" id="nameInp" maxlength="28" autocomplete="off"></div>
-          <div><div class="group-title" data-i18n="size">Размер поля</div>
-            <div class="seg" id="esizeSeg"><button data-size="3">3×3</button><button data-size="4">4×4</button></div></div>
-          <button class="btn sm" id="clearBtn" title="Сбросить все плитки к обычной доске" data-i18n-title="clearBoard" data-i18n="clear">Очистить</button>
+        <div class="editor-top">
+          <div class="editor-main-row">
+            <div class="editor-name-wrap"><div class="group-title" data-i18n="name">Название</div><input type="text" class="txt" id="nameInp" maxlength="80" autocomplete="off"></div>
+            <div class="editor-size-wrap"><div class="group-title" data-i18n="size">Размер поля</div>
+              <div class="editor-size">
+                <select class="txt" id="boardCols" aria-label="Ширина" data-i18n-aria-label="width"><option>2</option><option>3</option><option>4</option><option>5</option></select>
+                <span class="size-divider" aria-hidden="true"></span>
+                <select class="txt" id="boardRows" aria-label="Высота" data-i18n-aria-label="height"><option>2</option><option>3</option><option>4</option><option>5</option></select>
+              </div>
+            </div>
+            <button class="btn sm editor-clear" id="clearBtn" title="Сбросить все плитки к обычной доске" data-i18n-title="clearBoard" data-i18n="clear">Очистить</button>
+          </div>
+          <div class="editor-author-row">
+            <div class="group-title" data-i18n="author">Автор</div>
+            <div class="author-select-row">
+              <input type="text" class="txt" id="authorInp" maxlength="100" autocomplete="off">
+              <button type="button" id="authorDropdownBtn" class="author-dropdown-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="authorDropdownMenu" title="Выбрать автора" data-i18n-title="chooseAuthor" aria-label="Выбрать автора" data-i18n-aria-label="chooseAuthor">▾</button>
+            </div>
+          </div>
         </div>
         <div class="row2">
           <button class="btn primary" id="launchBtn" data-i18n="launch">▶ Запустить</button>
@@ -356,7 +459,15 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
         </div>
         <div id="statusSlotEdit"></div>
         <hr class="sep" style="margin-top:12px">
-        <div id="editNone" class="hint" style="margin:10px 0" data-i18n="editNone">Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.</div>
+        <div id="editNone" class="board-editor" style="margin:10px 0">
+          <div class="group-title" data-i18n="boardTools">РЕДАКТОР ДОСКИ</div>
+          <div class="board-tools">
+            <button id="boardKnife" type="button" class="btn sm board-tool" data-i18n="knifeButton" aria-pressed="false">✂ Нож</button>
+            <button id="boardBandage" type="button" class="btn sm board-tool" data-i18n="bandageButton" aria-pressed="false">⛓ Бандаж</button>
+            <button id="clearBandage" type="button" class="btn sm" disabled aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9.5 6.5 11a3.5 3.5 0 0 0 5 5l2-2"/><path d="m16 14.5 1.5-1.5a3.5 3.5 0 0 0-5-5l-2 2"/><path d="M3.5 3.5 20.5 20.5"/></svg><span data-i18n="unbindButton">Разъединить</span></button>
+          </div>
+          <div class="hint" id="boardToolHint" data-i18n="boardModeHelp">Выберите плитку для редактирования или инструмент для изменения формы доски.</div>
+        </div>
         <div id="editHole" class="hint hidden" style="margin:10px 0" data-i18n="editHole">Это пустая клетка. Можно создать плитку или перетащить сюда существующую.</div>
         <div id="createTileRow" class="create-tile-row hidden"><button id="createTileBtn" class="btn" type="button" data-i18n="createTile">＋ Создать плитку</button></div>
         <div id="editTile" class="hidden" style="margin-top:10px">
@@ -388,19 +499,19 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
             <div class="group-title" data-i18n="frameLabel">Рамка плитки</div>
             <div class="seg" id="frameSeg" style="margin-bottom:10px">
               <button data-frame="none" data-i18n="frameNone">Нет</button>
-              <button data-frame="circle" data-i18n="frameCircle">● Круг</button>
-              <button data-frame="square" data-i18n="frameSquare">■ Квадрат</button>
+              <button data-frame="circle" data-i18n="frameCirclePlain">Круг</button>
+              <button data-frame="square" data-i18n="frameSquarePlain">Квадрат</button>
             </div>
           </div>
           <div id="shapeBox">
             <div class="group-title" data-i18n="upperShape">Форма башни</div>
             <div class="shapes" id="shapeSeg" style="grid-template-columns:repeat(6,minmax(0,1fr))">
-              <button data-mod="circle" style="grid-column:span 2" data-i18n="circle">● Круг</button>
-              <button data-mod="square" style="grid-column:span 2" data-i18n="square">■ Квадрат</button>
-              <button data-mod="star" style="grid-column:span 2" data-i18n="star">✦ Звезда</button>
-              <button data-mod="bars" style="grid-column:span 2" data-i18n="bars">✚ Выступы по центру</button>
-              <button data-mod="bars2" style="grid-column:span 2" data-i18n="bars2">⌗ Выступы со сдвигом</button>
-              <button data-mod="hook" style="grid-column:span 2" data-i18n="hook">Γ Крюк</button>
+              <button data-mod="circle" style="grid-column:span 2" data-i18n="shapeCircle">Круг</button>
+              <button data-mod="square" style="grid-column:span 2" data-i18n="shapeSquare">Квадрат</button>
+              <button data-mod="star" style="grid-column:span 2" data-i18n="shapeStar">Звезда</button>
+              <button data-mod="bars" style="grid-column:span 2" data-i18n="shapeBars">Выступы по центру</button>
+              <button data-mod="bars2" style="grid-column:span 2" data-i18n="shapeBars2">Выступы со сдвигом</button>
+              <button data-mod="hook" style="grid-column:span 2" data-i18n="shapeHook">Крюк</button>
             </div>
 
             <div id="circleBox" class="mod m-circle">
@@ -451,6 +562,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
                   <label for="starRange"><span data-i18n="bodySize">Размер (ширина плитки = 100%)</span><b id="starVal"></b></label>
                   <input type="range" id="starRange" min="50" max="150" step="5">
                 </div>
+                <div class="hook-reflection-row"><button id="starRotate" class="toolbtn" type="button" aria-pressed="false" title="Повернуть звезду на 45°" data-i18n-title="starRotate" aria-label="Повернуть звезду на 45°" data-i18n-aria-label="starRotate"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0.6L15.2 8.8L23.4 12L15.2 15.2L12 23.4L8.8 15.2L0.6 12L8.8 8.8Z" fill="currentColor"/></svg></button><span class="hint" id="starTurnState" data-i18n="starStraight">Вертикальная звезда</span></div>
               </div>
             </div>
 
@@ -559,7 +671,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
   <section class="about-block" id="aboutBlock" aria-labelledby="aboutTitle">
     <div class="about-head">
       <h2 id="aboutTitle" data-i18n="aboutTitle">О Программе</h2>
-      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 1.80</div>
+      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 2.00</div>
       <div class="language-control lang-top">
         <span data-i18n="chooseLanguage">выберите язык</span>
         <div class="seg" id="languageSeg" aria-label="Язык / Language">
@@ -641,11 +753,19 @@ var BUILTIN_TEXTS = [
   "PYATNASHKI\nname: Fifteen Frame\nsize: 4\ncell: 1 | u=3b6fd8 bars2=95:00010100\ncell: 2 | u=2fb4ff bars2=40:00010100\ncell: 3 | u=2fb4ff bars2=40:00001001\ncell: 4 | u=3b6fd8 bars2=95:00001001\ncell: 5 | u=2fb4ff bars2=40:00010100\ncell: 6 |\ncell: 7 |\ncell: 8 | u=2fb4ff bars2=40:00000001\ncell: 9 | u=2fb4ff bars2=40:01000000\ncell: 10 |\ncell: 11 |\ncell: 12 | u=2fb4ff bars2=40:10000000\ncell: 13 | u=3b6fd8 bars2=95:01100000\ncell: 14 | u=2fb4ff bars2=40:01000000\ncell: 15 | u=2fb4ff bars2=40:10000000\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Star\nsize: 4\ncell: 1 | u=ff5fb0 bars=40:T barwidth=80 bars2=95:00001000\ncell: 2 | f=ff9a3c frame=circle u=ff9a3c bars2=40:10000000\ncell: 3 | u=ff5fb0 bars=40:R barwidth=80 bars2=95:00000010\ncell: 4 |\ncell: 5 | f=ff9a3c frame=circle u=ff9a3c bars2=40:00001000\ncell: 6 | u=ff4d4d star=145\ncell: 7 | f=ff9a3c frame=circle u=ff9a3c bars2=40:01000000\ncell: 8 |\ncell: 9 | u=ff5fb0 bars=40:L barwidth=80 bars2=95:00010000\ncell: 10 | f=ff9a3c frame=circle u=ff9a3c bars2=40:00000100\ncell: 11 | u=ff5fb0 bars=40:B barwidth=80 bars2=95:01000000\ncell: 12 |\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Tetris\nsize: 4\ncell: 1 |\ncell: 2 | u=2fb4ff square=80 cut=25:TB bars2=75:01001000 thick=95\ncell: 3 | u=2fb4ff square=80 cut=25:TB bars2=75:10000100\ncell: 4 |\ncell: 5 |\ncell: 6 | f=4cd964 frame=circle u=4cd964 bars=100:L barwidth=30\ncell: 7 | f=4cd964 frame=circle u=4cd964 bars=100:R barwidth=30\ncell: 8 |\ncell: 9 | f=ffd93d frame=square u=ffd93d bars=100:R barwidth=30\ncell: 10 |\ncell: 11 |\ncell: 12 | f=ffd93d frame=square u=ffd93d bars=100:L barwidth=30\ncell: 13 |\ncell: 14 | u=ff4d4d square=80 cut=25:TB bars2=75:10000000\ncell: 15 | u=ff4d4d square=80 cut=25:TB bars2=75:01000000 thick=95\ncell: EMPTY",
-  "PYATNASHKI\nname: Fifteen Golf\nsize: 4\ncell: 1 |\ncell: 2 | u=ffd93d hook=00001000:50 hookout=1 hookwidth=80\ncell: 3 | u=ff4d4d hook=00010000:50 hookout=1 hookwidth=80\ncell: 4 |\ncell: 5 | u=ff4d4d hook=01000000:50 hookout=1 hookwidth=80\ncell: 6 | u=9b5cf6 bars2=40:00000100\ncell: 7 | u=9b5cf6 bars2=40:00001000\ncell: 8 | u=ffd93d hook=00000010:50 hookout=1 hookwidth=80\ncell: 9 | u=ffd93d hook=00010000:50 hookout=1 hookwidth=80\ncell: 10 | u=9b5cf6 bars2=40:01000000\ncell: 11 | u=9b5cf6 bars2=40:10000000\ncell: 12 | u=ff4d4d hook=00001000:50 hookout=1 hookwidth=80\ncell: 13 |\ncell: 14 | u=ff4d4d hook=00000010:50 hookout=1 hookwidth=80\ncell: 15 | u=ffd93d hook=01000000:50 hookout=1 hookwidth=80\ncell: EMPTY"
+  "PYATNASHKI\nname: Fifteen Golf\nsize: 4\ncell: 1 |\ncell: 2 | u=ffd93d hook=00001000:50 hookout=1 hookwidth=80\ncell: 3 | u=ff4d4d hook=00010000:50 hookout=1 hookwidth=80\ncell: 4 |\ncell: 5 | u=ff4d4d hook=01000000:50 hookout=1 hookwidth=80\ncell: 6 | u=9b5cf6 bars2=40:00000100\ncell: 7 | u=9b5cf6 bars2=40:00001000\ncell: 8 | u=ffd93d hook=00000010:50 hookout=1 hookwidth=80\ncell: 9 | u=ffd93d hook=00010000:50 hookout=1 hookwidth=80\ncell: 10 | u=9b5cf6 bars2=40:01000000\ncell: 11 | u=9b5cf6 bars2=40:10000000\ncell: 12 | u=ff4d4d hook=00001000:50 hookout=1 hookwidth=80\ncell: 13 |\ncell: 14 | u=ff4d4d hook=00000010:50 hookout=1 hookwidth=80\ncell: 15 | u=ffd93d hook=01000000:50 hookout=1 hookwidth=80\ncell: EMPTY",
+  "PYATNASHKI\nname: Fifteen Bracelet v1\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=2fb4ff square=70 bars=60:RL\ncell: 2 | u=2fb4ff square=70 bars=60:TB\ncell: 3 | u=2fb4ff square=70 bars=60:RL\ncell: 4 | u=2fb4ff square=70 bars=60:TB\ncell: 5 | u=2fb4ff square=70 bars=60:TB\ncell: 6 |\ncell: 7 |\ncell: 8 | u=2fb4ff square=70 bars=60:RL\ncell: 9 | u=2fb4ff square=70 bars=60:RL\ncell: 10 |\ncell: 11 |\ncell: 12 | u=2fb4ff square=70 bars=60:TB\ncell: 13 | u=2fb4ff square=70 bars=60:TB\ncell: 14 | u=2fb4ff square=70 bars=60:RL\ncell: 15 | u=2fb4ff square=70 bars=60:TB\ncell: EMPTY",
+  "PYATNASHKI\nname: Fifteen Bracelet v2\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=2fb4ff square=70 bars=60:RL\ncell: 2 | u=2fb4ff square=70 bars=60:TB\ncell: 3 | u=2fb4ff square=70 bars=60:RL\ncell: 4 | u=2fb4ff square=70 bars=60:TB\ncell: 5 | u=2fb4ff square=70 bars=60:TB\ncell: 6 | u=2fb4ff square=70 bars=60:RL\ncell: 7 | u=2fb4ff square=70 bars=60:TB\ncell: 8 | u=2fb4ff square=70 bars=60:RL\ncell: 9 | u=2fb4ff square=70 bars=60:RL\ncell: 10 | u=2fb4ff square=70 bars=60:TB\ncell: 11 | u=2fb4ff square=70 bars=60:RL\ncell: 12 | u=2fb4ff square=70 bars=60:TB\ncell: 13 | u=2fb4ff square=70 bars=60:TB\ncell: 14 | u=2fb4ff square=70 bars=60:RL\ncell: 15 |\ncell: EMPTY",
+  "PYATNASHKI\nname: Fifteen Steps v1\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 |\ncell: 2 |\ncell: 3 |\ncell: 4 |\ncell: 5 | u=ff4d4d square=70 bars=60:BL\ncell: 6 | u=ff4d4d square=70 bars=60:BL\ncell: 7 | u=ff4d4d square=70 bars=60:BL\ncell: 8 | u=ff4d4d square=70 bars=60:BL\ncell: 9 | u=1f9d3a square=70 bars=60:RB\ncell: 10 | u=1f9d3a square=70 bars=60:RB\ncell: 11 | u=1f9d3a square=70 bars=60:RB\ncell: 12 | u=1f9d3a square=70 bars=60:RB\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
+  "PYATNASHKI\nname: Fifteen Steps v2\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=ffd93d square=70 bars=60:TR\ncell: 2 | u=ffd93d square=70 bars=60:TR\ncell: 3 | u=ffd93d square=70 bars=60:TR\ncell: 4 | u=ffd93d square=70 bars=60:TR\ncell: 5 | u=3b6fd8 square=70 bars=60:TL\ncell: 6 | u=3b6fd8 square=70 bars=60:TL\ncell: 7 | u=3b6fd8 square=70 bars=60:TL\ncell: 8 | u=3b6fd8 square=70 bars=60:TL\ncell: 9 | u=ff4d4d square=70 bars=60:BL\ncell: 10 | u=ff4d4d square=70 bars=60:BL\ncell: 11 | u=ff4d4d square=70 bars=60:BL\ncell: 12 | u=ff4d4d square=70 bars=60:BL\ncell: 13 | u=1f9d3a square=70 bars=60:RB\ncell: 14 | u=1f9d3a square=70 bars=60:RB\ncell: 15 | u=1f9d3a square=70 bars=60:RB\ncell: EMPTY",
+  "PYATNASHKI\nname: Farmer v1\nauthor: Vladimir Yaroslavskiy\nsize: 5x3\ncell: 1 |\ncell: 2 | u=ffffff circle=120\ncell: 3 |\ncell: 4 |\ncell: BLOCKED\ncell: 6 | u=9aa3b2 circle=120\ncell: 7 |\ncell: 8 | u=4cd964 circle=120\ncell: 9 |\ncell: BLOCKED\ncell:  | bond=1\ncell:  | bond=1\ncell:  | bond=1\ncell: 😀 |\ncell: EMPTY",
+  "PYATNASHKI\nname: Farmer v2\nauthor: Vladimir Yaroslavskiy\nsize: 3x5\ncell: BLOCKED\ncell: BLOCKED\ncell: EMPTY\ncell: 1 |\ncell: 2 |\ncell: 3 |\ncell: 4 | u=9aa3b2 circle=120\ncell: 5 |\ncell: 6 | u=ffffff circle=120\ncell: 7 |\ncell: 8 | u=4cd964 circle=120\ncell: 9 |\ncell:  | bond=1\ncell:  | bond=1\ncell: 😀 |",
+  "PYATNASHKI\nname: Farmer v3\nauthor: Vladimir Yaroslavskiy\nsize: 4\ncell: 1 |\ncell: 😀 | u=ffd93d circle=120\ncell: 3 |\ncell: 4 |\ncell: 5 | u=9aa3b2 circle=120\ncell: 6 |\ncell: 7 | u=4cd964 circle=120\ncell: 8 |\ncell: 9 |\ncell: 10 | u=ffffff circle=120\ncell: 11 |\ncell: 12 |\ncell:  | bond=1\ncell:  | bond=1\ncell:  | bond=1\ncell: EMPTY",
+  "PYATNASHKI\nname: Olympic\nauthor: Vladimir Yaroslavskiy\nsize: 5x4\ncell:  | u=2fb4ff circle=120\ncell:  |\ncell:  | u=2b3345 circle=120\ncell:  |\ncell:  | u=ff4d4d circle=120\ncell:  |\ncell:  | u=ffd93d circle=120\ncell:  |\ncell:  | u=4cd964 circle=120\ncell:  |\ncell: S |\ncell: O |\ncell: C |\ncell: H |\ncell: I |\ncell: EMPTY\ncell: 2 | bond=1\ncell: 0 | bond=1\ncell: 1 | bond=1\ncell: 4 | bond=1"
 ];
 
 var UI_LANG = detectLanguage();
-var rus_eng = {"ru": {"moves": "Ходы", "time": "Время", "congrats": "Поздравляем!", "again": "🎲 Ещё раз", "close": "Закрыть", "puzzles": "Головоломки", "scramble": "🎲 Перемешать", "editor": "✎ Редактор", "undo": "↶ Назад", "redo": "↷ Вперёд", "reset": "↺ Сброс", "name": "Название", "size": "Размер поля", "clear": "Очистить", "launch": "▶ Запустить", "cancel": "Отмена", "editNone": "Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.", "editHole": "Это пустая клетка. Можно создать плитку или перетащить сюда существующую.", "marker": "Маркер", "tier": "Башня", "tile": "Плитка", "upper": "Башня", "palette": "Палитра", "upperShape": "Форма башни", "circle": "● Круг", "square": "■ Квадрат", "star": "✦ Звезда", "bars": "✚ Выступы по центру", "bars2": "⌗ Выступы со сдвигом", "hook": "Γ Крюк", "bodySize": "Размер (ширина плитки = 100%)", "sideShift": "Сдвиг сторон", "shift": "Сдвиг (% стороны)", "length": "Длина от центра", "thickness": "Толщина", "offsetWidth": "⌗ Выступы со сдвигом (ширина 40%)", "tabsHint": "Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.", "hookHint": "При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.", "copy": "Скопировать в буфер", "paste": "Вставить из буфера", "delete": "Удалить", "load": "Загрузить", "hint": "Подсказка", "newPuzzle": "Новая головоломка", "clearBoard": "Сбросить все плитки к обычной доске", "clearCuts": "Убрать срезы", "clearTabs": "Убрать выступы", "clearHooks": "Убрать крюки", "shiftTop": "Сдвиг сверху", "shiftRight": "Сдвиг справа", "shiftBottom": "Сдвиг снизу", "shiftLeft": "Сдвиг слева", "top": "Сверху", "right": "Справа", "bottom": "Снизу", "left": "Слева", "topLeft": "Сверху, левый", "topRight": "Сверху, правый", "rightUpper": "Справа, верхний", "rightLower": "Справа, нижний", "bottomLeft": "Снизу, левый", "bottomRight": "Снизу, правый", "leftUpper": "Слева, верхний", "leftLower": "Слева, нижний", "appName": "Про Пятнашки", "versionLine": "Про Пятнашки · версия 1.80", "aboutTitle": "О Программе", "chooseLanguage": "выберите язык", "pulseLabel": "Пульсация", "pulseOn": "Вкл", "pulseOff": "Выкл", "copyTileParams": "Скопировать параметры плитки", "pasteTileParams": "Вставить параметры", "copyTileDone": "Параметры плитки скопированы без маркера.", "pasteTileDone": "Параметры вставлены. Маркер плитки сохранён.", "nothingToPaste": "Буфер пуст — сначала скопируйте параметры плитки.", "collapseSection": "Свернуть блок", "expandSection": "Развернуть блок", "frameLabel": "Рамка плитки", "frameNone": "Нет", "frameCircle": "● Круг", "frameSquare": "■ Квадрат", "developers": "Разработчики:", "puzzleAuthors": "Авторские головоломки:", "puzzleNumber": "Головоломка {number}", "defaultPuzzle": "Головоломка", "importName": "Импорт", "winSummary": "«{name}» собрана", "plainStatus": "Тяните плитку к пустой клетке или кликните по ней.", "playNamed": "«{name}». Тяните плитку к пустой клетке или кликните по ней.", "editorConflict": "Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.", "editorReady": "Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».", "editorLoaded": "Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.", "copyDone": "Головоломка «{name}» скопирована в буфер обмена.", "copyFallback": "Скопируйте текст головоломки вручную (Ctrl+C)", "pastePrompt": "Вставьте текст головоломки (Ctrl+V)", "pasteError": "Не удалось вставить: {error}.", "deleteAsk": "Удалить головоломку «{name}» из хранилища?", "deleteTitle": "Удалить головоломку?", "newBoard": "Новая головоломка", "assembled": "Собрано! Ходов: {moves}, время: {time}.", "noMoves": "Нет ни одного возможного хода — нажмите «Назад» или «Сброс».", "notNeighbor": "Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.", "shiftBlocked": "Групповой ход заблокирован: один из участников не может продолжить движение.", "undoDone": "Ход отменён.", "redoDone": "Ход возвращён.", "scrambleNone": "На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.", "scrambleDone": "Перемешивание выполнено за {moves} шагов.", "resetDone": "Сброс: доска собрана.", "solve": "✓ Решить", "stop": "✕ Стоп", "solveRunning": "Поиск решения…", "solveProgress": "Поиск решения… {phase}Позиций: {count}, время: {time}", "solveDone": "Решение найдено: {moves} ходов.", "solveFailed": "Не удалось найти решение. Доска оставлена в текущем состоянии.", "solveAborted": "Решение отменено. Доска оставлена в текущем состоянии.", "computingRest": "Досчитываю решение…", "retryAttempt": "Попытка {n} из {total}. Откат…", "retryHeuristic": "Переключение на эвристику…", "alreadySolvedTitle": "Головоломка уже собрана", "alreadySolvedText": "Перемешать её?", "scrambleShort": "🎲 Перемешать", "pause": "Пауза", "play": "Продолжить", "toStart": "В начало", "toEnd": "В конец", "stepBack": "Шаг назад", "stepFwd": "Шаг вперёд", "phaseTopRow": "верхний ряд", "phaseLeftCol": "левый столбик", "phaseBlock": "финальный блок", "phaseIda": "IDA*", "phaseInit": "подготовка", "deleteTile": "Удалить плитку", "createTile": "＋ Создать плитку", "turnHook": "Отразить крюк", "hookInward": "Перекладины внутрь", "hookOutward": "Перекладины наружу", "tileDeleted": "Плитка удалена. На её месте — пустая клетка.", "tileCreated": "Плитка создана.", "noHole": "Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.", "solverOneHole": "Автоматический решатель пока работает только с одной пустой клеткой.", "hookStemLength": "Длина ножки", "hookWidth": "Ширина выступа"}, "en": {"moves": "Moves", "time": "Time", "congrats": "Congratulations!", "again": "🎲 Play again", "close": "Close", "puzzles": "Puzzles", "scramble": "🎲 Scramble", "editor": "✎ Editor", "undo": "↶ Undo", "redo": "↷ Redo", "reset": "↺ Reset", "name": "Name", "size": "Board size", "clear": "Clear", "launch": "▶ Start", "cancel": "Cancel", "editNone": "Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.", "editHole": "This cell is empty. Create a tile or drag an existing tile here.", "marker": "Marker", "tier": "Tower", "tile": "Tile", "upper": "Tower", "palette": "Palette", "upperShape": "Tower shape", "circle": "● Circle", "square": "■ Square", "star": "✦ Star", "bars": "✚ Centered tabs", "bars2": "⌗ Offset tabs", "hook": "Γ Hook", "bodySize": "Size (cell width = 100%)", "sideShift": "Side shifts", "shift": "Shift (% of side)", "length": "Length from center", "thickness": "Thickness", "offsetWidth": "⌗ Offset tabs (width 40%)", "tabsHint": "Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.", "hookHint": "Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.", "copy": "Copy to clipboard", "paste": "Paste from clipboard", "delete": "Delete", "load": "Load", "hint": "Hint", "newPuzzle": "New puzzle", "clearBoard": "Reset all tiles to a plain board", "clearCuts": "Remove side shifts", "clearTabs": "Remove tabs", "clearHooks": "Remove hooks", "shiftTop": "Shift top", "shiftRight": "Shift right", "shiftBottom": "Shift bottom", "shiftLeft": "Shift left", "top": "Top", "right": "Right", "bottom": "Bottom", "left": "Left", "topLeft": "Top, left", "topRight": "Top, right", "rightUpper": "Right, upper", "rightLower": "Right, lower", "bottomLeft": "Bottom, left", "bottomRight": "Bottom, right", "leftUpper": "Left, upper", "leftLower": "Left, lower", "appName": "Fifteen Pro", "versionLine": "Fifteen Pro · version 1.80", "aboutTitle": "About", "chooseLanguage": "Choose language", "pulseLabel": "Pulsation", "pulseOn": "On", "pulseOff": "Off", "copyTileParams": "Copy tile parameters", "pasteTileParams": "Paste parameters", "copyTileDone": "Tile parameters copied without the marker.", "pasteTileDone": "Parameters pasted. The tile marker was preserved.", "nothingToPaste": "Clipboard is empty — copy tile parameters first.", "collapseSection": "Collapse section", "expandSection": "Expand section", "frameLabel": "Tile frame", "frameNone": "None", "frameCircle": "● Circle", "frameSquare": "■ Square", "developers": "Developers:", "puzzleAuthors": "Puzzle authors:", "puzzleNumber": "Puzzle {number}", "defaultPuzzle": "Puzzle", "importName": "Imported puzzle", "winSummary": "“{name}” solved", "plainStatus": "Drag a tile into the empty cell or click it.", "playNamed": "“{name}”. Drag a tile into the empty cell or click it.", "editorConflict": "Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.", "editorReady": "Edit the tiles. No conflicts detected — press “Start” when ready.", "editorLoaded": "Puzzle “{name}” loaded in the editor. Press “Start” to save it.", "copyDone": "Puzzle “{name}” copied to the clipboard.", "copyFallback": "Copy the puzzle text manually (Ctrl+C)", "pastePrompt": "Paste puzzle text (Ctrl+V)", "pasteError": "Could not paste: {error}.", "deleteAsk": "Delete puzzle “{name}” from storage?", "deleteTitle": "Delete puzzle?", "newBoard": "New puzzle", "assembled": "Solved! Moves: {moves}, time: {time}.", "noMoves": "No legal moves. Press “Undo” or “Reset”.", "notNeighbor": "This tile is not next to the empty cell, and its row/column cannot be shifted.", "shiftBlocked": "Group move blocked: a required tile cannot continue moving.", "undoDone": "Move undone.", "redoDone": "Move restored.", "scrambleNone": "This board has no legal moves. Change tile shapes in the editor.", "scrambleDone": "Shuffling completed in {moves} steps.", "resetDone": "Reset: board solved.", "solve": "✓ Solve", "stop": "✕ Stop", "solveRunning": "Solving…", "solveProgress": "Solving… {phase}Positions: {count}, time: {time}", "solveDone": "Solution found: {moves} moves.", "solveFailed": "Could not find a solution. Board left in its current state.", "solveAborted": "Solving aborted. Board left in its current state.", "computingRest": "Finishing the solution…", "retryAttempt": "Attempt {n} of {total}. Rolling back…", "retryHeuristic": "Switching to heuristic…", "alreadySolvedTitle": "Puzzle is already solved", "alreadySolvedText": "Scramble it?", "scrambleShort": "🎲 Scramble", "pause": "Pause", "play": "Play", "toStart": "To start", "toEnd": "To end", "stepBack": "Step back", "stepFwd": "Step forward", "phaseTopRow": "top row", "phaseLeftCol": "left column", "phaseBlock": "final block", "phaseIda": "IDA*", "phaseInit": "init", "deleteTile": "Delete tile", "createTile": "＋ Create tile", "turnHook": "Mirror hook", "hookInward": "Heads inward", "hookOutward": "Heads outward", "tileDeleted": "Tile deleted. Its cell is now empty.", "tileCreated": "Tile created.", "noHole": "Leave at least one empty cell so tiles can move.", "solverOneHole": "The automatic solver currently requires exactly one empty cell.", "hookStemLength": "Stem length", "hookWidth": "Protrusion width"}};
+var rus_eng = {"ru":{"moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","scramble":"🎲 Перемешать","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Башня","palette":"Палитра","upperShape":"Форма башни","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом (ширина 40%)","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 2.00","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveDone":"Решение найдено: {moves} ходов.","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Решение отменено. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы."},"en":{"moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","scramble":"🎲 Scramble","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Tower","palette":"Palette","upperShape":"Tower shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs (width 40%)","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 2.00","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveDone":"Solution found: {moves} moves.","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group."}};
 
 var LAST_STATUS = null, LAST_DIALOG = null;
 var pulseOn = true;
@@ -710,7 +830,7 @@ function applyLanguage(language) {
   updatePlaybackUI();
 }
 
-var n = 4, puzzles = [], cur = 0, cfg = null, layout = [];
+var n = 4, boardRows = 4, puzzles = [], cur = 0, cfg = null, layout = [];
 var hist = [], redo = [], mode = 'play', sel = -1;
 var deletedBuiltinNames = [];
 
@@ -724,7 +844,7 @@ function syncUpper(t) {
 function newTile(marker) {
   return {
     marker: marker, color: '#ffffff', upColor: UP_DEFAULT, upper: false,
-    body: 'none', cr: 0.60, sq: 0.70, star: 1.20, thick: 1.00, ch: [0, 0, 0, 0], cut: 0.30,
+    body: 'none', cr: 0.60, sq: 0.70, star: 1.20, starTilt: false, bond: 0, thick: 1.00, ch: [0, 0, 0, 0], cut: 0.30,
     bars: false, bl: 0.60, barWidth: 0.70, bars2: false, bl2: 0.60,
     sides: [1, 1, 1, 1], sides2: [1, 1, 1, 1, 1, 1, 1, 1],
     frame: 'none',
@@ -732,14 +852,15 @@ function newTile(marker) {
   };
 }
 
-function defaultCfg(size, name) {
+function defaultCfg(size, name, rows) {
+  rows = rows == null ? size : rows;
   var tiles = [], lay = [], i;
-  for (i = 0; i < size * size - 1; i++) {
+  for (i = 0; i < size * rows - 1; i++) {
     tiles.push(newTile(String(i + 1)));
     lay.push(i);
   }
   lay.push(-1);
-  return { name: name || '', n: size, tiles: tiles, layout: lay };
+  return { name: name || '', author: '', n: size, rows: rows, tiles: tiles, layout: lay };
 }
 
 function builtinPuzzles() {
@@ -761,16 +882,20 @@ function lettersToSides(s) {
   return a;
 }
 function puzzleToText(p) {
-  var L = [FMT, 'name: ' + (p.name || ''), 'size: ' + p.n];
+  var L = [FMT, 'name: ' + (p.name || ''), 'author: ' + (p.author || ''), 'size: ' + p.n + (puzzleRows(p) !== p.n ? 'x' + puzzleRows(p) : '')];
   p.layout.forEach(function (id) {
-    if (id < 0) { L.push('cell: EMPTY'); return; }
+    if (id === -2) { L.push('cell: BLOCKED'); return; }
+    if (id === -1) { L.push('cell: EMPTY'); return; }
     var t = p.tiles[id], o = [];
     if (t.color.toLowerCase() !== '#ffffff') o.push('f=' + t.color.slice(1).toLowerCase());
     if (t.frame && t.frame !== 'none') o.push('frame=' + t.frame);
     if (t.upper) {
       o.push('u=' + t.upColor.slice(1).toLowerCase());
       if (t.body === 'circle') o.push('circle=' + Math.round(t.cr * 200));
-      if (t.body === 'star') o.push('star=' + Math.round(t.star * 100));
+      if (t.body === 'star') {
+        o.push('star=' + Math.round(t.star * 100));
+        if (t.starTilt) o.push('starturn=45');
+      }
       if (t.body === 'square') {
         o.push('square=' + Math.round(t.sq * 100));
         if (t.ch[0] || t.ch[1] || t.ch[2] || t.ch[3]) o.push('cut=' + Math.round(t.cut * 100) + ':' + sidesToLetters(t.ch));
@@ -798,6 +923,7 @@ function puzzleToText(p) {
     if ((t.hookEnabled || (t.hooks && t.hooks.some(function(v){return !!v;}))) && Math.abs(hookWidthOf(t)-0.70)>EPS) {
       o.push('hookwidth=' + Math.round(hookWidthOf(t)*100));
     }
+    if (t.bond > 0) o.push('bond=' + t.bond);
     L.push('cell: ' + t.marker + ' |' + (o.length ? ' ' + o.join(' ') : ''));
   });
   return L.join('\n');
@@ -814,6 +940,14 @@ function applyOpts(t, optStr) {
       if (!/^[0-9a-f]{6}$/i.test(v)) { err = 'цвет «' + tok + '» должен быть в формате RRGGBB'; return; }
       if (k === 'f') t.color = '#' + v.toLowerCase(); else t.upColor = '#' + v.toLowerCase();
       return;
+    }
+    if (k === 'starturn') {
+      if (v !== '45' && v !== '0') { err = 'starturn должен быть 0 или 45'; return; }
+      t.starTilt = v === '45'; return;
+    }
+    if (k === 'bond') {
+      if (!/^[1-9][0-9]*$/.test(v) || Number(v) > 1000000) { err = 'bond должен быть положительным целым числом'; return; }
+      t.bond = Number(v); return;
     }
     if (k === 'frame') {
       var fv = String(v).toLowerCase();
@@ -858,32 +992,38 @@ function applyOpts(t, optStr) {
   return err;
 }
 function textToPuzzle(text) {
-  var lines = String(text || '').replace(/\r/g, '').split('\n'), i = 0, name = '', size = 0, cells = [], m;
+  var lines = String(text || '').replace(/\r/g, '').split('\n'), i = 0, name = '', author = '', size = 0, rows = 0, cells = [], m;
   while (i < lines.length && !lines[i].trim()) i++;
   if (i >= lines.length || lines[i].trim().toUpperCase().indexOf('PYATNASHKI') !== 0) return { error: 'не найден заголовок ' + FMT };
   for (i++; i < lines.length; i++) {
     var raw = lines[i].replace(/^\s+/, '');
     if (!raw.trim() || raw.charAt(0) === '#') continue;
-    m = /^(name|size|cell)\s*:(.*)$/i.exec(raw);
+    m = /^(name|author|size|cell)\s*:(.*)$/i.exec(raw);
     if (!m) return { error: 'строка ' + (i + 1) + ' не распознана' };
     var key = m[1].toLowerCase();
     if (key === 'name') name = m[2].trim();
-    else if (key === 'size') size = parseInt(m[2], 10);
-    else cells.push(m[2]);
+    else if (key === 'author') author = m[2].trim();
+    else if (key === 'size') {
+      var dimensions = /^(\d+)\s*(?:[x×]\s*(\d+))?$/i.exec(m[2].trim());
+      if (!dimensions) return { error: 'size должен быть в формате 4 или 3x5' };
+      size = +dimensions[1]; rows = dimensions[2] ? +dimensions[2] : size;
+    } else cells.push(m[2]);
   }
-  if (size !== 3 && size !== 4) return { error: 'size должен быть 3 или 4' };
-  if (cells.length !== size * size) return { error: 'нужно ' + (size * size) + ' строк cell:, найдено ' + cells.length };
+  if (size < 2 || size > 5 || rows < 2 || rows > 5) return { error: 'ширина и высота поля должны быть от 2 до 5' };
+  if (cells.length !== size * rows) return { error: 'нужно ' + (size * rows) + ' строк cell:, найдено ' + cells.length };
   var tiles = [], lay = [], empties = 0, c;
   for (c = 0; c < cells.length; c++) {
     var s = cells[c], idx = s.lastIndexOf(' |'), marker, opts = '';
     if (idx >= 0) { marker = s.slice(0, idx).trim(); opts = s.slice(idx + 2); } else marker = s.trim();
     if (marker === 'EMPTY') { lay.push(-1); empties++; continue; }
+    if (marker === 'BLOCKED') { lay.push(-2); continue; }
     var t = newTile(marker), err = applyOpts(t, opts);
     if (err) return { error: 'клетка ' + (c + 1) + ': ' + err };
     lay.push(tiles.length);
     tiles.push(t);
   }
-  return { puzzle: { name:name||tr('importName'), n: size, tiles: tiles, layout: lay } };
+  if (!empties) return {error:'нужно оставить хотя бы одну пустую клетку'};
+  return { puzzle: { name:name||tr('importName'), author: author, n: size, rows: rows, tiles: tiles, layout: lay } };
 }
 
 function R(x0, x1, y0, y1) { return { k: 'r', x0: x0, x1: x1, y0: y0, y1: y1 }; }
@@ -898,10 +1038,10 @@ function squareShape(cx, cy, size, ch, cutFrac) {
   return R(x0, x1, y0, y1);
 }
 
-function starShape(cx, cy, size) {
-  var pts = [], radius = size / 2;
+function starShape(cx, cy, size, turned) {
+  var pts = [], radius = size / (turned ? Math.SQRT2 : 2);
   for (var i = 0; i < 8; i++) {
-    var a = -Math.PI / 2 + i * Math.PI / 4;
+    var a = -Math.PI / 2 + i * Math.PI / 4 + (turned ? Math.PI / 4 : 0);
     var rr = i % 2 ? radius * 0.36 : radius;
     pts.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr]);
   }
@@ -966,7 +1106,7 @@ function shapesOf(t, cx, cy) {
   var o = [];
   if (t.body === 'circle') o.push(C(cx, cy, t.cr));
   else if (t.body === 'square') o.push(squareShape(cx, cy, t.sq, t.ch, t.cut));
-  else if (t.body === 'star') o.push(starShape(cx, cy, t.star));
+  else if (t.body === 'star') o.push(starShape(cx, cy, t.star, !!t.starTilt));
   if (t.bars) {
     var w = (t.barWidth === undefined ? 0.70 : t.barWidth) / 2, L = t.bl, s = t.sides;
     if (s[0]) o.push(R(cx - w, cx + w, cy - L, cy));
@@ -1035,7 +1175,7 @@ function contourShape(s, env) {
 }
 function geometryKey(t) {
   var hk = t.hooks ? t.hooks.join('') : '00000000';
-  return [t.upper ? 1 : 0, t.body, t.cr, t.sq, t.star, t.cut, t.ch.join(''),
+  return [t.upper ? 1 : 0, t.body, t.cr, t.sq, t.star, t.starTilt ? 1 : 0, t.cut, t.ch.join(''),
     t.bars ? 1 : 0, t.bl, t.barWidth === undefined ? 0.70 : t.barWidth, t.sides.join(''),
     t.bars2 ? 1 : 0, t.bl2, t.thick === undefined ? 1 : t.thick, t.sides2.join(''),
     t.frame || 'none', hk, t.hookThick === undefined ? 0.5 : t.hookThick, t.hookOut ? 1 : 0, 'hook-178', hookLengthOf(t), hookWidthOf(t), HOOK_EDGE_SHIFT, hookGeometryDelta()].join('|');
@@ -1318,13 +1458,337 @@ function simulateApply(state, cell) {
   state[cell] = -1;
 }
 
+
+/* v1.92: -2 is an absent board cell, -1 is a playable empty cell. */
+var boardTool = '', bondAnchor = -1;
+function isCut(cell) { return !!cfg && !!cfg.layout && cell >= 0 && cfg.layout[cell] === -2; }
+function hasSpecialBoard() {
+  return cfg.layout.indexOf(-2) >= 0 || cfg.tiles.some(function(t){return t.bond > 0;});
+}
+function bondedCells(state, cell) {
+  var id=state[cell], t=id>=0?cfg.tiles[id]:null;
+  if (!t || !(t.bond > 0)) return [];
+  var out=[];
+  for(var i=0;i<state.length;i++) if(state[i]>=0 && cfg.tiles[state[i]].bond===t.bond)out.push(i);
+  return out;
+}
+function bondIsConnected(state) {
+  var groups=Object.create(null);
+  state.forEach(function(id,cell){
+    if(id>=0 && cfg.tiles[id].bond>0){
+      var b=cfg.tiles[id].bond;
+      if(!groups[b])groups[b]=[];
+      groups[b].push(cell);
+    }
+  });
+  return Object.keys(groups).every(function(k){
+    var cells=groups[k], set=new Set(cells), visited=new Set([cells[0]]), pending=[cells[0]];
+    while(pending.length){
+      var cell=pending.pop();
+      neighborsOf(cell).forEach(function(next){
+        if(set.has(next) && !visited.has(next)){visited.add(next);pending.push(next);}
+      });
+    }
+    return visited.size === cells.length && cells.length > 1;
+  });
+}
+function normalizeBondGroups() {
+  var counts=Object.create(null);
+  cfg.tiles.forEach(function(t){if(t.bond>0)counts[t.bond]=(counts[t.bond]||0)+1;});
+  cfg.tiles.forEach(function(t){if(t.bond>0 && counts[t.bond]<2)t.bond=0;});
+}
+function bondGroupAt(cell) {
+  if (cell<0 || layout[cell]<0) return 0;
+  return cfg.tiles[layout[cell]].bond || 0;
+}
+function groupAdjacent(a,b) { return neighborsOf(a).indexOf(b)>=0; }
+function bondSelectedCell(cell) {
+  if(layout[cell]<0){setStatus(msg('bandageWrong'),'err');return;}
+  if(bondAnchor<0 || layout[bondAnchor]<0) {
+    bondAnchor=cell;renderAll(false);return;
+  }
+  var current=bondGroupAt(bondAnchor), members=current>0?bondedCells(layout,bondAnchor):[bondAnchor];
+  if (members.indexOf(cell)>=0) {
+    // Clicking a bonded tile again keeps it selected as the next anchor.
+    bondAnchor=cell;renderAll(false);return;
+  }
+  if(!members.some(function(p){return groupAdjacent(p,cell);})) {
+    setStatus(msg('bandageAdjacent'),'err');return;
+  }
+  var other=bondGroupAt(cell), group=current||other;
+  if(!group){
+    group=1;
+    cfg.tiles.forEach(function(t){if(t.bond>=group)group=t.bond+1;});
+  }
+  cfg.tiles.forEach(function(t){if(t.bond===current && current>0 || t.bond===other && other>0)t.bond=group;});
+  cfg.tiles[layout[bondAnchor]].bond=group;
+  cfg.tiles[layout[cell]].bond=group;
+  bondAnchor=cell;
+  renderAll(false);
+}
+function detachBondAt(cell) {
+  if (cell == null || cell < 0 || layout[cell] < 0) return false;
+  var tile = cfg.tiles[layout[cell]];
+  if (!tile || !(tile.bond > 0)) return false;
+  var originalGroup = tile.bond;
+  tile.bond = 0;
+  // Detaching one half of a two-tile bond also detaches the surviving singleton.
+  normalizeBondGroups();
+  // A removed bridge can split the remainder into separate components.
+  var members = [];
+  for (var i = 0; i < layout.length; i++) {
+    var id = layout[i];
+    if (id >= 0 && cfg.tiles[id].bond === originalGroup) members.push(i);
+  }
+  var unseen = new Set(members), components = [];
+  while (unseen.size) {
+    var start = unseen.values().next().value;
+    unseen.delete(start);
+    var pending = [start], component = [start];
+    while (pending.length) {
+      var cur = pending.pop();
+      neighborsOf(cur).forEach(function(adj){
+        if (unseen.has(adj)) { unseen.delete(adj); pending.push(adj); component.push(adj); }
+      });
+    }
+    components.push(component);
+  }
+  if (components.length > 1) {
+    var nextGroup = cfg.tiles.reduce(function(mx,t){ return Math.max(mx, t.bond || 0); }, 0) + 1;
+    components.forEach(function(c, idx){
+      var group = c.length < 2 ? 0 : (idx === 0 ? originalGroup : nextGroup++);
+      c.forEach(function(pos){ cfg.tiles[layout[pos]].bond = group; });
+    });
+  }
+  normalizeBondGroups();
+  groupContactCache.clear();
+  if (!anyBondedTiles()) boardTool = '';
+  setStatus(msg('unbindDone'),'ok');
+  return true;
+}
+
+function cutBoardCell(cell) {
+  if(cell<0 || cell>=layout.length)return;
+  if(layout[cell]===-2) { layout[cell]=-1; cfg.layout=layout; sel=-1; build(); return; }
+  var alive=layout.filter(function(id){return id!==-2;}).length;
+  if(alive<=2 || (layout[cell]===-1 && layout.filter(function(id){return id===-1;}).length<=1)) {
+    setStatus(msg('knifeLast'),'err'); return;
+  }
+  if(layout[cell]>=0){
+    var id=layout[cell];
+    cfg.tiles.splice(id,1);
+    for(var i=0;i<layout.length;i++) if(layout[i]>id)layout[i]--;
+  }
+  layout[cell]=-2;cfg.layout=layout;
+  normalizeBondGroups();
+  sel=-1;bondAnchor=-1;hist=[];redo=[];
+  collisionTileCache=new WeakMap();groupContactCache.clear();
+  build();
+}
+function updateBoardTools() {
+  ['boardKnife','boardBandage'].forEach(function(id){
+    var modeName=id==='boardKnife'?'knife':'bandage';
+    var isOn=modeName===boardTool;
+    $(id).classList.toggle('on',isOn);
+    $(id).setAttribute('aria-pressed',isOn?'true':'false');
+  });
+  $('clearBandage').classList.toggle('on', boardTool==='unbind');
+  $('clearBandage').setAttribute('aria-pressed', boardTool==='unbind' ? 'true' : 'false');
+  $('clearBandage').disabled=!anyBondedTiles();
+  $('boardToolHint').textContent=tr(boardTool==='knife'?'knifeHelp':boardTool==='bandage'?'bandageHelp':boardTool==='unbind'?'unbindHelp':'boardModeHelp');
+}
+
+function anyBondedTiles() {
+  return cfg.tiles.some(function(t){ return t && t.bond > 0; });
+}
+/* Adapted from Klotski Solver v2.68: boundary-edge traversal and curved
+   contour loops for the board and composite pieces. */
+const KL_CONTOUR_R = 0.14, KL_CONTOUR_RJ = 0.18;
+  function buildContourPath(cellList, cellW, cellH, inset, connectDiagonals = false) {
+    cellW = (cellW == null) ? 1 : cellW;
+    cellH = (cellH == null) ? 1 : cellH;
+    inset = Math.max(-0.12, Math.min(0.24, Number(inset) || 0));
+    if (!cellList || cellList.length === 0) return '';
+    const cellSet = new Set(cellList.map(([x, y]) => x + ',' + y));
+    if (cellSet.size === 0) return '';
+    const edges = [];
+    for (const [x, y] of cellList) {
+      if (!cellSet.has(x + ',' + (y - 1))) edges.push({ from: [x, y], to: [x + 1, y], dir: [1, 0] });
+      if (!cellSet.has((x + 1) + ',' + y)) edges.push({ from: [x + 1, y], to: [x + 1, y + 1], dir: [0, 1] });
+      if (!cellSet.has(x + ',' + (y + 1))) edges.push({ from: [x + 1, y + 1], to: [x, y + 1], dir: [-1, 0] });
+      if (!cellSet.has((x - 1) + ',' + y)) edges.push({ from: [x, y + 1], to: [x, y], dir: [0, -1] });
+    }
+    if (edges.length === 0) return '';
+    const startsAt = new Map();
+    for (let i = 0; i < edges.length; i++) {
+      const k = edges[i].from[0] + ',' + edges[i].from[1];
+      if (!startsAt.has(k)) startsAt.set(k, []);
+      startsAt.get(k).push(i);
+    }
+    const junctions = connectDiagonals ? new Set([...startsAt].filter(([, outs]) => outs.length > 1).map(([key]) => key)) : null;
+    const nextEdge = new Array(edges.length).fill(-1);
+    for (let i = 0; i < edges.length; i++) {
+      const e = edges[i];
+      const outs = startsAt.get(e.to[0] + ',' + e.to[1]) || [];
+      if (outs.length === 0) continue;
+      if (outs.length === 1) { nextEdge[i] = outs[0]; continue; }
+      const din = e.dir;
+      let best = outs[0], bestCross = connectDiagonals ? Infinity : -Infinity;
+      for (const j of outs) {
+        const dout = edges[j].dir;
+        const cross = din[0] * dout[1] - din[1] * dout[0];
+        if (connectDiagonals ? cross < bestCross : cross > bestCross) { bestCross = cross; best = j; }
+      }
+      nextEdge[i] = best;
+    }
+    const visited = new Array(edges.length).fill(false);
+    let d = '';
+    for (let i = 0; i < edges.length; i++) {
+      if (visited[i]) continue;
+      const loop = [];
+      let cur = i, safety = 0;
+      while (cur >= 0 && !visited[cur] && safety++ < edges.length + 5) {
+        visited[cur] = true;
+        loop.push(cur);
+        cur = nextEdge[cur];
+      }
+      if (loop.length === 0) continue;
+      d += contourLoopToPath(loop, edges, cellW, cellH, inset, junctions);
+    }
+    return d;
+  }
+
+  function contourLoopToPath(loop, edges, cellW, cellH, inset, junctions) {
+    const n = loop.length;
+    if (n === 0) return '';
+    const inPts = [], outPts = [], curves = [];
+    for (let i = 0; i < n; i++) {
+      const e = edges[loop[i]], en = edges[loop[(i + 1) % n]];
+      const din = e.dir, dout = en.dir;
+      const cross = din[0] * dout[1] - din[1] * dout[0];
+      // Intersect the two edge offsets on the occupied side. Applying the
+      // offset at every boundary also protects concave corners and holes.
+      const nx = cross === 0 ? -din[1] : -din[1] - dout[1];
+      const ny = cross === 0 ? din[0] : din[0] + dout[0];
+      // Only diagonal contacts have a narrow neck across the shared corner.
+      // All ordinary edges and concave corners retain their inward offset.
+      const diagonalContact = junctions && junctions.has(e.to[0] + ',' + e.to[1]);
+      const Bx = (e.to[0] + nx * inset) * cellW;
+      const By = (e.to[1] + ny * inset) * cellH;
+      if (diagonalContact && cross < 0) {
+        // As in diagonalPathD: connect the two inset cell edges with a cubic
+        // curve whose controls remain on their respective occupied sides.
+        // A circular fillet at the empty corner crosses the opposite fillet.
+        const vx = e.to[0], vy = e.to[1], reach = inset + KL_CONTOUR_RJ;
+        const sx = (vx - din[1] * inset - din[0] * reach) * cellW;
+        const sy = (vy + din[0] * inset - din[1] * reach) * cellH;
+        const ex = (vx - dout[1] * inset + dout[0] * reach) * cellW;
+        const ey = (vy + dout[0] * inset + dout[1] * reach) * cellH;
+        const c1x = (vx - din[1] * inset - din[0] * inset) * cellW;
+        const c1y = (vy + din[0] * inset - din[1] * inset) * cellH;
+        const c2x = (vx - dout[1] * inset + dout[0] * inset) * cellW;
+        const c2y = (vy + dout[0] * inset + dout[1] * inset) * cellH;
+        inPts.push([sx, sy]); outPts.push([ex, ey]);
+        curves.push(`C ${c1x.toFixed(4)} ${c1y.toFixed(4)} ${c2x.toFixed(4)} ${c2y.toFixed(4)} ${ex.toFixed(4)} ${ey.toFixed(4)} `);
+      }
+      else if (cross === 0) { inPts.push([Bx, By]); outPts.push([Bx, By]); curves.push(''); }
+      else {
+        const r = cross > 0 ? KL_CONTOUR_R : Math.min(KL_CONTOUR_R * 0.6, Math.max(0.02, Math.abs(inset) * 2));
+        const rx = r * cellW, ry = r * cellH;
+        const sx = Bx - din[0] * rx, sy = By - din[1] * ry;
+        const ex = Bx + dout[0] * rx, ey = By + dout[1] * ry;
+        const sweep = cross > 0 ? 1 : 0;
+        inPts.push([sx, sy]); outPts.push([ex, ey]);
+        curves.push(`A ${rx.toFixed(4)} ${ry.toFixed(4)} 0 0 ${sweep} ${ex.toFixed(4)} ${ey.toFixed(4)} `);
+      }
+    }
+    let d = `M ${outPts[n - 1][0].toFixed(4)} ${outPts[n - 1][1].toFixed(4)} `;
+    for (let i = 0; i < n; i++) { d += `L ${inPts[i][0].toFixed(4)} ${inPts[i][1].toFixed(4)} `; d += curves[i]; }
+    d += 'Z';
+    return d;
+  }
+
+
+function contourCellsFromIndices(indices) {
+  return indices.map(function(pos) { return [pos % n, Math.floor(pos / n)]; });
+}
+function contourPathForIndices(indices, inset) {
+  return buildContourPath(contourCellsFromIndices(indices), S, S, inset || 0, false);
+}
+function boardContourMarkup() {
+  var cells = [];
+  for (var i = 0; i < cfg.layout.length; i++) if (cfg.layout[i] !== -2) cells.push(i);
+  // Match the same gutter that a regular rectangular board has around
+  // its tiles. The contour expands by almost one full board padding, both
+  // around the outside and around inner cut-outs.
+  var extra = Math.max(0, PAD - 1);
+  var d = contourPathForIndices(cells, -extra / S);
+  if (!d) return '';
+  var W = board.clientWidth, H = board.clientHeight;
+  return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" aria-hidden="true">'+
+    '<defs><linearGradient id="fifteen-board-shape-gradient" x1="0" y1="0" x2="0.25" y2="1">'+
+    '<stop offset="0" stop-color="#bdc8da"/><stop offset="0.55" stop-color="#aebad0"/>'+
+    '<stop offset="1" stop-color="#98a4bd"/></linearGradient></defs>'+
+    '<g transform="translate('+PAD+' '+PAD+')">'+
+    '<path d="'+d+'" fill="url(#fifteen-board-shape-gradient)" fill-rule="evenodd" '+
+    'stroke="#6f7d9e" stroke-width="2.8" stroke-linejoin="round"/>'+
+    '</g></svg>';
+}
+function renderBondOverlaySvg() {
+  var host = $('bondOverlayLayer');
+  if (!anyBondedTiles()) { host.innerHTML = ''; return; }
+  var groups = Object.create(null), i;
+  for (i = 0; i < layout.length; i++) {
+    var id = layout[i];
+    if (id >= 0 && cfg.tiles[id].bond > 0) {
+      var group = cfg.tiles[id].bond;
+      (groups[group] || (groups[group] = [])).push(i);
+    }
+  }
+  var W = board.clientWidth, H = board.clientHeight;
+  var out = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" aria-hidden="true">' +
+    '<defs>' +
+      '<filter id="bondGroupShadow" x="-20%" y="-20%" width="160%" height="180%">' +
+        '<feDropShadow dx="0" dy="4" stdDeviation="0" flood-color="#1e2a4e" flood-opacity="0.55"/>' +
+        '<feDropShadow dx="0" dy="12" stdDeviation="4" flood-color="#0f193c" flood-opacity="0.35"/>' +
+      '</filter>' +
+      '<linearGradient id="bondGroupGloss" x1="0" y1="0" x2="0.75" y2="1">' +
+        '<stop offset="0" stop-color="#ffffff" stop-opacity="0.56"/>' +
+        '<stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    '<g transform="translate('+PAD+' '+PAD+')">';
+  var count = 0;
+  Object.keys(groups).forEach(function(key) {
+    var cells = groups[key];
+    if (cells.length < 2) return;
+    var d = contourPathForIndices(cells, Math.min(0.24, GAP / S));
+    if (!d) return;
+    var clipId = 'fifteen-bond-' + count++;
+    var edgeColor = mode === 'edit' ? '#8532af' : shade(cfg.tiles[layout[cells[0]]].color, -0.5);
+    out += '<g class="bond-moving-group" data-bond-id="'+key+'" filter="url(#bondGroupShadow)">';
+    out += '<defs><clipPath id="'+clipId+'"><path d="'+d+'" fill-rule="evenodd"/></clipPath></defs>';
+    out += '<g clip-path="url(#'+clipId+')">';
+    cells.forEach(function(pos) {
+      var tile = cfg.tiles[layout[pos]];
+      var x = (pos % n) * S, y = Math.floor(pos / n) * S;
+      out += '<rect x="'+x+'" y="'+y+'" width="'+(S + 0.3)+'" height="'+(S + 0.3)+'" fill="'+tile.color+'"/>';
+    });
+    out += '<path d="'+d+'" fill="url(#bondGroupGloss)" fill-rule="evenodd"/>';
+    out += '</g>';
+    out += '<path d="'+d+'" fill="none" stroke="'+edgeColor+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    out += '</g>';
+  });
+  host.innerHTML = out + '</g></svg>';
+}
+
 function neighborsOf(cell) {
   var r = Math.floor(cell / n), c = cell % n, o = [];
   if (r > 0) o.push(cell - n);
-  if (r < n - 1) o.push(cell + n);
+  if (r < boardRows - 1) o.push(cell + n);
   if (c > 0) o.push(cell - 1);
   if (c < n - 1) o.push(cell + 1);
-  return o;
+  return o.filter(function(pos){return !isCut(pos);});
 }
 
 function legalCells() {
@@ -1337,11 +1801,12 @@ function tileSig(t) {
   var s = [t.marker, t.color.toLowerCase(), t.frame || 'none'];
   if (t.upper) {
     s.push(t.upColor.toLowerCase(), t.body,
-      t.body === 'circle' ? t.cr : t.body === 'star' ? t.star : t.body === 'square' ? t.sq + '/' + t.ch.join('') + '/' + t.cut : 0,
+      t.body === 'circle' ? t.cr : t.body === 'star' ? t.star + '/' + (t.starTilt ? 45 : 0) : t.body === 'square' ? t.sq + '/' + t.ch.join('') + '/' + t.cut : 0,
       t.bars ? t.sides.join('') + '@' + t.bl + '@' + (t.barWidth === undefined ? 0.70 : t.barWidth) : '-',
       t.bars2 ? t.sides2.join('') + '@' + t.bl2 + '@' + (t.thick === undefined ? 1 : t.thick) : '-',
       t.hooks ? t.hooks.join('') + '@' + (t.hookThick === undefined ? 0.5 : t.hookThick) + '@' + (t.hookOut ? 1 : 0) + '@' + hookLengthOf(t) + '@' + hookWidthOf(t) : '-');
   } else s.push('-');
+  s.push('bond:' + (t.bond || 0));
   return s.join('|');
 }
 function cellSig(lay, i) { return lay[i] < 0 ? '#' : tileSig(cfg.tiles[lay[i]]); }
@@ -1395,14 +1860,22 @@ function markerNeedsOutline(t, markerColor) {
 }
 
 var builtinIdentity = Object.create(null), builtinLegacyNames = Object.create(null);
+function builtinAuthor(name) {
+  if (/^Classic [34]×[34]$/.test(name)) return 'Classic';
+  if (/^(Red-Hot|One-Way|E\.W\.S\.N|SKY)$/.test(name)) return 'Minoru Abe';
+  if (/^(Coin-15 ver [123]|Farmer v[123]|Olympic)$/.test(name)) return 'Vladimir Yaroslavskiy';
+  if (/^Fifteen (Lattice|Frame|Star|Tetris|Golf|Bracelet v[12]|Steps v[12])$/.test(name)) return 'Evgeniy Grigoriev';
+  return '';
+}
+function puzzleRows(p) { return p && Number.isInteger(p.rows) ? p.rows : p.n; }
 function createBuiltinCatalog() {
   var list = builtinPuzzles();
-  list.forEach(function (p) { p.origin = 'builtin'; p.builtinId = 'classic:' + p.n; });
+  list.forEach(function (p) { p.origin = 'builtin'; p.builtinId = 'classic:' + p.n; p.author = builtinAuthor(p.name); });
   BUILTIN_TEXTS.forEach(function (text) {
     var result = textToPuzzle(text);
     if (!result.puzzle) return;
     var p = result.puzzle;
-    p.origin = 'builtin'; p.builtinId = 'text:' + p.name; p.builtinName = p.name;
+    p.origin = 'builtin'; p.builtinId = 'text:' + p.name; p.builtinName = p.name; p.author = p.author || builtinAuthor(p.name);
     list.push(p);
   });
   builtinIdentity = Object.create(null); builtinLegacyNames = Object.create(null);
@@ -1435,13 +1908,15 @@ function saveStore() {
     localStorage.setItem(STORE_KEY, JSON.stringify(data));
   } catch (e) {}
 }
-function validCfg(c, size) {
+function validCfg(c, size, rows) {
   if (!c || !c.tiles || !c.layout) return false;
-  if (!Array.isArray(c.tiles) || !Array.isArray(c.layout) || c.tiles.length > size*size || c.layout.length !== size*size) return false;
+  rows = rows == null ? puzzleRows(c) : rows;
+  if (!Number.isInteger(size) || !Number.isInteger(rows) || size < 2 || size > 5 || rows < 2 || rows > 5) return false;
+  if (!Array.isArray(c.tiles) || !Array.isArray(c.layout) || c.tiles.length > size*rows || c.layout.length !== size*rows) return false;
   var seen = {}, i;
   for (i = 0; i < c.layout.length; i++) {
     var v = c.layout[i];
-    if (!Number.isInteger(v) || v < -1 || v >= c.tiles.length) return false;
+    if (!Number.isInteger(v) || v < -2 || v >= c.tiles.length) return false;
     if (v >= 0) { if (seen[v]) return false; seen[v] = true; }
   }
   if (Object.keys(seen).length !== c.tiles.length) return false;
@@ -1460,6 +1935,8 @@ function validCfg(c, size) {
     if (typeof t.thick !== 'number') t.thick = 1.00;
     if (typeof t.barWidth !== 'number') t.barWidth = 0.70;
     t.bars = !!t.bars; t.bars2 = !!t.bars2;
+    t.starTilt = !!t.starTilt;
+    t.bond = Number.isInteger(t.bond) && t.bond > 0 && t.bond <= 1000000 ? t.bond : 0;
     if (!t.hooks || t.hooks.length !== 8) t.hooks = [0,0,0,0,0,0,0,0];
     t.hookOut = !!t.hookOut;
     t.hookLength = hookLengthOf(t);
@@ -1474,7 +1951,8 @@ function validCfg(c, size) {
   return true;
 }
 function validPuzzle(p) {
-  return !!p && (p.n === 3 || p.n === 4) && typeof p.name === 'string' && validCfg(p, p.n);
+  return !!p && Number.isInteger(p.n) && Number.isInteger(puzzleRows(p)) &&
+    typeof p.name === 'string' && (p.author === undefined || typeof p.author === 'string') && validCfg(p, p.n, puzzleRows(p));
 }
 function loadStore() {
   var catalog = createBuiltinCatalog(), users = [], selected = null, data = null, seenIds = Object.create(null);
@@ -1514,6 +1992,8 @@ function loadStore() {
       if (!validPuzzle(p)) return;
       if (p.origin !== 'user' && isBuiltinPuzzle(p)) return;
       ensureUserIdentity(p);
+      p.rows = puzzleRows(p);
+      if (typeof p.author !== 'string') p.author = '';
       if (seenIds[p.userId]) return;
       seenIds[p.userId] = true;
       users.push(p);
@@ -1846,10 +2326,10 @@ function put(id, gx, gy, anim) {
 
 function build() {
   cancelDragPaint();
-  slotLayer.innerHTML = baseLayer.innerHTML = upLayer.innerHTML = mkLowLayer.innerHTML = mkLayer.innerHTML = '';
+  slotLayer.innerHTML = boardOutlineLayer.innerHTML = baseLayer.innerHTML = upLayer.innerHTML = mkLowLayer.innerHTML = mkLayer.innerHTML = bondOverlayLayer.innerHTML = '';
   slots = []; els = {};
   var i;
-  for (i = 0; i < n * n; i++) {
+  for (i = 0; i < n * boardRows; i++) {
     var s = document.createElement('div');
     s.className = 'slot';
     slotLayer.appendChild(s);
@@ -1866,11 +2346,57 @@ function build() {
   renderAll(false);
 }
 
+function scaleBoardToPanel() {
+  var wrap = document.querySelector('.board-wrap');
+  if (!wrap) return;
+  var catalogue = $('puzBox');
+  // The puzzle list must not create a feedback loop: its initial maximum
+  // height is independent of the size we are about to assign to the board.
+  if (catalogue) catalogue.style.maxHeight = '480px';
+
+  var maxWidth = Math.min(600, 900 * n / boardRows);
+  var stack = window.matchMedia('(max-width: 880px)').matches;
+  var heightLimit;
+  if (!stack && mode === 'play') {
+    // On desktops, the board ends no lower than the right panel.
+    // Account for the stat row above the board instead of comparing only
+    // the two element heights (which leaves the board too low).
+    var panel = document.querySelector('.game > .panel');
+    heightLimit = panel ? panel.getBoundingClientRect().bottom - board.getBoundingClientRect().top : 900;
+  } else {
+    // On phones, fit the board into the visible screen area. Account for
+    // the page heading, statistics and the part already above the board.
+    var viewH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    var top = board.getBoundingClientRect().top;
+    heightLimit = viewH - Math.max(0, top) - 12;
+    // If the page was scrolled far or the keyboard is open, keep the puzzle
+    // usable instead of shrinking it to just a few pixels.
+    if (heightLimit < 160) heightLimit = Math.max(160, viewH - 32);
+  }
+  // measure() uses 3.5% padding on each side. Therefore actual board height
+  // is width * (0.07 + 0.93 * rows/cols), not simply width * rows/cols.
+  if (isFinite(heightLimit) && heightLimit > 0) {
+    var aspectHeight = 0.07 + 0.93 * boardRows / n;
+    maxWidth = Math.min(maxWidth, Math.max(2, (heightLimit - 4) / aspectHeight));
+  }
+  wrap.style.maxWidth = maxWidth.toFixed(2) + 'px';
+  return maxWidth;
+}
+
 function measure() {
+  scaleBoardToPanel();
   var W = board.clientWidth;
   collisionWidth = W;
+  lastBoardMask = '';
   PAD = W * 0.035;
   S = (W - 2 * PAD) / n;
+  board.style.setProperty('--cell-step', S + 'px');
+  board.style.aspectRatio = 'auto';
+  board.style.height = (boardRows * S + 2 * PAD).toFixed(2) + 'px';
+  // Keep the list scrollable and never taller than the board. This runs
+  // after panel-based sizing, so it cannot influence the chosen board height.
+  var catalogue = $('puzBox');
+  if (catalogue) catalogue.style.maxHeight = Math.min(480, boardRows * S + 2 * PAD).toFixed(2) + 'px';
   slots.forEach(function (s, i) {
     s.style.width = s.style.height = (S - 2 * GAP) + 'px';
     s.style.transform = 'translate(' + (PAD + (i % n) * S).toFixed(2) + 'px,' + (PAD + Math.floor(i / n) * S).toFixed(2) + 'px)';
@@ -1878,12 +2404,32 @@ function measure() {
   Object.keys(els).forEach(function (id) { sizeTile(+id); });
 }
 
+var lastBoardMask = '';
+function updateBoardMask() {
+  var cuts=cfg.layout.indexOf(-2)>=0;
+  var key=[n,boardRows,board.clientWidth,board.clientHeight,
+    cfg.layout.map(function(id){return id===-2?'X':'.';}).join('')].join('/');
+  board.classList.toggle('has-cut',cuts);
+  // Keep the transparent holes clickable for the Knife. The silhouette is
+  // drawn as one SVG path instead of masking the interactive board element.
+  board.style.webkitMaskImage=''; board.style.maskImage='';
+  if (lastBoardMask===key) return;
+  lastBoardMask=key;
+  $('boardOutlineLayer').innerHTML=cuts ? boardContourMarkup() : '';
+}
+
 function renderAll(anim) {
   var i;
+  if (mode === 'edit' && anyBondedTiles()) anim=false;
+  updateBoardMask();
+  renderBondOverlaySvg();
+  cutoutLayer.textContent='';
   for (i = 0; i < layout.length; i++) {
     var id = layout[i];
     if (id >= 0) put(id, i % n, Math.floor(i / n), anim);
-    slots[i].classList.toggle('hole', id < 0 && mode === 'edit');
+    slots[i].classList.toggle('hole', id === -1 && mode === 'edit');
+    slots[i].classList.toggle('cut-cell', id === -2);
+    slots[i].classList.toggle('bond-anchor', mode==='edit' && boardTool==='bandage' && i===bondAnchor);
     slots[i].classList.toggle('sel', mode === 'edit' && i === sel);
     slots[i].classList.remove('drop');
   }
@@ -1891,12 +2437,14 @@ function renderAll(anim) {
   Object.keys(els).forEach(function (k) {
     var e = els[k], cell = layout.indexOf(+k);
     e.b.classList.toggle('sel', mode === 'edit' && cell === sel);
+    e.b.classList.toggle('bonded', !!(cfg.tiles[+k] && cfg.tiles[+k].bond>0));
     setUpline(+k);
   });
   updateUI();
 }
 
 function updateUI() {
+  if (mode !== 'edit' && $('authorDropdownMenu')) closeAuthorDropdown(false);
   var slot = $(mode === 'edit' ? 'statusSlotEdit' : 'statusSlotPlay');
   if (statusEl.parentNode !== slot) slot.appendChild(statusEl);
   $('movesEl').textContent = hist.length;
@@ -1918,30 +2466,58 @@ function updateUI() {
   $('aboutBlock').classList.toggle('hidden', mode !== 'play');
   $('hintBtn').style.visibility = mode === 'play' ? 'visible' : 'hidden';
   updateSolveButtonLabel();
+  $('solveBtn').disabled = mode === 'play' && (boardRows !== n || (n !== 3 && n !== 4) || hasSpecialBoard());
+  $('solveBtn').title = hasSpecialBoard() ? tr('unsupportedSolverStructure') :
+    ((boardRows !== n || (n !== 3 && n !== 4)) ? tr('unsupportedSolverSize') : '');
   if (mode === 'edit') updateEditor();
 }
 
 function renderList() {
-  var boxes = { 3: $('puzList3'), 4: $('puzList4') };
-  boxes[3].innerHTML = '';
-  boxes[4].innerHTML = '';
+  var host = $('puzGroups');
+  host.textContent = '';
   var locked = solveRunning || !!pb;
-  puzzles.forEach(function (p, i) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    var userPuzzle = !isBuiltinPuzzle(p);
-    b.className = 'puz' + (i === cur ? ' on' : '') + (userPuzzle ? ' user' : '');
-    var label = document.createElement('span');
-    label.className = 'puz-label';
-    label.textContent = p.name || tr('puzzleNumber', {number: i + 1});
-    b.appendChild(label);
-    b.title = label.textContent;
-    b.disabled = locked;
-    b.addEventListener('click', function () { if (mode === 'play' && !solveRunning && !pb && i !== cur) selectPuzzle(i); });
-    boxes[p.n].appendChild(b);
+  var groups = new Map(), ordering = ['Classic', 'Minoru Abe', 'Vladimir Yaroslavskiy', 'Evgeniy Grigoriev'];
+  puzzles.forEach(function(p, i) {
+    var author = (p.author || '').trim() || tr('unknownAuthor');
+    if (!groups.has(author)) groups.set(author, []);
+    groups.get(author).push({p:p, i:i});
   });
-  boxes[3].classList.toggle('scrollable', boxes[3].children.length > 10);
-  boxes[4].classList.toggle('scrollable', boxes[4].children.length > 10);
+  var names = Array.from(groups.keys());
+  names.sort(function(a,b) {
+    var ia = ordering.indexOf(a), ib = ordering.indexOf(b);
+    if (ia >= 0 || ib >= 0) return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
+    return a.localeCompare(b, UI_LANG);
+  });
+  names.forEach(function(author) {
+    var section = document.createElement('section');
+    section.className = 'puzgroup';
+    var head = document.createElement('div');
+    head.className = 'puz-author';
+    head.textContent = author;
+    section.appendChild(head);
+    var grid = document.createElement('div');
+    grid.className = 'puz-author-grid';
+    var entries = groups.get(author);
+    entries.forEach(function(entry) {
+      var p = entry.p, i = entry.i;
+      var b = document.createElement('button');
+      b.type = 'button';
+      var userPuzzle = !isBuiltinPuzzle(p);
+      b.className = 'puz' + (i === cur ? ' on' : '') + (userPuzzle ? ' user' : '');
+      var label = document.createElement('span');
+      label.className = 'puz-label';
+      label.textContent = p.name || tr('puzzleNumber', {number:i + 1});
+      b.appendChild(label);
+      b.title = label.textContent + ' · ' + p.n + '×' + puzzleRows(p);
+      b.disabled = locked;
+      b.addEventListener('click', function() {
+        if (mode === 'play' && !solveRunning && !pb && i !== cur) selectPuzzle(i);
+      });
+      grid.appendChild(b);
+    });
+    section.appendChild(grid);
+    host.appendChild(section);
+  });
 }
 
 function selectPuzzle(i) {
@@ -1952,6 +2528,7 @@ function selectPuzzle(i) {
   cur = i;
   cfg = puzzles[cur];
   n = cfg.n;
+  boardRows = puzzleRows(cfg);
   layout = cfg.layout.slice();
   hist = []; redo = []; sel = -1;
   timerReset();
@@ -1990,8 +2567,9 @@ function drawMini() {
   rrect(ctx, 0.5, 0.5, W - 1, W - 1, W * 0.08);
   ctx.fillStyle = '#a5b0c7'; ctx.fill();
   ctx.strokeStyle = '#6f7d9e'; ctx.lineWidth = 1.5; ctx.stroke();
-  var pad = W * 0.035, s = (W - 2 * pad) / n, g = Math.max(1, s * 0.03), i, t, r, c, id;
-  for (i = 0; i < n * n; i++) {
+  var pad = W * 0.035, s = (W - 2 * pad) / Math.max(n,boardRows), g = Math.max(1, s * 0.03), i, t, r, c, id;
+  ctx.translate((W - n * s - 2 * pad) / 2, (W - boardRows * s - 2 * pad) / 2);
+  for (i = 0; i < n * boardRows; i++) {
     r = Math.floor(i / n); c = i % n;
     id = cfg.layout[i];
     rrect(ctx, pad + c * s + g, pad + r * s + g, s - 2 * g, s - 2 * g, s * 0.14);
@@ -2039,13 +2617,13 @@ function drawMini() {
     ctx.fillText(t.marker, cx, cy);
   }
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  for (i = 0; i < n * n; i++) {
+  for (i = 0; i < n * boardRows; i++) {
     id = cfg.layout[i];
     if (id < 0 || cfg.tiles[id].upper) continue;
     t = cfg.tiles[id]; r = Math.floor(i / n); c = i % n;
     drawMarkerText(t, pad + (c + 0.5) * s, pad + (r + 0.5) * s + s * 0.02);
   }
-  for (i = 0; i < n * n; i++) {
+  for (i = 0; i < n * boardRows; i++) {
     id = cfg.layout[i];
     if (id < 0 || !cfg.tiles[id].upper) continue;
     t = cfg.tiles[id]; r = Math.floor(i / n); c = i % n;
@@ -2060,7 +2638,7 @@ function drawMini() {
     shp.forEach(function (q) { path(q, 0); ctx.fill(); });
   }
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  for (i = 0; i < n * n; i++) {
+  for (i = 0; i < n * boardRows; i++) {
     id = cfg.layout[i];
     if (id < 0 || !cfg.tiles[id].upper) continue;
     t = cfg.tiles[id]; r = Math.floor(i / n); c = i % n;
@@ -2139,8 +2717,11 @@ var editMsg = false;
 function updateEditor() {
   var id = sel >= 0 ? layout[sel] : null;
   if ($('nameInp').value !== cfg.name) $('nameInp').value = cfg.name;
-  Array.prototype.forEach.call($('esizeSeg').children, function (b) { b.classList.toggle('on', +b.dataset.size === n); });
+  $('boardCols').value = String(n);
+  $('boardRows').value = String(boardRows);
+  if ($('authorInp').value !== (cfg.author || '')) $('authorInp').value = cfg.author || '';
   $('editNone').classList.toggle('hidden', sel >= 0);
+  updateBoardTools();
   $('editHole').classList.toggle('hidden', !(sel >= 0 && id < 0));
   $('createTileRow').classList.toggle('hidden', !(sel >= 0 && id < 0));
   $('editTile').classList.toggle('hidden', !(sel >= 0 && id >= 0));
@@ -2168,6 +2749,10 @@ function updateEditor() {
     $('crRange').value = Math.round(t.cr * 200); $('crVal').textContent = Math.round(t.cr * 200) + '%';
     $('sqRange').value = Math.round(t.sq * 100); $('sqVal').textContent = Math.round(t.sq * 100) + '%';
     $('starRange').value = Math.round(t.star * 100); $('starVal').textContent = Math.round(t.star * 100) + '%';
+    $('starRotate').classList.toggle('on',!!t.starTilt);
+    $('starRotate').setAttribute('aria-pressed',t.starTilt?'true':'false');
+    $('starTurnState').dataset.i18n = t.starTilt ? 'starTurned' : 'starStraight';
+    $('starTurnState').textContent = tr(t.starTilt ? 'starTurned' : 'starStraight');
     $('thickRange').value = Math.round(t.thick * 100); $('thickVal').textContent = Math.round(t.thick * 100) + '%';
     $('cutRange').value = Math.round(t.cut * 100); $('cutVal').textContent = Math.round(t.cut * 100) + '%';
     $('blRange').value = Math.round(t.bl * 100); $('blVal').textContent = Math.round(t.bl * 100) + '%';
@@ -2187,6 +2772,7 @@ function updateEditor() {
     $('copyTileBtn').disabled = true;
   }
   if (layout.indexOf(-1) < 0) setStatus(msg('noHole'),'err');
+  else if (!bondIsConnected(layout)) setStatus(msg('bandageBroken'),'err');
   else if (Object.keys(badIds).length) setStatus(msg('editorConflict'),'err');
   else if (!editMsg) setStatus(msg('editorReady'),'');
   editMsg = false;
@@ -2218,7 +2804,9 @@ var motionSerial = 0;
 
 function cellStep(cell, dx, dy) {
   var r = Math.floor(cell / n) + dy, c = cell % n + dx;
-  return r < 0 || r >= n || c < 0 || c >= n ? -1 : r * n + c;
+  if(r < 0 || r >= boardRows || c < 0 || c >= n)return -1;
+  var dest=r*n+c;
+  return isCut(dest) ? -1 : dest;
 }
 
 function upperPairLimit(from, other, dx, dy, state) {
@@ -2288,6 +2876,27 @@ function buildMovePlan(cell, state, dx, dy) {
   return plans.length?plans[0]:null;
 }
 
+function clickedMovePlan(cell, point) {
+  var dirs = [[0,-1],[0,1],[-1,0],[1,0]], best = null, bestScore = Infinity;
+  for (var d=0;d<dirs.length;d++) {
+    var dx=dirs[d][0], dy=dirs[d][1], hole=cellStep(cell,dx,dy);
+    // An adjacent vacancy is preferred naturally by distance; when several
+    // vacancies exist, the center nearest to the actual click wins.
+    while (hole >= 0 && layout[hole] >= 0) hole=cellStep(hole,dx,dy);
+    if (hole < 0 || layout[hole] !== -1) continue;
+    var plan=buildDirectedMovePlan(cell,layout,dx,dy);
+    if (!plan) continue;
+    var holeX=PAD+((hole%n)+0.5)*S;
+    var holeY=PAD+(Math.floor(hole/n)+0.5)*S;
+    var dd=(point.x-holeX)*(point.x-holeX)+(point.y-holeY)*(point.y-holeY);
+    // Preserve the physical validity check; inaccessible directions cannot
+    // displace a free, legal path merely because they are closer to the click.
+    var score=(plan.ok?0:S*S*100) + dd;
+    if (score < bestScore) { bestScore=score; best=plan; }
+  }
+  return best || buildMovePlan(cell);
+}
+
 /* v1.75: directional contact graph; independent of tile/shape kinds.
    Offset of tile i: clamp(progress - delay[i], 0, 1).
    Contact clearance g from A to B imposes delay[B] <= delay[A] + g.
@@ -2299,7 +2908,7 @@ var GROUP_CONTACT_CACHE_LIMIT = 24;
 function directionalContactGraph(state, dx, dy) {
   collisionEnvelope();
   var key = [n, dx, dy, collisionEnvKey, state.join(','),
-    cfg.tiles.map(geometryKey).join(';')].join('|');
+    cfg.tiles.map(function(t){return geometryKey(t)+'#'+(t.bond||0);}).join(';'), cfg.layout.join(',')].join('|');
   if (groupContactCache.has(key)) {
     var cached = groupContactCache.get(key);
     groupContactCache.delete(key); groupContactCache.set(key,cached);
@@ -2315,7 +2924,9 @@ function directionalContactGraph(state, dx, dy) {
       if (other === from) continue;
       // First tier: a cell cannot be entered before its occupant starts leaving.
       // Second tier: exact primitive sweeps, including compound hook shapes.
-      var gap = other === to ? 0 : upperPairLimit(from,other,dx,dy,state);
+      var bondA = cfg.tiles[state[from]].bond || 0;
+      var bondB = cfg.tiles[state[other]].bond || 0;
+      var gap = bondA && bondA === bondB ? 0 : (other === to ? 0 : upperPairLimit(from,other,dx,dy,state));
       if (gap < 1 - MOTION_EPS) edges[from].push({cell:other, gap:Math.max(0,gap)});
     }
   }
@@ -2374,9 +2985,23 @@ function motionOffsets(plan, progress) {
 
 function paintMotion(plan, progress) {
   var offsets = motionOffsets(plan,progress);
+  // A bonded group has its visible body in a composite SVG layer, while its
+  // markers remain in the tile layer. Advance them with the SAME progress,
+  // on the SAME animation frame, to prevent letters moving ahead of the body.
+  var bondedProgress = Object.create(null);
   plan.parts.forEach(function(m,i){
     if (els[m.id]) put(m.id,m.from%plan.size+plan.dx*offsets[i],Math.floor(m.from/plan.size)+plan.dy*offsets[i],false);
+    var tile = cfg.tiles[m.id];
+    if (tile && tile.bond > 0) {
+      var key = String(tile.bond);
+      bondedProgress[key] = Math.max(bondedProgress[key] || 0,offsets[i]);
+    }
   });
+  var groups = $('bondOverlayLayer').querySelectorAll('.bond-moving-group');
+  for (var i=0;i<groups.length;i++) {
+    var g = groups[i], v = bondedProgress[g.getAttribute('data-bond-id')] || 0;
+    g.setAttribute('transform','translate('+(plan.dx*S*v).toFixed(3)+' '+(plan.dy*S*v).toFixed(3)+')');
+  }
 }
 
 function motionStateMatches(plan) {
@@ -2492,7 +3117,7 @@ function redoMove() {
 function scramble() {
   if (busy || solveRunning || pb || drag) return;
   closeWin();
-  var depth = n === 3 ? 300 : 200;
+  var depth = (n === 3 && boardRows === 3) ? 300 : 200;
   var classic = isClassic();
   // Scramble from the board's current arrangement, not the saved solved layout.
   // Keep a separate array so the shuffling choices cannot alias or mutate it.
@@ -2508,7 +3133,7 @@ function scramble() {
     for (var k = 0; k < neighbors.length; k++) {
       var cell = neighbors[k];
       // Collision check for this one tile only; do not build a group-contact graph.
-      if (travel(cell, hole) < 1 - MOTION_EPS) continue;
+      if (layout[cell] < 0 || cfg.tiles[layout[cell]].bond>0 || travel(cell, hole) < 1 - MOTION_EPS) continue;
       var next = layout.slice();
       next[hole] = next[cell];
       next[cell] = -1;
@@ -2518,8 +3143,9 @@ function scramble() {
     // Avoid immediate reversals when alternatives exist, but never bypass collision checks.
     if (!choices.length) choices = safeChoices;
     if (!choices.length) return false;
+    var nextState=choices[Math.floor(Math.random() * choices.length)];
     previous = layout.join(',');
-    layout = choices[Math.floor(Math.random() * choices.length)];
+    layout=nextState;
     done++;
     return true;
   }
@@ -2549,8 +3175,9 @@ function scramble() {
     if (!candidates.length) return false;
     var groupChoices = candidates.filter(function (c) { return c.state.join(',') !== previous; });
     if (groupChoices.length) candidates = groupChoices;
-    previous = layout.join(',');
-    layout = candidates[Math.floor(Math.random() * candidates.length)].state;
+    var selected=candidates[Math.floor(Math.random() * candidates.length)];
+    previous=layout.join(',');
+    layout=selected.state;
     done++;
     return true;
   }
@@ -2613,7 +3240,9 @@ function shuffleArray(a) {
 }
 
 var solverProgress = null;
+var solverAttemptDescription = '';
 function solverProgressBegin(labelKey) {
+  solverAttemptDescription = '';
   solverProgress = { t0: Date.now(), total: 0, lastReport: 0, labelKey: labelKey || 'phaseInit', tileLabel: '' };
   solverProgressFlush();
 }
@@ -2637,14 +3266,15 @@ function solverProgressFlush(now) {
   solverProgress.lastReport = now;
   var labelText = solverProgress.labelKey ? tr(solverProgress.labelKey) : '';
   var tileText = solverProgress.tileLabel ? ' «' + solverProgress.tileLabel + '»' : '';
-  var phaseText = labelText ? labelText + tileText + ' · ' : '';
+  var attemptText = solverAttemptDescription ? solverAttemptDescription + ' · ' : '';
+  var phaseText = attemptText + (labelText ? labelText + tileText + ' · ' : '');
   setStatus(msg('solveProgress', {
     count: solverProgress.total,
     time: ((now - solverProgress.t0) / 1000).toFixed(1) + 's',
     phase: phaseText
   }), '');
 }
-function solverProgressEnd() { solverProgress = null; }
+function solverProgressEnd() { solverProgress = null; solverAttemptDescription = ''; }
 
 function manhattanTile(lay, tileId, targetCell) {
   var pos = -1;
@@ -2681,7 +3311,7 @@ function heapPop(h) {
 }
 
 function isClassic() {
-  for (var i = 0; i < cfg.tiles.length; i++) if (cfg.tiles[i].upper) return false;
+  for (var i = 0; i < cfg.tiles.length; i++) if (cfg.tiles[i].upper || cfg.tiles[i].bond>0) return false;
   return true;
 }
 function buildClassicState() {
@@ -2832,7 +3462,7 @@ function solverNeighbors(lay, frozen) {
   var dirs = [[-1,0],[1,0],[0,-1],[0,1]];
   for (var d = 0; d < 4; d++) {
     var nr = r + dirs[d][0], nc = c + dirs[d][1];
-    if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
+    if (nr < 0 || nr >= boardRows || nc < 0 || nc >= n) continue;
     var nb = nr * n + nc;
     if (frozen[nb]) continue;
     var ok = travelInState(nb, hole, lay) >= 1 - 1e-9;
@@ -2852,63 +3482,78 @@ async function waitIfPaused() {
   return !solveAbort;
 }
 
-async function bidirectionalBFS(startLay, goalLay, frozen) {
-  function key(lay) { return lay.join(','); }
-  var sk = key(startLay), gk = key(goalLay);
-  if (sk === gk) return [];
-
-  var fw = {}, bw = {};
-  fw[sk] = { lay: startLay, prev: null, move: -1, hole: startLay.indexOf(-1) };
-  bw[gk] = { lay: goalLay, prev: null, move: -1, hole: goalLay.indexOf(-1) };
-  var fwQ = [sk], bwQ = [gk];
-  var limit = 3000000, iter = 0;
-  var lastYield = Date.now();
-  var lastProgress = Date.now();
-
-  function reconstructForward(k) {
-    var p = [];
-    while (fw[k] && fw[k].move >= 0) { p.unshift(fw[k].move); k = fw[k].prev; }
-    return p;
+function solverValidatePath(startLay, cells, goalLay, frozen) {
+  var check = startLay.slice();
+  for (var i = 0; i < cells.length; i++) {
+    var hole = check.indexOf(-1), cell = cells[i];
+    if (hole < 0 || cell < 0 || cell >= check.length || frozen[cell]) return false;
+    if (Math.abs((hole % n) - (cell % n)) +
+        Math.abs(Math.floor(hole / n) - Math.floor(cell / n)) !== 1) return false;
+    if (travelInState(cell, hole, check) < 1 - 1e-9) return false;
+    check[hole] = check[cell];
+    check[cell] = -1;
   }
-  function reconstructBackwardRev(k) {
-    var p = [];
-    while (bw[k] && bw[k].move >= 0) { p.push(bw[k].hole); k = bw[k].prev; }
-    return p;
+  for (var j = 0; j < check.length; j++) if (check[j] !== goalLay[j]) return false;
+  return true;
+}
+
+// Bidirectional BFS on the actual directed graph of legal single-tile moves.
+// Backward steps generate PREDECESSORS (their move into the current state must
+// be legal), instead of assuming that all geometric moves are reversible.
+async function bidirectionalBFS(startLay, goalLay, frozen, maxNodes) {
+  function key(state) { return state.join(','); }
+  var sk=key(startLay),gk=key(goalLay);
+  if(sk===gk)return [];
+  var fw=new Map(),bw=new Map();
+  fw.set(sk,{lay:startLay,prev:null,move:-1});
+  bw.set(gk,{lay:goalLay,prev:null,move:-1});
+  var fq=[sk],bq=[gk],expanded=0,lastYield=Date.now();
+  var cap=maxNodes || 480000;
+  function predecessors(state) {
+    var hole=state.indexOf(-1),out=[];
+    var around=neighborsOf(hole);
+    for(var i=0;i<around.length;i++) {
+      var tileCell=around[i];
+      if(frozen[tileCell] || frozen[hole])continue;
+      var prior=state.slice();
+      prior[hole]=prior[tileCell];prior[tileCell]=-1;
+      // To arrive at state, tile at "hole" in the predecessor enters tileCell.
+      if(travelInState(hole,tileCell,prior)>=1-1e-9)
+        out.push({lay:prior,move:hole});
+    }
+    return out;
   }
-
-  while (fwQ.length && bwQ.length) {
-    if (++iter > limit) return null;
-    if (solveAbort) return null;
-
-    var now = Date.now();
-    if (now - lastProgress > 150) {
-      solverProgressAdd(1);
-      lastProgress = now;
-    }
-    if (now - lastYield > 40) {
-      await solverSleep(0);
-      if (pb && pb.paused && !pb.precompute) await waitIfPaused();
-      lastYield = Date.now();
-      if (solveAbort) return null;
-    }
-
-    var expandFw = fwQ.length <= bwQ.length;
-    var Q = expandFw ? fwQ : bwQ;
-    var V = expandFw ? fw : bw;
-    var O = expandFw ? bw : fw;
-    var nQ = [];
-    for (var qi = 0; qi < Q.length; qi++) {
-      var k = Q[qi], entry = V[k];
-      var nbrs = solverNeighbors(entry.lay, frozen);
-      for (var ni = 0; ni < nbrs.length; ni++) {
-        var nb = nbrs[ni], nk = key(nb.lay);
-        if (V[nk]) continue;
-        V[nk] = { lay: nb.lay, prev: k, move: nb.move, hole: entry.lay.indexOf(-1) };
-        if (O[nk]) return reconstructForward(nk).concat(reconstructBackwardRev(nk));
-        nQ.push(nk);
+  function reconstruction(meeting) {
+    var left=[],right=[],k=meeting;
+    while(fw.get(k).prev!==null){var a=fw.get(k);left.push(a.move);k=a.prev;}
+    left.reverse();k=meeting;
+    while(bw.get(k).prev!==null){var b=bw.get(k);right.push(b.move);k=b.prev;}
+    return left.concat(right);
+  }
+  while(fq.length && bq.length && !solveAbort) {
+    var forward=fq.length<=bq.length, queue=forward?fq:bq;
+    var own=forward?fw:bw,other=forward?bw:fw,next=[];
+    for(var qi=0;qi<queue.length;qi++) {
+      if(solveAbort)return null;
+      if(++expanded>cap)return null;
+      if((expanded&255)===0){
+        solverProgressAdd(256);
+        if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
+      }
+      var id=queue[qi],current=own.get(id);
+      var adj=forward?solverNeighbors(current.lay,frozen):predecessors(current.lay);
+      for(var ni=0;ni<adj.length;ni++){
+        var edge=adj[ni],nk=key(edge.lay);
+        if(own.has(nk))continue;
+        own.set(nk,{lay:edge.lay,prev:id,move:edge.move});
+        if(other.has(nk)){
+          var path=reconstruction(nk);
+          if(solverValidatePath(startLay,path,goalLay,frozen))return path;
+        }
+        next.push(nk);
       }
     }
-    if (expandFw) fwQ = nQ; else bwQ = nQ;
+    if(forward)fq=next;else bq=next;
   }
   return null;
 }
@@ -2957,7 +3602,7 @@ async function moveHoleTo(targetCell, avoidCell, frozen) {
     var dirs = [[-1,0],[1,0],[0,-1],[0,1]];
     for (var d = 0; d < 4; d++) {
       var nr = r + dirs[d][0], nc = c + dirs[d][1];
-      if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
+      if (nr < 0 || nr >= boardRows || nc < 0 || nc >= n) continue;
       var nb = nr * n + nc;
       if (frozen[nb]) continue;
       if (nb === avoidCell) continue;
@@ -2982,6 +3627,7 @@ async function animateApply(cell, records, animateStep) {
     if (solveAbort) return false;
   }
   var fast = pb && pb.precompute;
+  var jumpToEnd = pb && pb.jumpToEnd;
   var h = layout.indexOf(-1);
   layout[h] = layout[cell];
   layout[cell] = -1;
@@ -2993,7 +3639,8 @@ async function animateApply(cell, records, animateStep) {
       pb.index = records.length;
       updatePlaybackUI();
     }
-    if (animateStep) {
+    // Full route is already planned: fast-forward on >>, without dropping records.
+    if (animateStep && !jumpToEnd) {
       renderAll(true);
       await solverSleep(SOLVE_STEP_MS);
       return !solveAbort;
@@ -3002,11 +3649,13 @@ async function animateApply(cell, records, animateStep) {
   return true;
 }
 
+var solverTieBreak = 0;
 async function silentGreedyPass(tileId, targetCell, frozen) {
   var moves = [];
   var guard = 0;
   var bestDist = manhattanTile(layout, tileId, targetCell);
   var stepsSinceImprove = 0;
+  var visitedGreedy = new Set();
   while (true) {
     if (++guard > 5000) return { moves: moves, ok: false };
     if (solveAbort) return { moves: moves, ok: false };
@@ -3018,6 +3667,9 @@ async function silentGreedyPass(tileId, targetCell, frozen) {
     for (var i = 0; i < layout.length; i++) if (layout[i] === tileId) { tilePos = i; break; }
     if (tilePos < 0) return { moves: moves, ok: false };
     if (tilePos === targetCell) return { moves: moves, ok: true };
+    var greedyKey = layout.join(',');
+    if (visitedGreedy.has(greedyKey)) return {moves:moves, ok:false};
+    visitedGreedy.add(greedyKey);
     var tR = (tilePos / n) | 0, tC = tilePos % n;
     var gR = (targetCell / n) | 0, gC = targetCell % n;
     var towardDirs = [];
@@ -3026,7 +3678,10 @@ async function silentGreedyPass(tileId, targetCell, frozen) {
     if (tC > gC) towardDirs.push([0, -1]);
     if (tC < gC) towardDirs.push([0, 1]);
     var extra = [[-1,0],[1,0],[0,-1],[0,1]];
-    if (greedyShuffle) shuffleArray(extra);
+    if (solverTieBreak) {
+      var shift = solverTieBreak % extra.length;
+      extra = extra.slice(shift).concat(extra.slice(0, shift));
+    }
     var allDirs = towardDirs.slice();
     for (var ei = 0; ei < extra.length; ei++) {
       var ed = extra[ei], dup = false;
@@ -3035,15 +3690,15 @@ async function silentGreedyPass(tileId, targetCell, frozen) {
       }
       if (!dup) allDirs.push(ed);
     }
-    if (greedyShuffle && allDirs.length > 1 && Math.random() < 0.20) {
-      var swapIdx = 1 + Math.floor(Math.random() * (allDirs.length - 1));
+    if (solverTieBreak > 1 && allDirs.length > 1) {
+      var swapIdx = solverTieBreak % allDirs.length;
       var tmpD = allDirs[0]; allDirs[0] = allDirs[swapIdx]; allDirs[swapIdx] = tmpD;
     }
     var success = false;
     for (var di = 0; di < allDirs.length; di++) {
       var dr = allDirs[di][0], dc = allDirs[di][1];
       var hR = tR + dr, hC = tC + dc;
-      if (hR < 0 || hR >= n || hC < 0 || hC >= n) continue;
+      if (hR < 0 || hR >= boardRows || hC < 0 || hC >= n) continue;
       var hCell = hR * n + hC;
       if (frozen[hCell]) continue;
       var path = await moveHoleTo(hCell, tilePos, frozen);
@@ -3127,7 +3782,7 @@ async function aStarPlaceTile(tileId, targetCell, frozen) {
     var dirs = [[-1,0],[1,0],[0,-1],[0,1]];
     for (var d = 0; d < 4; d++) {
       var nr = r + dirs[d][0], nc = c + dirs[d][1];
-      if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
+      if (nr < 0 || nr >= boardRows || nc < 0 || nc >= n) continue;
       var nb = nr*n + nc;
       if (frozen[nb]) continue;
       if (travelInState(nb, hole, node.lay) < 1 - 1e-9) continue;
@@ -3254,165 +3909,481 @@ async function placeLastColTile(prevTile, goalTile, prevCell, goalCell, frozen, 
   return true;
 }
 
-async function solve4x4Attempt(records, order, animateStep) {
-  var frozen = {};
-
-  if (order === 'rowFirst') {
-    solverProgressSetLabel('phaseTopRow');
-    for (var col = 0; col < 2; col++) {
-      if (solveAbort) return false;
-      var goalTile1 = cfg.layout[col];
-      solverProgressSetLabel('phaseTopRow', goalTile1);
-      var beforeLen = records.length;
-      pb.tileStartLen = beforeLen;
-      if (!await placeTileGreedy(goalTile1, col, frozen, records, animateStep)) return false;
-      frozen[col] = true;
-    }
-    var prevTile1 = cfg.layout[2];
-    var goalTile2 = cfg.layout[3];
-    solverProgressSetLabel('phaseTopRow', prevTile1);
-    pb.tileStartLen = records.length;
-    if (!await placeLastRowTile(prevTile1, goalTile2, 2, 3, frozen, records, animateStep)) return false;
-    frozen[2] = true; frozen[3] = true;
-
-    solverProgressSetLabel('phaseLeftCol');
-    var cell4 = 4;
-    var goalTile3 = cfg.layout[cell4];
-    solverProgressSetLabel('phaseLeftCol', goalTile3);
-    pb.tileStartLen = records.length;
-    if (!await placeTileGreedy(goalTile3, cell4, frozen, records, animateStep)) return false;
-    frozen[cell4] = true;
-    var prevTile2 = cfg.layout[8];
-    var goalTile4 = cfg.layout[12];
-    solverProgressSetLabel('phaseLeftCol', prevTile2);
-    pb.tileStartLen = records.length;
-    if (!await placeLastColTile(prevTile2, goalTile4, 8, 12, frozen, records, animateStep)) return false;
-    frozen[8] = true; frozen[12] = true;
-  } else {
-    solverProgressSetLabel('phaseLeftCol');
-    for (var r1 = 0; r1 < 2; r1++) {
-      if (solveAbort) return false;
-      var goalTileC1 = cfg.layout[r1 * 4];
-      solverProgressSetLabel('phaseLeftCol', goalTileC1);
-      pb.tileStartLen = records.length;
-      if (!await placeTileGreedy(goalTileC1, r1 * 4, frozen, records, animateStep)) return false;
-      frozen[r1 * 4] = true;
-    }
-    var prevTileC1 = cfg.layout[8];
-    var goalTileC2 = cfg.layout[12];
-    solverProgressSetLabel('phaseLeftCol', prevTileC1);
-    pb.tileStartLen = records.length;
-    if (!await placeLastColTile(prevTileC1, goalTileC2, 8, 12, frozen, records, animateStep)) return false;
-    frozen[8] = true; frozen[12] = true;
-
-    solverProgressSetLabel('phaseTopRow');
-    for (var col2 = 1; col2 < 3; col2++) {
-      if (solveAbort) return false;
-      var goalTileR1 = cfg.layout[col2];
-      solverProgressSetLabel('phaseTopRow', goalTileR1);
-      pb.tileStartLen = records.length;
-      if (!await placeTileGreedy(goalTileR1, col2, frozen, records, animateStep)) return false;
-      frozen[col2] = true;
-    }
-    var prevTileR = cfg.layout[2];
-    var goalTileR2 = cfg.layout[3];
-    solverProgressSetLabel('phaseTopRow', prevTileR);
-    pb.tileStartLen = records.length;
-    if (!await placeLastRowTile(prevTileR, goalTileR2, 2, 3, frozen, records, animateStep)) return false;
-    frozen[2] = true; frozen[3] = true;
-  }
-
-  solverProgressSetLabel('phaseBlock');
-  var subMoves = await bidirectionalBFS(layout, cfg.layout, frozen);
-  if (!subMoves) return false;
-  if (pb && pb.live && !pb.precompute) {
-    pb.knownTotal = records.length + subMoves.length;
-    updatePlaybackUI();
-  }
-  for (var si = 0; si < subMoves.length; si++) {
-    if (!await animateApply(subMoves[si], records, animateStep)) return false;
+// Never declare a boundary solved if a supposedly fixed cell was displaced.
+// The check is deliberately cheap: at most 16 array comparisons.
+function solverFrozenMatches(frozen, state) {
+  for (var cell in frozen) {
+    if (Object.prototype.hasOwnProperty.call(frozen, cell) && frozen[cell] &&
+        state[cell] !== cfg.layout[cell]) return false;
   }
   return true;
 }
 
-async function solve4x4(records, animateStep) {
-  var origRecordsLen = records.length;
-  var origHistLen = hist.length;
-
-  var nameStr = String(cfg.name || '');
-  var preferColFirst = /^coin-15 ver [23]\b/i.test(nameStr) || (/coin/i.test(nameStr) && /ver\s*[23]/i.test(nameStr) && !/ver\s*1\b/i.test(nameStr));
-
-  var variants = preferColFirst ? [
-    { order: 'colFirst', shuffle: false },
-    { order: 'rowFirst', shuffle: false },
-    { order: 'colFirst', shuffle: true },
-    { order: 'rowFirst', shuffle: true },
-    { order: 'colFirst', shuffle: true },
-    { order: 'rowFirst', shuffle: true },
-    { order: 'colFirst', shuffle: true },
-    { order: 'rowFirst', shuffle: true },
-    { order: 'colFirst', shuffle: true },
-    { order: 'rowFirst', shuffle: true }
-  ] : [
-    { order: 'rowFirst', shuffle: false },
-    { order: 'colFirst', shuffle: false },
-    { order: 'rowFirst', shuffle: true },
-    { order: 'colFirst', shuffle: true },
-    { order: 'rowFirst', shuffle: true },
-    { order: 'colFirst', shuffle: true },
-    { order: 'rowFirst', shuffle: true },
-    { order: 'colFirst', shuffle: true },
-    { order: 'rowFirst', shuffle: true },
-    { order: 'colFirst', shuffle: true }
-  ];
-
-  for (var vi = 0; vi < variants.length; vi++) {
-    if (solveAbort) { greedyShuffle = false; return false; }
-    var v = variants[vi];
-
-    if (vi > 0) {
-      var rollbackTarget = (pb.tileStartLen != null && pb.tileStartLen >= origRecordsLen) ? pb.tileStartLen : origRecordsLen;
-      var madeSoFar = records.length - rollbackTarget;
-      if (madeSoFar < 2) {
-        rollbackTarget = Math.max(origRecordsLen, records.length - 6);
-      }
-      if (rollbackTarget < records.length) {
-        setStatus(msg('retryAttempt', { n: vi + 1, total: variants.length }), '');
-        var isFast = pb && pb.precompute;
-        while (records.length > rollbackTarget) {
-          if (solveAbort) { greedyShuffle = false; return false; }
-          var m = records.pop();
-          if (hist.length > origHistLen) hist.pop();
-          layout[m.a] = layout[m.b];
-          layout[m.b] = -1;
-          if (pb && pb.live && !isFast) {
-            pb.index = records.length;
-            pb.knownTotal = null;
-            updatePlaybackUI();
-          }
-          if (!isFast) {
-            renderAll(true);
-            await solverSleep(60);
-          }
-        }
-        if (!isFast) await solverSleep(280);
-      }
-      if (solveAbort) { greedyShuffle = false; return false; }
-    }
-
-    greedyShuffle = v.shuffle;
-    var ok = await solve4x4Attempt(records, v.order, animateStep);
-    if (ok) { greedyShuffle = false; return true; }
+// A completed boundary is a checkpoint, not a reason to restart the whole board.
+// Retry the remaining boundary from exactly the same layout and playback history.
+function solverCheckpoint(records) {
+  return {lay:layout.slice(), history:hist.slice(), redo:redo.slice(), length:records.length};
+}
+function solverRestoreCheckpoint(point, records) {
+  layout=point.lay.slice(); hist=point.history.slice(); redo=point.redo.slice();
+  records.length=point.length;
+  if (pb) {
+    pb.tileStartLen=null;
+    pb.knownTotal=null;
+    if (pb.live && !pb.precompute) {pb.index=records.length;updatePlaybackUI();}
   }
+  if (!pb || !pb.precompute) renderAll(false);
+}
+async function solve4x4Remainder(records, frozen, order, animateStep) {
+  if (!solverFrozenMatches(frozen, layout)) return false;
+  solverProgressSetLabel('phaseBlock');
+  var subMoves=await bidirectionalBFS(layout,cfg.layout,frozen);
+  if (!subMoves && !solveAbort) {
+    var softened={};
+    for (var fixedCell in frozen) if (Object.prototype.hasOwnProperty.call(frozen,fixedCell)) {
+      var idx=+fixedCell;
+      if (order==='rowFirst' ? idx<4 : idx%4===0) softened[idx]=true;
+    }
+    subMoves=await bidirectionalBFS(layout,cfg.layout,softened);
+  }
+  if (!subMoves || solveAbort) return false;
+  if (pb && pb.live && !pb.precompute) {
+    pb.knownTotal=records.length+subMoves.length;updatePlaybackUI();
+  }
+  for (var si=0;si<subMoves.length;si++)
+    if (!await animateApply(subMoves[si],records,animateStep)) return false;
+  return isSolved();
+}
+async function solve4x4Attempt(records,order,animateStep) {
+  var frozen={};
+  if (order==='rowFirst') {
+    solverProgressSetLabel('phaseTopRow');
+    for (var col=0;col<2;col++) {
+      if (solveAbort) return false;
+      var goalTile1=cfg.layout[col];
+      solverProgressSetLabel('phaseTopRow',goalTile1);
+      if (pb) pb.tileStartLen=records.length;
+      if (!await placeTileGreedy(goalTile1,col,frozen,records,animateStep)) return false;
+      frozen[col]=true;
+      if (!solverFrozenMatches(frozen,layout)) return false;
+    }
+    solverProgressSetLabel('phaseTopRow',cfg.layout[2]);
+    if (pb) pb.tileStartLen=records.length;
+    if (!await placeLastRowTile(cfg.layout[2],cfg.layout[3],2,3,frozen,records,animateStep)) return false;
+    frozen[2]=true;frozen[3]=true;
+  } else {
+    solverProgressSetLabel('phaseLeftCol');
+    for (var r1=0;r1<2;r1++) {
+      if (solveAbort) return false;
+      var goalTileC1=cfg.layout[r1*4];
+      solverProgressSetLabel('phaseLeftCol',goalTileC1);
+      if (pb) pb.tileStartLen=records.length;
+      if (!await placeTileGreedy(goalTileC1,r1*4,frozen,records,animateStep)) return false;
+      frozen[r1*4]=true;
+      if (!solverFrozenMatches(frozen,layout)) return false;
+    }
+    solverProgressSetLabel('phaseLeftCol',cfg.layout[8]);
+    if (pb) pb.tileStartLen=records.length;
+    if (!await placeLastColTile(cfg.layout[8],cfg.layout[12],8,12,frozen,records,animateStep)) return false;
+    frozen[8]=true;frozen[12]=true;
+  }
+  if (!solverFrozenMatches(frozen,layout)) return false;
 
-  greedyShuffle = false;
+  // Keep the first completed row/column. The following stages have several
+  // choices of blank routing; failing one choice must not erase the boundary.
+  var checkpoint=solverCheckpoint(records);
+  var originalTie=solverTieBreak;
+  for (var stageTry=0;stageTry<4;stageTry++) {
+    if (solveAbort) break;
+    if (stageTry>0) {
+      solverRestoreCheckpoint(checkpoint,records);
+      if (!pb || !pb.precompute) await solverSleep(0);
+    }
+    solverTieBreak=(originalTie+stageTry)%4;
+    if (stageTry>0) {
+      solverProgressSetLabel(order==='rowFirst'?'phaseLeftCol':'phaseTopRow');
+      solverProgressFlush();
+    }
+    var secondary=Object.assign({},frozen);
+    var good=true;
+    if (order==='rowFirst') {
+      solverProgressSetLabel('phaseLeftCol',cfg.layout[4]);
+      if (pb) pb.tileStartLen=records.length;
+      good=await placeTileGreedy(cfg.layout[4],4,secondary,records,animateStep);
+      if (good) {
+        secondary[4]=true;
+        good=solverFrozenMatches(secondary,layout);
+      }
+      if (good) {
+        solverProgressSetLabel('phaseLeftCol',cfg.layout[8]);
+        if (pb) pb.tileStartLen=records.length;
+        good=await placeLastColTile(cfg.layout[8],cfg.layout[12],8,12,secondary,records,animateStep);
+        if (good) {secondary[8]=true;secondary[12]=true;good=solverFrozenMatches(secondary,layout);}
+      }
+    } else {
+      for (var col2=1;col2<3 && good;col2++) {
+        solverProgressSetLabel('phaseTopRow',cfg.layout[col2]);
+        if (pb) pb.tileStartLen=records.length;
+        good=await placeTileGreedy(cfg.layout[col2],col2,secondary,records,animateStep);
+        if (good) {secondary[col2]=true;good=solverFrozenMatches(secondary,layout);}
+      }
+      if (good) {
+        solverProgressSetLabel('phaseTopRow',cfg.layout[2]);
+        if (pb) pb.tileStartLen=records.length;
+        good=await placeLastRowTile(cfg.layout[2],cfg.layout[3],2,3,secondary,records,animateStep);
+        if (good) {secondary[2]=true;secondary[3]=true;good=solverFrozenMatches(secondary,layout);}
+      }
+    }
+    if (good && await solve4x4Remainder(records,secondary,order,animateStep)) {
+      solverTieBreak=originalTie;
+      return true;
+    }
+  }
+  solverTieBreak=originalTie;
+  if (!solveAbort) solverRestoreCheckpoint(checkpoint,records);
   return false;
+}
+
+// v1.85–1.86: geometry-aware staged search with endpoint diversification and
+// a bounded full-board completion search. Computation never mutates layout.
+function stagedHeapPush(h,item){
+  var i=h.length;h.push(item);
+  while(i>0){var p=(i-1)>>1;if(h[p].priority<=item.priority)break;h[i]=h[p];i=p;}h[i]=item;
+}
+function stagedHeapPop(h){
+  var top=h[0],tail=h.pop();
+  if(h.length){var i=0;while(true){var j=i*2+1;if(j>=h.length)break;
+    if(j+1<h.length&&h[j+1].priority<h[j].priority)j++;
+    if(tail.priority<=h[j].priority)break;h[i]=h[j];i=j;
+  }h[i]=tail;}return top;
+}
+function stagedHeuristic(state,targets,goalPositions){
+  var positions=new Array(cfg.tiles.length);
+  for(var i=0;i<state.length;i++)if(state[i]>=0)positions[state[i]]=i;
+  var sum=0,placed=0,rest=0;
+  for(var j=0;j<targets.length;j++){
+    var dest=targets[j],id=cfg.layout[dest],pos=positions[id];
+    if(pos===dest)placed++;
+    else sum+=Math.abs((pos%4)-(dest%4))+Math.abs(((pos/4)|0)-((dest/4)|0));
+  }
+  for(var k=0;k<positions.length;k++){
+    var at=positions[k],to=goalPositions[k];
+    if(at!==undefined&&to!==undefined)
+      rest+=Math.abs((at%4)-(to%4))+Math.abs(((at/4)|0)-((to/4)|0));
+  }
+  return {primary:sum,secondary:rest,placed:placed};
+}
+// A small bounded cache is shared across stages, never between puzzles.
+function stagedLegalNeighbors(state,cache){
+  if(!cache)return solverNeighbors(state,{});
+  var k=state.join(','),res=cache.get(k);
+  if(res)return res;
+  res=solverNeighbors(state,{});
+  if(cache.size>=24000)cache.clear();
+  cache.set(k,res);
+  return res;
+}
+// Retain different holes/residual arrangements instead of the first N
+// satisfied configurations found by a greedy priority queue.
+function stagedDedupe(candidates,limit){
+  var chosen=[],seen=new Set(),holes=new Set();
+  candidates.sort(function(a,b){return a.moves.length*.22+a.score-(b.moves.length*.22+b.score);});
+  var deferred=[];
+  for(var i=0;i<candidates.length;i++){
+    var item=candidates[i],key=item.lay.join(',');
+    if(seen.has(key))continue;
+    seen.add(key);
+    var hole=item.lay.indexOf(-1);
+    if(!holes.has(hole)&&chosen.length<limit){chosen.push(item);holes.add(hole);}
+    else deferred.push(item);
+  }
+  for(var j=0;j<deferred.length&&chosen.length<limit;j++)chosen.push(deferred[j]);
+  return chosen;
+}
+async function stagedFindCandidates(source,targets,goalPositions,count,budget,variant,cache){
+  var root={lay:source.lay.slice(),parent:null,move:-1,depth:0};
+  var visited=new Map(),heap=[],output=[],outSet=new Set(),expanded=0,extra=0,lastYield=Date.now();
+  var hh=stagedHeuristic(root.lay,targets,goalPositions);
+  stagedHeapPush(heap,{node:root,priority:hh.primary*3.5+hh.secondary*.05});
+  visited.set(root.lay.join(','),0);
+  var reserve=Math.max(count*5,24);
+  while(heap.length&&expanded<budget&&!solveAbort){
+    var curr=stagedHeapPop(heap).node;
+    var h=stagedHeuristic(curr.lay,targets,goalPositions);
+    if(h.primary===0){
+      var ck=curr.lay.join(',');
+      if(!outSet.has(ck)){
+        var route=[],walk=curr;
+        while(walk.parent){route.push(walk.move);walk=walk.parent;}
+        route.reverse();
+        output.push({lay:curr.lay,moves:source.moves.concat(route),score:h.secondary});
+        outSet.add(ck);
+      }
+      // Do not stop at the first solved boundary. Other positions of the
+      // remaining tiles can have radically different solvability.
+      if(output.length>=reserve)break;
+      if(extra++<budget/5){ /* also explore beyond a completed boundary */ }
+      else continue;
+    }
+    ++expanded;
+    if((expanded&127)===0){
+      solverProgressAdd(128);
+      if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
+    }
+    var nbrs=stagedLegalNeighbors(curr.lay,cache);
+    if(variant&1)nbrs=nbrs.slice().reverse();
+    for(var j=0;j<nbrs.length;j++){
+      var nb=nbrs[j],key=nb.lay.join(','),depth=curr.depth+1;
+      if(visited.has(key)&&visited.get(key)<=depth)continue;
+      visited.set(key,depth);
+      var nh=stagedHeuristic(nb.lay,targets,goalPositions);
+      var priority=depth*(variant===2?.9:.62)+nh.primary*(variant===3?2.6:3.5)+nh.secondary*(variant===1?.12:.055);
+      priority+=(variant%3)*.00001*j;
+      stagedHeapPush(heap,{node:{lay:nb.lay,parent:curr,move:nb.move,depth:depth},priority:priority});
+    }
+  }
+  return stagedDedupe(output,count);
+}
+// A last-resort bounded weighted A* search; previously solved border tiles
+// can be moved if a geometric puzzle requires temporarily undoing progress.
+async function stagedFinishAStar(source,goalPositions,cache,budget,weight){
+  var heap=[],visited=new Map(),lastYield=Date.now(),expanded=0;
+  var root={lay:source.lay,parent:null,move:-1,depth:0};
+  var goalKey=cfg.layout.join(','),rootKey=root.lay.join(',');
+  if(rootKey===goalKey)return [];
+  var initial=stagedHeuristic(root.lay,[],goalPositions);
+  stagedHeapPush(heap,{node:root,priority:initial.secondary*weight});
+  visited.set(rootKey,0);
+  while(heap.length&&expanded<budget&&!solveAbort){
+    var node=stagedHeapPop(heap).node,key=node.lay.join(',');
+    if(visited.get(key)<node.depth)continue;
+    if(key===goalKey){
+      var result=[];
+      while(node.parent){result.push(node.move);node=node.parent;}
+      result.reverse();return result;
+    }
+    ++expanded;
+    if((expanded&255)===0){
+      solverProgressAdd(256);
+      if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
+    }
+    var nbrs=stagedLegalNeighbors(node.lay,cache);
+    for(var i=0;i<nbrs.length;i++){
+      var child=nbrs[i],nk=child.lay.join(','),depth=node.depth+1;
+      if(visited.has(nk)&&visited.get(nk)<=depth)continue;
+      visited.set(nk,depth);
+      var h=stagedHeuristic(child.lay,[],goalPositions);
+      stagedHeapPush(heap,{node:{lay:child.lay,parent:node,move:child.move,depth:depth},priority:depth+weight*h.secondary});
+    }
+  }
+  return null;
+}
+async function stagedFindCandidatesLegacy(source, targets, goalPositions, count, budget, variant) {
+  var first=source.lay.slice(), visited=new Map(), heap=[];
+  var initialH=stagedHeuristic(first,targets,goalPositions);
+  var root={lay:first, parent:null, move:-1, depth:0};
+  stagedHeapPush(heap,{node:root,priority:initialH.primary*3+initialH.secondary*.035});
+  visited.set(first.join(','),0);
+  var output=[], seenOut=new Set(), expanded=0, lastYield=Date.now();
+  while(heap.length && expanded<budget && !solveAbort) {
+    var curr=stagedHeapPop(heap).node;
+    var h=stagedHeuristic(curr.lay,targets,goalPositions);
+    if(h.primary===0) {
+      var candidateKey=curr.lay.join(',');
+      if(!seenOut.has(candidateKey)) {
+        var route=[]; var walk=curr;
+        while(walk.parent){route.push(walk.move);walk=walk.parent;}
+        route.reverse();
+        seenOut.add(candidateKey);output.push({lay:curr.lay,moves:source.moves.concat(route),score:h.secondary});
+      }
+      if(output.length>=count)break;
+      // Do not expand an already satisfactory boundary: seek alternate endpoints.
+      continue;
+    }
+    ++expanded;
+    if((expanded&127)===0) {
+      solverProgressAdd(128);
+      if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
+    }
+    var neighbors=solverNeighbors(curr.lay,{});
+    if(variant&1)neighbors.reverse();
+    for(var j=0;j<neighbors.length;j++) {
+      var nb=neighbors[j],key=nb.lay.join(','),depth=curr.depth+1;
+      if(visited.has(key)&&visited.get(key)<=depth)continue;
+      visited.set(key,depth);
+      var nh=stagedHeuristic(nb.lay,targets,goalPositions);
+      var priority=depth*.65+nh.primary*3.5+nh.secondary*.055;
+      // A stable alternate ordering, without random resets.
+      priority+=(variant%3)*.00001*j;
+      stagedHeapPush(heap,{node:{lay:nb.lay,parent:curr,move:nb.move,depth:depth},priority:priority});
+    }
+  }
+  return output;
+}
+function stagedDedupeLegacy(candidates, limit) {
+  var seen=new Set(),chosen=[];
+  candidates.sort(function(a,b){return a.moves.length-b.moves.length + (a.score-b.score)*.12;});
+  for(var i=0;i<candidates.length && chosen.length<limit;i++) {
+    var item=candidates[i],key=item.lay.join(',');
+    if(seen.has(key))continue;
+    seen.add(key);chosen.push(item);
+  }
+  return chosen;
+}
+async function stagedSearchLegacy4x4(start) {
+  var goals=new Array(cfg.tiles.length);
+  for(var p=0;p<16;p++)if(cfg.layout[p]>=0)goals[cfg.layout[p]]=p;
+  var orders=[
+    [[0,1],[0,1,2,3],[0,1,2,3,4,8,12]],
+    [[0,4],[0,4,8,12],[0,4,8,12,1,2,3]]
+  ];
+  for(var orderIndex=0;orderIndex<orders.length && !solveAbort;orderIndex++) {
+    var paths=[{lay:start.slice(),moves:[],score:0}];
+    var stages=orders[orderIndex];
+    for(var stage=0;stage<stages.length && paths.length && !solveAbort;stage++) {
+      solverAttemptDescription=(orderIndex+1)+'/2 · '+(orderIndex===0?tr('phaseTopRow'):tr('phaseLeftCol'))+' · '+(stage+1)+'/3';
+      solverProgressSetLabel(stage===0?(orderIndex===0?'phaseTopRow':'phaseLeftCol'):'phaseBlock');
+      solverProgressFlush();
+      var found=[];
+      for(var k=0;k<paths.length && !solveAbort;k++) {
+        var candidate=paths[k];
+        var additions=await stagedFindCandidatesLegacy(candidate,stages[stage],goals,stage===2?5:7,stage===0?26000:34000,(k+stage)%4);
+        for(var j=0;j<additions.length;j++)found.push(additions[j]);
+      }
+      paths=stagedDedupeLegacy(found,stage===2?14:9);
+    }
+    solverAttemptDescription=(orderIndex+1)+'/2 · '+tr('phaseBlock');
+    for(var ci=0;ci<paths.length && !solveAbort;ci++) {
+      var candidate=paths[ci],fixed={};
+      var cells=stages[2];
+      for(var fi=0;fi<cells.length;fi++)fixed[cells[fi]]=true;
+      // The final 9-cell search is exact; all paths are validated before playback.
+      var ending=await bidirectionalBFS(candidate.lay,cfg.layout,fixed);
+      if(ending) {
+        var route=candidate.moves.concat(ending);
+        if(solverValidatePath(start,route,cfg.layout,{}))return route;
+      }
+    }
+  }
+  return null;
+}
+
+async function stagedSearch4x4(start){
+  var goals=new Array(cfg.tiles.length);
+  for(var p=0;p<16;p++)if(cfg.layout[p]>=0)goals[cfg.layout[p]]=p;
+  var orders=[
+    [[0,1],[0,1,2,3],[0,1,2,3,4,8,12]],
+    [[0,4],[0,4,8,12],[0,4,8,12,1,2,3]]
+  ];
+  var neighborCache=new Map(),fallback=[];
+  for(var orderIndex=0;orderIndex<orders.length&&!solveAbort;orderIndex++){
+    var paths=[{lay:start.slice(),moves:[],score:0}],stages=orders[orderIndex];
+    for(var stage=0;stage<stages.length&&paths.length&&!solveAbort;stage++){
+      solverAttemptDescription=(orderIndex+1)+'/2 · '+(orderIndex===0?tr('phaseTopRow'):tr('phaseLeftCol'))+' · '+(stage+1)+'/3';
+      solverProgressSetLabel(stage===0?(orderIndex===0?'phaseTopRow':'phaseLeftCol'):'phaseBlock');
+      solverProgressFlush();
+      var found=[];
+      for(var k=0;k<paths.length&&!solveAbort;k++){
+        var candidate=paths[k];
+        var additions=await stagedFindCandidates(candidate,stages[stage],goals,stage===2?8:10,stage===0?22000:28000,(k+stage)%4,neighborCache);
+        for(var j=0;j<additions.length;j++)found.push(additions[j]);
+      }
+      paths=stagedDedupe(found,stage===2?18:12);
+    }
+    solverAttemptDescription=(orderIndex+1)+'/2 · '+tr('phaseBlock');
+    for(var ci=0;ci<paths.length&&!solveAbort;ci++){
+      var candidate=paths[ci],fixed={},cells=stages[2];
+      for(var fi=0;fi<cells.length;fi++)fixed[cells[fi]]=true;
+      var ending=await bidirectionalBFS(candidate.lay,cfg.layout,fixed,450000);
+      if(ending){
+        var route=candidate.moves.concat(ending);
+        if(solverValidatePath(start,route,cfg.layout,{}))return route;
+      }
+      // Keep several diverse options for a full-board completion pass.
+      if(ci<7)fallback.push(candidate);
+    }
+  }
+  // Use full-board search only after both restricted strategies were tried.
+  // This can leave an apparently finished top row to unlock another tile.
+  var finals=stagedDedupe(fallback,10);
+  for(var f=0;f<finals.length&&!solveAbort;f++){
+    solverAttemptDescription=tr('phaseBlock')+' · A* '+(f+1)+'/'+finals.length;
+    solverProgressFlush();
+    var from=finals[f];
+    var suffix=await stagedFinishAStar(from,goals,neighborCache,60000,f%2?2.5:3.5);
+    if(suffix){
+      var complete=from.moves.concat(suffix);
+      if(solverValidatePath(start,complete,cfg.layout,{}))return complete;
+    }
+  }
+  return null;
+}
+
+// Drop cycles within a computed solution. State hashes are built by applying
+// the independently discovered moves, never by reading scramble/history.
+// For example A -> B -> A is erased entirely before playback.
+function simplifySolverMoves(start, moves) {
+  var states = [start.slice()], route = [], positions = new Map();
+  positions.set(states[0].join(','), 0);
+  for (var i = 0; i < moves.length; i++) {
+    var next = states[states.length-1].slice(), hole = next.indexOf(-1), cell = moves[i];
+    if (hole < 0 || cell < 0 || cell >= next.length || next[cell] < 0 ||
+        Math.abs(hole % n - cell % n) + Math.abs(Math.floor(hole / n) - Math.floor(cell / n)) !== 1) {
+      return moves.slice(); // Leave validation to the existing solver if unexpected.
+    }
+    next[hole] = next[cell]; next[cell] = -1;
+    var key = next.join(','), backTo = positions.get(key);
+    if (backTo !== undefined) {
+      while (route.length > backTo) {
+        positions.delete(states.pop().join(','));
+        route.pop();
+      }
+    } else {
+      route.push(cell);
+      states.push(next);
+      positions.set(key, route.length);
+    }
+  }
+  return route;
+}
+
+// v1.90: independent search only. The scramble and move history are NEVER
+// used to choose the route; every candidate starts from the current layout.
+async function solve4x4(records, animateStep) {
+  var initial=layout.slice();
+  var planned=null;
+  // For near-finished configurations, try a bounded exact search first.
+  // This searches the actual collision-checked state graph, not recorded moves.
+  var goalPositions=new Array(cfg.tiles.length), distance=0;
+  for(var gi=0;gi<16;gi++)if(cfg.layout[gi]>=0)goalPositions[cfg.layout[gi]]=gi;
+  for(var si=0;si<16;si++){
+    var id=initial[si];
+    if(id>=0){var to=goalPositions[id];distance+=Math.abs(si%4-to%4)+Math.abs(((si/4)|0)-((to/4)|0));}
+  }
+  if(distance<=16){
+    solverAttemptDescription='BFS';
+    solverProgressSetLabel('phaseBlock');
+    planned=await bidirectionalBFS(initial,cfg.layout,{},85000);
+  }
+  if(!planned && !solveAbort)planned=await stagedSearchLegacy4x4(initial);
+  if(!planned && !solveAbort)planned=await stagedSearch4x4(initial);
+  solverAttemptDescription='';
+  if(solveAbort)return false;
+  if(!planned || !solverValidatePath(initial,planned,cfg.layout,{}))return false;
+  planned = simplifySolverMoves(initial, planned);
+  if(!solverValidatePath(initial,planned,cfg.layout,{}))return false;
+  if(pb && pb.live && !pb.precompute){pb.knownTotal=planned.length;updatePlaybackUI();}
+  for(var i=0;i<planned.length;i++){
+    if(solveAbort || !await animateApply(planned[i],records,animateStep))return false;
+  }
+  return isSolved();
 }
 
 async function solve3x3(records, animateStep) {
   solverProgressSetLabel('phaseBlock');
   var moves = await bidirectionalBFS(layout, cfg.layout, {});
   if (!moves) return false;
+  moves = simplifySolverMoves(layout, moves);
   if (pb && pb.live && !pb.precompute) {
     pb.knownTotal = records.length + moves.length;
     updatePlaybackUI();
@@ -3465,6 +4436,7 @@ async function runSolver() {
       live: true,
       knownTotal: null,
       precompute: false,
+      jumpToEnd: false,
       pauseIndex: 0,
       tileStartLen: null,
       winShown: false
@@ -3482,6 +4454,7 @@ async function runSolver() {
         triedIda = true;
         var res = await solveWithWorker(state, n);
         if (res && res.moves && !solveAbort) {
+          res.moves = simplifySolverMoves(layout, res.moves);
           if (pb && pb.live && !pb.precompute) {
             pb.knownTotal = records.length + res.moves.length;
             updatePlaybackUI();
@@ -3521,28 +4494,35 @@ async function runSolver() {
         pb.knownTotal = records.length;
 
         if (pb.precompute) {
+          // A paused solver completes its route silently. >> requests the real
+          // end of that route, not the already displayed pauseIndex.
+          var seekEnd = !!pb.jumpToEnd;
+          var finalIndex = seekEnd ? records.length : pb.pauseIndex;
           pb.precompute = false;
           layout = pb.baseLayout.slice();
           hist = pb.baseHist.slice();
           redo = pb.baseRedo.slice();
-          for (var i2 = 0; i2 < pb.pauseIndex; i2++) {
+          for (var i2 = 0; i2 < finalIndex; i2++) {
             var m2 = pb.solution[i2];
-            layout[m2.b] = layout[m2.a];
-            layout[m2.a] = -1;
+            applyMotionRecord(layout,m2,false);
             hist.push(m2);
           }
-          pb.index = pb.pauseIndex;
-          renderAll(true);
+          pb.index = finalIndex;
+          pb.jumpToEnd = false;
           pb.paused = true;
-          pb.winShown = false;
+          pb.winShown = seekEnd;
+          renderAll(false);
           updatePlaybackUI();
           updateUI();
           setStatus(msg('solveDone', { moves: records.length }), 'ok');
+          if (seekEnd) setTimeout(function(){ if (pb && pb.winShown) openWin({hideTime:true}); }, 320);
           return;
         }
 
         pb.paused = true;
         pb.winShown = true;
+        if (pb.jumpToEnd) renderAll(false);
+        pb.jumpToEnd = false;
         updatePlaybackUI();
         updateUI();
       }
@@ -3556,20 +4536,20 @@ async function runSolver() {
       pb.knownTotal = records.length;
 
       if (pb.precompute) {
+        var lastIndex = pb.jumpToEnd ? records.length : Math.min(pb.pauseIndex,records.length);
         pb.precompute = false;
         layout = pb.baseLayout.slice();
         hist = pb.baseHist.slice();
         redo = pb.baseRedo.slice();
-        for (var i3 = 0; i3 < pb.pauseIndex; i3++) {
+        for (var i3 = 0; i3 < lastIndex; i3++) {
           var m3 = pb.solution[i3];
-          layout[m3.b] = layout[m3.a];
-          layout[m3.a] = -1;
+          applyMotionRecord(layout,m3,false);
           hist.push(m3);
         }
-        pb.index = pb.pauseIndex;
-        renderAll(true);
+        pb.index = lastIndex;
         pb.paused = true;
         pb.winShown = false;
+        renderAll(false);
         updatePlaybackUI();
         updateUI();
       } else {
@@ -3578,6 +4558,8 @@ async function runSolver() {
         updatePlaybackUI();
         updateUI();
       }
+      pb.jumpToEnd = false;
+      updatePlaybackUI();
     }
     renderAll(true);
     setStatus(solveAbort ? msg('solveAborted') : msg('solveFailed'), solveAbort ? '' : 'err');
@@ -3587,6 +4569,7 @@ async function runSolver() {
     if (pb) {
       pb.live = false;
       pb.precompute = false;
+      pb.jumpToEnd = false;
       pb.paused = true;
       pb.winShown = true;
       if (pb.knownTotal == null) pb.knownTotal = records.length;
@@ -3602,6 +4585,8 @@ function startSolve() {
   if(busy || drag)return;
   if (mode !== 'play' || busy || solveRunning || pb) return;
   if(layout.filter(function(id){return id<0;}).length!==1){setStatus(msg('solverOneHole'),'err');return;}
+  if (hasSpecialBoard()) {setStatus(msg('unsupportedSolverStructure'),'err');return;}
+  if (boardRows !== n || (n !== 3 && n !== 4)) {setStatus(msg('unsupportedSolverSize'),'err');return;}
   if (isSolved()) { openAskPop(); return; }
   closeWin(); closeHint();
   solveAbort = false;
@@ -3639,8 +4624,7 @@ function pbStepForward(count) {
   var target = Math.min(pb.solution.length, pb.index + count);
   while (pb.index < target) {
     var m = pb.solution[pb.index];
-    layout[m.b] = layout[m.a];
-    layout[m.a] = -1;
+    applyMotionRecord(layout,m,false);
     hist.push(m);
     pb.index++;
   }
@@ -3654,8 +4638,7 @@ function pbStepBackward(count) {
   while (pb.index > target) {
     pb.index--;
     var m = pb.solution[pb.index];
-    layout[m.a] = layout[m.b];
-    layout[m.b] = -1;
+    applyMotionRecord(layout,m,true);
     hist.pop();
   }
   renderAll(true);
@@ -3664,8 +4647,10 @@ function pbStepBackward(count) {
 
 function pbSeek(newIndex) {
   if (!pb || pb.precompute) return;
-  var maxAvail = (pb.knownTotal != null && pb.knownTotal > 0) ? pb.knownTotal : pb.solution.length;
-  newIndex = Math.max(0, Math.min(maxAvail, newIndex));
+  // During live playback the array contains only the already played prefix.
+  // Never seek beyond available records; >> uses a separate fast-forward request.
+  if (pb.live) return;
+  newIndex = Math.max(0, Math.min(pb.solution.length, newIndex));
   if (newIndex === pb.index) return;
   if (pb.timer) { clearTimeout(pb.timer); pb.timer = null; }
   layout = pb.baseLayout.slice();
@@ -3673,8 +4658,7 @@ function pbSeek(newIndex) {
   redo = pb.baseRedo.slice();
   for (var i = 0; i < newIndex; i++) {
     var m = pb.solution[i];
-    layout[m.b] = layout[m.a];
-    layout[m.a] = -1;
+    applyMotionRecord(layout,m,false);
     hist.push(m);
   }
   pb.index = newIndex;
@@ -3683,7 +4667,7 @@ function pbSeek(newIndex) {
 }
 
 function pbTogglePause() {
-  if (!pb || pb.precompute) return;
+  if (!pb || pb.precompute || pb.jumpToEnd) return;
   if (pb.paused) {
     pb.paused = false;
     updatePlaybackUI();
@@ -3720,7 +4704,7 @@ var ICON_PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
 function updatePlaybackUI() {
   if (!pb) return;
   var sl = $('pbSlider');
-  sl.disabled = !!pb.precompute;
+  sl.disabled = !!(pb.live || pb.precompute || pb.jumpToEnd);
   var maxVal = (pb.knownTotal != null && pb.knownTotal > 0) ? pb.knownTotal : Math.max(1, pb.solution.length);
   sl.max = maxVal;
   sl.value = pb.index;
@@ -3730,11 +4714,15 @@ function updatePlaybackUI() {
     $('pbLabel').textContent = String(pb.index);
   }
   var pauseBtn = $('pbPause');
-  pauseBtn.disabled = !!pb.precompute;
+  pauseBtn.disabled = !!(pb.precompute || pb.jumpToEnd);
   pauseBtn.innerHTML = pb.paused ? ICON_PLAY : ICON_PAUSE;
   var pauseTitle = pb.paused ? tr('play') : tr('pause');
   pauseBtn.title = pauseTitle;
   pauseBtn.setAttribute('aria-label', pauseTitle);
+  ['pbStart','pbPrev','pbNext'].forEach(function(id) {
+    $(id).disabled = !!(pb.live || pb.precompute || pb.jumpToEnd);
+  });
+  $('pbEnd').disabled = !!pb.jumpToEnd;
   if (!pb.live && pb.index >= pb.solution.length && pb.solution.length > 0 && !pb.winShown) {
     pb.winShown = true;
     pb.paused = true;
@@ -3757,12 +4745,13 @@ function openEditor(isNew) {
   layout = cfg.layout;
   hist = []; redo = [];
   timerReset();
-  sel = -1;
+  sel = -1; boardTool='';bondAnchor=-1;
   renderAll(true);
 }
 
 function launchEditor() {
   if (layout.indexOf(-1)<0) {setStatus(msg('noHole'),'err');return;}
+  if(!bondIsConnected(layout)){setStatus(msg('bandageBroken'),'err');return;}
   badIds = conflictSet();
   if (Object.keys(badIds).length) { renderAll(false); return; }
   mode = 'play';
@@ -3793,7 +4782,7 @@ function doConfirmDelete() {
   closeConfirmPop();
   var size = n;
   puzzles.splice(cur, 1);
-  if (!puzzles.length) puzzles.push(ensureUserIdentity(defaultCfg(size,tr('newBoard'))));
+  if (!puzzles.length) puzzles.push(ensureUserIdentity(defaultCfg(size,tr('newBoard'),boardRows)));
   cur = Math.max(0, Math.min(cur, puzzles.length - 1));
   mode = 'play';
   editSnap = null; editIsNew = false;
@@ -3813,13 +4802,15 @@ function installCfg(c) {
   puzzles[cur] = c;
   cfg = c;
   n = c.n;
-  sel = -1;
+  boardRows = puzzleRows(c);
+  sel = -1; boardTool='';bondAnchor=-1;
   layout = cfg.layout;
   hist = []; redo = [];
   build();
 }
 function replaceCfg(c) {
   c.name = cfg.name;
+  c.author = cfg.author || '';
   installCfg(c);
 }
 
@@ -3937,22 +4928,27 @@ function editorCellAt(p) {
 
 function cellAt(p) {
   var c = Math.floor((p.x - PAD) / S), r = Math.floor((p.y - PAD) / S);
-  if (c < 0 || r < 0 || c >= n || r >= n) return -1;
+  if (c < 0 || r < 0 || c >= n || r >= boardRows) return -1;
   return r * n + c;
 }
 function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
 board.addEventListener('pointerdown', function (e) {
   if (drag || busy || solveRunning || pb) return;
-  var p = pt(e), cell = mode === 'edit' ? editorCellAt(p) : cellAt(p);
+  var p = pt(e), cell = mode === 'edit' ? (boardTool ? cellAt(p) : editorCellAt(p)) : cellAt(p);
   if (cell < 0) return;
   var id = layout[cell];
   if (mode === 'edit') {
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-    sel = cell;
+    if (boardTool==='knife') {cutBoardCell(cell);e.preventDefault();return;}
+    if (boardTool==='bandage') {bondSelectedCell(cell);e.preventDefault();return;}
+    if (boardTool==='unbind') {detachBondAt(cell);e.preventDefault();renderAll(false);return;}
+    if (id===-2)return;
+    var wasSelected = sel===cell;
+    sel = id < 0 && wasSelected ? -1 : cell;
     renderAll(true);
     if (id >= 0) {
-      drag = { edit: true, cell: cell, id: id, sx: p.x, sy: p.y, moved: false, target: -1 };
+      drag = { edit: true, cell: cell, id: id, wasSelected:wasSelected, sx: p.x, sy: p.y, moved: false, target: -1 };
       if (cellAt(p) !== cell) {
         drag.dropOffsetX = p.x - (PAD + (cell % n + 0.5) * S);
         drag.dropOffsetY = p.y - (PAD + (Math.floor(cell / n) + 0.5) * S);
@@ -3965,7 +4961,7 @@ board.addEventListener('pointerdown', function (e) {
   }
   e.preventDefault();
   if (id < 0) return;
-  var plan=buildMovePlan(cell);
+  var plan=clickedMovePlan(cell,p);
   if(plan){
     drag={cell:cell,id:id,plan:plan,sx:p.x,sy:p.y,moved:false,frac:0,want:0};
     drag.boardRect=board.getBoundingClientRect();
@@ -3988,7 +4984,7 @@ board.addEventListener('pointermove', function (e) {
     if (tg !== drag.target) {
       if (drag.target >= 0) slots[drag.target].classList.remove('drop');
       drag.target = tg;
-      if (tg >= 0 && tg !== drag.cell) slots[tg].classList.add('drop');
+      if (tg >= 0 && tg !== drag.cell && layout[tg] !== -2) slots[tg].classList.add('drop');
     }
     return;
   }
@@ -4016,9 +5012,11 @@ function endDrag(e, cancel) {
   try { board.releasePointerCapture(e.pointerId); } catch (_) {}
   if (d.edit) {
     var tg = d.target;
-    if (d.moved && !cancel && tg >= 0 && tg !== d.cell) {
+    if (d.moved && !cancel && tg >= 0 && tg !== d.cell && layout[tg] !== -2) {
       var tmp = layout[tg]; layout[tg] = layout[d.cell]; layout[d.cell] = tmp;
       sel = tg;
+    } else if (!d.moved && !cancel && d.wasSelected) {
+      sel = -1;
     }
     renderAll(true);
     return;
@@ -4069,7 +5067,7 @@ $('hintBtn').addEventListener('click', openHint);
 $('addPuzBtn').addEventListener('click', addPuzzle);
 $('launchBtn').addEventListener('click', launchEditor);
 $('cancelBtn').addEventListener('click', cancelEditor);
-$('clearBtn').addEventListener('click', function () { if (mode === 'edit') replaceCfg(defaultCfg(n)); });
+$('clearBtn').addEventListener('click', function () { if (mode === 'edit') replaceCfg(defaultCfg(n, '', boardRows)); });
 $('copyBtn').addEventListener('click', copyPuzzle);
 $('pasteBtn').addEventListener('click', pasteFlow);
 $('deleteBtn').addEventListener('click', deletePuzzle);
@@ -4084,18 +5082,110 @@ $('confirmNo').addEventListener('click', closeConfirmPop);
 $('confirmPop').addEventListener('click', function (e) { if (e.target === $('confirmPop')) closeConfirmPop(); });
 $('dlgOk').addEventListener('click', function () { var tx = $('dlgText').value; closeDlg(); importText(tx); });
 $('dlgClose').addEventListener('click', closeDlg);
-$('esizeSeg').addEventListener('click', function (e) {
-  var b = e.target.closest('button');
-  if (!b || mode !== 'edit' || +b.dataset.size === n) return;
-  replaceCfg(defaultCfg(+b.dataset.size));
+function editorResizeBoard() {
+  if (mode !== 'edit') return;
+  var cols = +$('boardCols').value, rows = +$('boardRows').value;
+  if (cols === n && rows === boardRows) return;
+  // As before, changing the board dimensions creates a clean board.
+  replaceCfg(defaultCfg(cols, '', rows));
+}
+$('boardKnife').addEventListener('click',function(){
+  boardTool=boardTool==='knife'?'':'knife';sel=-1;bondAnchor=-1;renderAll(false);
 });
+$('boardBandage').addEventListener('click',function(){
+  boardTool=boardTool==='bandage'?'':'bandage';sel=-1;bondAnchor=-1;renderAll(false);
+});
+$('clearBandage').addEventListener('click',function(){
+  if(!anyBondedTiles()) return;
+  boardTool = boardTool==='unbind' ? '' : 'unbind';
+  sel=-1; bondAnchor=-1; renderAll(false);
+});
+$('boardCols').addEventListener('change', editorResizeBoard);
+$('boardRows').addEventListener('change', editorResizeBoard);
 $('nameInp').addEventListener('input', function () { cfg.name = this.value; });
+$('authorInp').addEventListener('input', function () { cfg.author = this.value; });
+/* === Выбор автора: стиль всплывающего списка из Klotski Solver 2 === */
+function closeAuthorDropdown(restoreFocus) {
+  var menu = $('authorDropdownMenu');
+  if (menu) menu.remove();
+  var btn = $('authorDropdownBtn');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+  if (restoreFocus && btn && mode === 'edit') btn.focus();
+}
+function authorsInCatalog() {
+  var seen = new Set();
+  puzzles.forEach(function(p) {
+    var a = (p && p.author || '').trim();
+    if (a) seen.add(a);
+  });
+  return Array.from(seen).sort(function(a,b){ return a.localeCompare(b, UI_LANG || 'ru'); });
+}
+function openAuthorDropdown() {
+  var menu = $('authorDropdownMenu');
+  if (menu) { closeAuthorDropdown(false); return; }
+  var authors = authorsInCatalog();
+  if (!authors.length) return;
+  var btn = $('authorDropdownBtn');
+  menu = document.createElement('div');
+  menu.id = 'authorDropdownMenu';
+  menu.className = 'author-dropdown-menu';
+  menu.setAttribute('role', 'listbox');
+  menu.setAttribute('aria-label', tr('chooseAuthor'));
+  authors.forEach(function(author, ix) {
+    var option = document.createElement('button');
+    option.type = 'button';
+    option.textContent = author;
+    option.title = author;
+    option.setAttribute('role', 'option');
+    option.setAttribute('aria-selected', String(author === ($('authorInp').value || '').trim()));
+    option.addEventListener('click', function(ev) {
+      ev.stopPropagation();
+      cfg.author = author;
+      $('authorInp').value = author;
+      closeAuthorDropdown(false);
+      $('authorInp').focus();
+    });
+    option.addEventListener('keydown', function(ev) {
+      if (ev.key === 'Escape') { ev.preventDefault(); closeAuthorDropdown(true); }
+      else if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        var choices=Array.from(menu.querySelectorAll('button'));
+        choices[(ix+(ev.key==='ArrowDown'?1:-1)+choices.length)%choices.length].focus();
+      } else if (ev.key === 'Home' || ev.key === 'End') {
+        ev.preventDefault();
+        var choices2=menu.querySelectorAll('button');
+        choices2[ev.key==='Home'?0:choices2.length-1].focus();
+      }
+    });
+    menu.appendChild(option);
+  });
+  document.body.appendChild(menu);
+  btn.setAttribute('aria-expanded', 'true');
+  var rect = $('authorInp').getBoundingClientRect();
+  var menuWidth=Math.min(Math.max(rect.width + btn.offsetWidth, 180), window.innerWidth - 12);
+  menu.style.width=menuWidth+'px';
+  var mrect=menu.getBoundingClientRect();
+  var left=Math.min(Math.max(6,rect.left),window.innerWidth-menuWidth-6);
+  var top=btn.getBoundingClientRect().bottom+4;
+  if (top + mrect.height > window.innerHeight - 6) top=Math.max(6,btn.getBoundingClientRect().top-mrect.height-4);
+  menu.style.left=left+'px'; menu.style.top=top+'px';
+}
+$('authorDropdownBtn').addEventListener('click', function(ev) {ev.stopPropagation();openAuthorDropdown();});
+document.addEventListener('pointerdown', function(ev){
+  var menu = $('authorDropdownMenu');
+  if (menu && !menu.contains(ev.target) && !$('authorDropdownBtn').contains(ev.target)) closeAuthorDropdown(false);
+});
+document.addEventListener('keydown', function(ev) {
+  if (ev.key === 'Escape' && $('authorDropdownMenu')) {ev.preventDefault(); closeAuthorDropdown(true);}
+});
+window.addEventListener('resize', function(){ if ($('authorDropdownMenu')) closeAuthorDropdown(false); });
+
 
 /* === Копирование/вставка параметров плитки === */
 function snapshotTile(t) {
   return {
     color: t.color, upColor: t.upColor,
-    body: t.body, cr: t.cr, sq: t.sq, star: t.star,
+    body: t.body, cr: t.cr, sq: t.sq, star: t.star, starTilt: !!t.starTilt,
     thick: t.thick, ch: t.ch.slice(), cut: t.cut,
     bars: t.bars, bl: t.bl, barWidth: t.barWidth,
     bars2: t.bars2, bl2: t.bl2,
@@ -4113,6 +5203,7 @@ function restoreTile(t, snap) {
   t.cr = snap.cr;
   t.sq = snap.sq;
   t.star = snap.star;
+  t.starTilt=!!snap.starTilt;
   t.thick = snap.thick;
   t.ch = snap.ch.slice();
   t.cut = snap.cut;
@@ -4200,7 +5291,24 @@ $('pbNext').addEventListener('click', function () {
   if (pb.index + 1 <= pb.solution.length) pbSeek(pb.index + 1);
 });
 $('pbEnd').addEventListener('click', function () {
-  if (!pb || pb.precompute) return;
+  if (!pb || pb.jumpToEnd) return;
+  if (pb.live) {
+    // The complete planned route may exist while pb.solution still holds only
+    // the animated prefix. Finish the live sequence quickly instead of seeking
+    // inside that incomplete prefix (which used to corrupt the slider).
+    pb.jumpToEnd = true;
+    closeWin();
+    if (!pb.precompute) {
+      pb.paused = false;
+      interruptSleep();
+    }
+    // If already precomputing after Pause, let it finish and rebuild the final
+    // state from baseLayout; mixing precomputed and animated records breaks hist.
+    if (pb.timer) { clearTimeout(pb.timer); pb.timer = null; }
+    updatePlaybackUI();
+    return;
+  }
+  if (pb.precompute) return;
   if (!pb.paused) {
     pb.paused = true;
     if (pb.timer) { clearTimeout(pb.timer); pb.timer = null; }
@@ -4247,6 +5355,7 @@ function deleteSelectedTile() {
   layout[sel] = -1;
   cfg.tiles.splice(c.id, 1);
   for (var i=0;i<layout.length;i++) if (layout[i]>c.id) layout[i]--;
+  normalizeBondGroups();
   cfg.layout = layout;
   collisionTileCache = new WeakMap();
   hist=[];redo=[];editMsg=true;
@@ -4254,7 +5363,7 @@ function deleteSelectedTile() {
   build();
 }
 function createSelectedTile() {
-  if (mode!=='edit' || sel<0 || layout[sel]>=0 || busy || drag) return;
+  if (mode!=='edit' || sel<0 || layout[sel]!==-1 || busy || drag) return;
   var used=Object.create(null), marker=1;
   cfg.tiles.forEach(function(t){used[t.marker]=true;});
   while (used[String(marker)]) marker++;
@@ -4321,6 +5430,7 @@ function bindRange(id, field, div) {
 bindRange('crRange', 'cr', 200);
 bindRange('sqRange', 'sq', 100);
 bindRange('starRange', 'star', 100);
+$('starRotate').addEventListener('click', function(){var c=curTile();if(!c)return;c.t.starTilt=!c.t.starTilt;afterEdit(c.id);});
 bindRange('thickRange', 'thick', 100);
 bindRange('cutRange', 'cut', 100);
 bindRange('blRange', 'bl', 100);
@@ -4347,6 +5457,7 @@ bindToggles('sidesH', 'hk', 'hooks');
 
 window.addEventListener('scroll',function(){if(drag)drag.boardRect=board.getBoundingClientRect();},true);
 window.addEventListener('resize', function () { cancelDragPaint(); closeHint(); measure(); renderAll(false); if(drag)drag.boardRect=board.getBoundingClientRect(); });
+if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { if (drag) return; measure(); renderAll(false); });
 function handleEditorDelete(e) {
   if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return false;
   if (e.key !== 'Delete' && e.key !== 'Del' && e.code !== 'Delete') return false;
@@ -4388,6 +5499,7 @@ loadEditClip();
 loadModCollapsed();
 cfg = puzzles[cur];
 n = cfg.n;
+boardRows = puzzleRows(cfg);
 layout = cfg.layout.slice();
 build();
 renderList();
