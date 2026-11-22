@@ -60,6 +60,10 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .up{--upline:#2a4a80;--side:#2a4a80;overflow:visible;filter:drop-shadow(calc(1.2px * var(--tile-scale,1)) 0 0 var(--upline)) drop-shadow(calc(-1.2px * var(--tile-scale,1)) 0 0 var(--upline)) drop-shadow(0 calc(-1.2px * var(--tile-scale,1)) 0 var(--upline)) drop-shadow(0 calc(1px * var(--tile-scale,1)) 0 var(--side)) drop-shadow(0 calc(1px * var(--tile-scale,1)) 0 var(--side)) drop-shadow(0 calc(1px * var(--tile-scale,1)) 0 var(--side)) drop-shadow(0 calc(1px * var(--tile-scale,1)) 0 var(--side)) drop-shadow(0 calc(1px * var(--tile-scale,1)) 0 var(--side)) drop-shadow(0 calc(7px * var(--tile-scale,1)) calc(5px * var(--tile-scale,1)) rgba(10,20,50,.5))}
 .up .u{position:absolute;border-radius:calc(4px * var(--tile-scale,1));background-repeat:no-repeat}
 .up .circ{border-radius:50%}
+.up.bond-upper-group{inset:0;transition:none;will-change:auto;pointer-events:none}
+.up.bond-upper-member{filter:none}
+.up.bond-upper-member .u{background-image:none!important;background-color:var(--bond-fill)}
+.game-board-surface.pulse .bond-upper-member .up-pulse{animation:none}
 .up .screw-overlay{position:absolute;pointer-events:none;transform-origin:50% 50%}
 .up .screw-circle{position:absolute;inset:0;border-radius:50%;background:inherit;box-shadow:inset 0 0 0 calc(1.5px * var(--tile-scale,1)) var(--upline),inset 0 calc(2px * var(--tile-scale,1)) calc(2px * var(--tile-scale,1)) rgba(255,255,255,.45)}
 .up .screw-line{position:absolute;left:50%;top:50%;background:rgba(36,57,92,.92);border-radius:999px;transform-origin:50% 50%}
@@ -724,6 +728,27 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .ana-close-row{grid-column:2;display:flex;justify-content:flex-end}
 .ana-close-row .btn{max-width:100%;white-space:normal;overflow-wrap:anywhere}
 @media(max-width:440px){.analyzer-dialog{padding:9px}.analyzer-toolbar{gap:4px}.ana-nav .btn{min-width:17px;padding:2px}}
+ .print-dialog{position:fixed;inset:auto;margin:0;max-width:none;max-height:calc(100dvh - 12px);padding:12px;border:1.5px solid var(--line);border-radius:18px;background:var(--card);color:var(--txt);overflow:auto}
+ .print-dialog h2{margin:0;color:var(--accent-d);font-size:20px}
+ .print-dialog p{font-size:13px;line-height:1.4;margin:8px 0}
+ .print-dialog::backdrop{background:rgba(15,22,38,.64)}
+ .print-header,.print-actions,.print-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+ .print-header,.print-toolbar{justify-content:space-between}
+ .print-header{margin-bottom:14px}
+ .print-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(205px,270px);gap:16px;align-items:start}
+ .print-dialog canvas{display:block;width:100%;height:auto;aspect-ratio:9/5;background:#202a37;border-radius:8px;touch-action:none}
+ .print-dialog [hidden]{display:none!important}
+ .print-toolbar{margin-bottom:8px}
+ .print-3d-toolbar{margin-top:14px}
+ .print-toolbar select,.print-settings input,.print-settings select{font:inherit;color:inherit;border:1px solid var(--line);border-radius:6px;background:#fff;padding:4px}
+ .print-settings{display:grid;gap:8px;align-self:start;align-content:start;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+ .print-settings label{display:grid;grid-template-columns:minmax(0,1fr) 68px;gap:5px;align-items:center;font-size:13px}
+ .print-settings input,.print-settings select{width:100%;min-width:0}
+ #printStatus{min-height:1.5em}
+ @media(max-width:650px){.print-grid{grid-template-columns:minmax(0,1fr)}}
+ .editor-output-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+ #printBtn{background:linear-gradient(#ffe77a,#ebba39);color:#352706;border-color:#b58721}
+ #printBtn:hover{filter:brightness(1.06)}
 </style>
 </head>
 <body>
@@ -886,7 +911,6 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
         </div>
         <div class="play-actions">
           <button class="btn primary" id="launchBtn" data-i18n="launch">▶ Запустить</button>
-          <button class="btn solve" type="button" id="analyzerBtn" data-i18n="anaOpen">Анализатор</button>
           <button class="btn" id="cancelBtn" data-i18n="cancel">Отмена</button>
         </div>
         <div id="statusSlotEdit"></div>
@@ -1232,6 +1256,10 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
           <button class="btn io" id="pasteBtn" data-i18n="paste">Вставить из буфера</button>
           <button class="btn io" id="deleteBtn" style="color:var(--bad)" data-i18n="delete">Удалить</button>
         </div>
+        <div class="editor-output-actions">
+          <button class="btn solve" type="button" id="analyzerBtn" data-i18n="anaOpen">Анализатор</button>
+          <button class="btn" type="button" id="printBtn" data-i18n="printPuzzle">Печать</button>
+        </div>
       </div>
       <div id="statusSlotPlay"><div id="status">Тяните плитку к пустой клетке или кликните по ней.</div></div>
     </aside>
@@ -1239,7 +1267,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
   <section class="about-block" id="aboutBlock" aria-labelledby="aboutTitle">
     <div class="about-head">
       <h2 id="aboutTitle" data-i18n="aboutTitle">О Программе</h2>
-      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 3.00</div>
+      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 3.18</div>
       <div class="language-control lang-top">
         <span data-i18n="chooseLanguage">выберите язык</span>
         <div class="seg" id="languageSeg" aria-label="Язык / Language">
@@ -1353,6 +1381,57 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
   </div>
 </dialog>
 
+<dialog class="print-dialog" id="printDialog" aria-labelledby="printTitle">
+  <header class="print-header">
+    <h2 id="printTitle" data-i18n="printTitle">3D-печать головоломки</h2>
+    <form method="dialog" class="print-actions">
+      <button class="btn primary" type="button" id="downloadPrintStl" data-i18n="printSingle">Один STL</button>
+      <button class="btn" type="button" id="downloadPrintKit" data-i18n="printDownload">STL в ZIP</button>
+      <button class="btn" type="button" id="downloadPrintStep" data-i18n="printStepFile">STEP</button>
+      <button class="btn" data-i18n="close">Закрыть</button>
+    </form>
+  </header>
+  <div class="print-grid">
+    <section class="print-previews">
+      <div class="print-toolbar">
+        <strong data-i18n="printPlanView">Плоский вид</strong>
+        <select id="printLayout" aria-label="Расположение деталей">
+          <option value="assembled" data-i18n="printAssembled">В сборе</option>
+          <option value="bed" data-i18n="printOnBed">Детали на столе</option>
+        </select>
+      </div>
+      <canvas id="printFlat" width="720" height="400"></canvas>
+      <div class="print-toolbar print-3d-toolbar">
+        <strong data-i18n="print3DView">3D-вид</strong>
+        <button class="btn sm" type="button" id="showPrint3D" data-i18n="printBuild3D">Построить 3D</button>
+      </div>
+      <canvas id="print3D" tabindex="0" hidden></canvas>
+      <p id="printHelp" data-i18n="printHelp" hidden>Левая кнопка — поворот, правая — сдвиг по горизонтали и вертикали, колесо — масштаб. Двойной щелчок — сброс вида.</p>
+      <p id="printStatus" role="status"></p>
+    </section>
+    <form id="printForm" class="print-settings">
+      <strong data-i18n="printSettings">Размеры и допуски, мм</strong>
+      <label><span data-i18n="print_pitch">Размер клетки</span><input type="number" name="pitch" min="12" max="40" step="0.5" value="20" required></label>
+      <label><span data-i18n="print_frameHeight">Высота рамки</span><input type="number" name="frameHeight" min="6" max="24" step="0.1" value="10" required></label>
+      <label><span data-i18n="print_blockHeight">Высота блоков</span><input type="number" name="blockHeight" min="2" max="15" step="0.1" value="3.8" required></label>
+      <label><span data-i18n="print_gap">Допуски на рамке</span><input type="number" name="gap" min="0.15" max="0.8" step="0.05" value="0.35" required></label>
+      <label><span data-i18n="print_radius">Скругление углов</span><input type="number" name="radius" min="0" max="2.5" step="0.05" value="0.65" required></label>
+      <label><span data-i18n="print_chamfer">Фаска</span><input type="number" name="chamfer" min="0" max="0.8" step="0.05" value="0.45" required></label>
+      <label><span data-i18n="print_pinHeight">Высота штырька</span><input type="number" name="pinHeight" value="6" readonly></label>
+      <label><span data-i18n="print_blockGap">Зазор под блоком</span><input type="number" name="blockGap" min="0" step="0.1" value="0" required></label>
+      <label><span data-i18n="print_pinGap">Зазор штырьков</span><input type="number" name="pinGap" min="0" max="0.8" step="0.05" value="0" required></label>
+      <label><span data-i18n="print_resolution">Шаг детализации</span>
+        <select name="resolution">
+          <option value="0.1">0.10</option><option value="0.2">0.20</option>
+          <option value="0.3">0.30</option><option value="0.4" selected>0.40</option>
+          <option value="0.5">0.50</option><option value="0.6">0.60</option>
+        </select>
+      </label>
+      <button class="btn" type="button" id="printReset" data-i18n="printReset">Сбросить настройки</button>
+    </form>
+  </div>
+</dialog>
+
 <script>
 /*LOGIC_START*/
 var G = { BW: 0.65, OW: 0.40 };
@@ -1413,7 +1492,8 @@ var BUILTIN_TEXTS = [
   "PYATNASHKI\nname: Farmer ver 1\nauthor: Vladimir Yaroslavskiy\nsize: 5x3\ncell: 1 |\ncell: 🐐 | mc=white u=ffffff circle=120\ncell: 3 |\ncell: 4 |\ncell: BLOCKED\ncell: 🐺 | mc=white u=9aa3b2 circle=120\ncell: 7 |\ncell: 🍏 | mc=white u=4cd964 circle=120\ncell: 9 |\ncell: BLOCKED\ncell:  | bond=1\ncell:  | bond=1\ncell:  | bond=1\ncell: 😀 | mc=white\ncell: EMPTY",
   "PYATNASHKI\nname: Farmer ver 2\nauthor: Vladimir Yaroslavskiy\nsize: 3x5\ncell: BLOCKED\ncell: BLOCKED\ncell: EMPTY\ncell: 1 |\ncell: 2 |\ncell: 3 |\ncell: 🐺 | mc=white u=9aa3b2 circle=120\ncell: 5 |\ncell: 🐐 | mc=white u=ffffff circle=120\ncell: 7 |\ncell: 🍏 | mc=white u=4cd964 circle=120\ncell: 9 |\ncell:  | bond=1\ncell:  | bond=1\ncell: 😀 | mc=white",
   "PYATNASHKI\nname: Farmer ver 3\nauthor: Vladimir Yaroslavskiy\nsize: 4\ncell: 1 |\ncell: 😀 | mc=white u=ffd93d circle=120\ncell: 3 |\ncell: 4 |\ncell: 🐺 | mc=white u=9aa3b2 circle=120\ncell: 6 |\ncell: 🍏 | mc=white u=4cd964 circle=120\ncell: 8 |\ncell: 9 |\ncell: 🐐 | mc=white u=ffffff circle=120\ncell: 11 |\ncell: 12 |\ncell:  | bond=1\ncell:  | bond=1\ncell:  | bond=1\ncell: EMPTY",
-  "PYATNASHKI\nname: Fence The Sheep\nauthor: Diniar Namdarian\nsize: 4x5\ncell:  | f=4cd964 bond=2\ncell:  | f=4cd964 bond=1\ncell: 🐑 | bond=3\ncell: 🐑 | bond=3\ncell:  | f=4cd964 bond=2\ncell:  | f=4cd964 bond=1\ncell: 🐑 | bond=3\ncell: 🐑 | bond=3\ncell:  | f=4cd964 u=2b3345 screw=40:-1:0 square=75 cut=0:B bars=135:R barwidth=75\ncell:  | f=4cd964\ncell:  | f=4cd964 u=2b3345 square=75 cut=25:R bond=4\ncell:  | f=4cd964 bond=4\ncell:  | f=4cd964 bond=6\ncell:  | f=4cd964 bond=6\ncell:  | f=4cd964 u=2b3345 screw=40:-1:0 square=75 cut=0:B bars=135:B barwidth=75\ncell: EMPTY\ncell:  | f=4cd964 bond=5\ncell:  | f=4cd964 bond=5\ncell:  | f=4cd964\ncell: EMPTY\ntarget:\ngoal: TILE 16\ngoal: TILE 17\ngoal: TILE 1\ngoal: TILE 2\ngoal: EMPTY\ngoal: TILE 18\ngoal: TILE 5\ngoal: TILE 6\ngoal: TILE 9\ngoal: TILE 10\ngoal: TILE 11\ngoal: TILE 12\ngoal: TILE 3\ngoal: TILE 4\ngoal: TILE 15\ngoal: EMPTY\ngoal: TILE 7\ngoal: TILE 8\ngoal: TILE 13\ngoal: TILE 14",
+  "PYATNASHKI\nname: Fence The Sheep\nauthor: Diniar Namdarian\nsize: 4x5\ncell:  | f=4cd964 bond=2\ncell:  | f=4cd964 bond=1\ncell: 🐑 | u=ffffff bodyoffset=3:15 square=85 bond=3\ncell: 🐑 | u=ffffff bodyoffset=5:15 square=85 bond=3\ncell:  | f=4cd964 bond=2\ncell:  | f=4cd964 bond=1\ncell: 🐑 | u=ffffff bodyoffset=1:15 square=85 bond=3\ncell: 🐑 | u=ffffff bodyoffset=7:15 square=85 bond=3\ncell:  | f=4cd964 u=2b3345 screw=40:-1:0 square=75 cut=0:B bars=135:R barwidth=75\ncell:  | f=4cd964\ncell:  | f=4cd964 u=2b3345 square=75 cut=25:R bond=4\ncell:  | f=4cd964 bond=4\ncell:  | f=4cd964 bond=6\ncell:  | f=4cd964 bond=6\ncell:  | f=4cd964 u=2b3345 screw=40:-1:0 square=75 cut=0:B bars=135:B barwidth=75\ncell: EMPTY\ncell:  | f=4cd964 bond=5\ncell:  | f=4cd964 bond=5\ncell:  | f=4cd964\ncell: EMPTY\ntarget:\ngoal: TILE 16\ngoal: TILE 17\ngoal: TILE 1\ngoal: TILE 2\ngoal: EMPTY\ngoal: TILE 18\ngoal: TILE 5\ngoal: TILE 6\ngoal: TILE 9\ngoal: TILE 10\ngoal: TILE 11\ngoal: TILE 12\ngoal: TILE 3\ngoal: TILE 4\ngoal: TILE 15\ngoal: EMPTY\ngoal: TILE 7\ngoal: TILE 8\ngoal: TILE 13\ngoal: TILE 14",
+  "PYATNASHKI\nname: Fence The Sheep (easy)\nauthor: Diniar Namdarian\nsize: 4x5\ncell:  | f=4cd964 bond=2\ncell:  | f=4cd964 bond=1\ncell: 🐑 | bond=3\ncell: 🐑 | bond=3\ncell:  | f=4cd964 bond=2\ncell:  | f=4cd964 bond=1\ncell: 🐑 | bond=3\ncell: 🐑 | bond=3\ncell:  | f=4cd964 u=2b3345 screw=40:-1:0 square=75 cut=0:B bars=135:R barwidth=75\ncell:  | f=4cd964\ncell:  | f=4cd964 u=2b3345 square=75 cut=25:R bond=4\ncell:  | f=4cd964 bond=4\ncell:  | f=4cd964 bond=6\ncell:  | f=4cd964 bond=6\ncell:  | f=4cd964 u=2b3345 screw=40:-1:0 square=75 cut=0:B bars=135:B barwidth=75\ncell: EMPTY\ncell:  | f=4cd964 bond=5\ncell:  | f=4cd964 bond=5\ncell:  | f=4cd964\ncell: EMPTY\ntarget:\ngoal: TILE 16\ngoal: TILE 17\ngoal: TILE 1\ngoal: TILE 2\ngoal: EMPTY\ngoal: TILE 18\ngoal: TILE 5\ngoal: TILE 6\ngoal: TILE 9\ngoal: TILE 10\ngoal: TILE 11\ngoal: TILE 12\ngoal: TILE 3\ngoal: TILE 4\ngoal: TILE 15\ngoal: EMPTY\ngoal: TILE 7\ngoal: TILE 8\ngoal: TILE 13\ngoal: TILE 14",
   "PYATNASHKI\nname: Fifteen Bracelet\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=4cd964 square=70 bars=60:RL\ncell: 2 | u=4cd964 square=70 bars=60:TB\ncell: 3 | u=4cd964 square=70 bars=60:RL\ncell: 4 | u=2fb4ff square=70 bars=60:TB\ncell: 5 | u=ffd93d square=70 bars=60:TB\ncell: 6 |\ncell: 7 |\ncell: 8 | u=2fb4ff square=70 bars=60:RL\ncell: 9 | u=ffd93d square=70 bars=60:RL\ncell: 10 |\ncell: 11 |\ncell: 12 | u=2fb4ff square=70 bars=60:TB\ncell: 13 | u=ffd93d square=70 bars=60:TB\ncell: 14 | u=ff4d4d square=70 bars=60:RL\ncell: 15 | u=ff4d4d square=70 bars=60:TB\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Flakes\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=ffd93d square=70 bars=60:TR\ncell: 2 | u=ffd93d square=70 bars=60:TR\ncell: 3 | u=ffd93d square=70 bars=60:TR\ncell: 4 | u=ffd93d square=70 bars=60:TR\ncell: 5 | u=3b6fd8 square=70 bars=60:TL\ncell: 6 | u=3b6fd8 square=70 bars=60:TL\ncell: 7 | u=3b6fd8 square=70 bars=60:TL\ncell: 8 | u=3b6fd8 square=70 bars=60:TL\ncell: 9 | u=ff4d4d square=70 bars=60:BL\ncell: 10 | u=ff4d4d square=70 bars=60:BL\ncell: 11 | u=ff4d4d square=70 bars=60:BL\ncell: 12 | u=ff4d4d square=70 bars=60:BL\ncell: 13 | u=1f9d3a square=70 bars=60:RB\ncell: 14 | u=1f9d3a square=70 bars=60:RB\ncell: 15 | u=1f9d3a square=70 bars=60:RB\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Frame v1\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=3b6fd8 screw=25:3:30 bars2=95:00010100\ncell: 2 | u=2fb4ff bars2=40:00010100\ncell: 3 | u=2fb4ff bars2=40:00001001\ncell: 4 | u=3b6fd8 screw=25:5:30 bars2=95:00001001\ncell: 5 | u=2fb4ff bars2=40:00010100\ncell: 6 |\ncell: 7 |\ncell: 8 | u=2fb4ff bars2=40:00000001\ncell: 9 | u=2fb4ff bars2=40:01000000\ncell: 10 |\ncell: 11 |\ncell: 12 | u=2fb4ff bars2=40:10000000\ncell: 13 | u=3b6fd8 screw=25:1:30 bars2=95:01100000\ncell: 14 | u=2fb4ff bars2=40:01000000\ncell: 15 | u=2fb4ff bars2=40:10000000\ncell: EMPTY",
@@ -1465,7 +1545,7 @@ var BUILTIN_TEXTS = [
 ];
 
 var UI_LANG = detectLanguage();
-var rus_eng = {"ru":{"anaUseMarkers":"Маркеры учитываем","anaUseColors":"Цвета учитываем","anaCompareBoards":"Сравнивать доски","anaNoSymmetricPositions":"В этой выборке нет симметричных позиций.","anaPathView":"Путь решения","anaTreeView":"Ближние / дальние","anaFilterView":"Фильтр","anaSymmetry":"Симметрия","anaSymAny":"Любая","anaSymVertical":"Вертикальное отражение","anaSymHorizontal":"Горизонтальное отражение","anaSymDiagonal":"Диагональное отражение","anaSymRotation":"Поворот","anaNear":"Ближние состояния","anaFar":"Дальние состояния","anaTreeStep":"{index} / {count} · ходов от корня: {depth}","anaPair":"Симметричная пара","anaDistance":"Между позициями: {moves}","anaDistanceChecking":"Считаю расстояние между позициями…","anaDistanceLimit":"Для поиска расстояния достигнут порог памяти.","anaDistanceUnreachable":"Из левой позиции правая недостижима.","anaDistanceError":"Не удалось вычислить расстояние между позициями.","anaFilterFound":"Пара {index} / {count}","anaFilterEmpty":"В выборке из ближних и дальних состояний нет пар с этой симметрией.","anaSavePair":"Создать головоломку","anaPairSame":"Старт и цель уже совпадают.","anaPairChecking":"Проверяю путь от старта к цели…","anaPairProgress":"Проверяю путь от старта к цели · состояний {count}","anaPairLimit":"Путь до цели не подтверждён до достижения порога памяти.","anaPairUnreachable":"Из этой стартовой позиции цель недостижима.","anaPairName":"{name} — симметрия {index}","anaPositionName":"{name} — вариант {index}","anaPairSaved":"В каталог добавлена «{name}» · решение: {depth} ходов.","anaPairSaveError":"Не удалось сохранить головоломку.","adjustmentStep":"Шаг настройки","anaMemory":"Бюджет памяти — {budget} ГиБ · расчётный порог — {count} состояний","anaMemoryReached":"Достигнут расчётный порог памяти ({budget} ГиБ) · состояний {count} · показан путь из {depth} ходов","anaOpen":"Анализатор","anaTitle":"Анализ головоломки","anaSearch":"🔍 Поиск","anaSwap":"⇄ Поменять","anaAuto":"↻ Авто","anaEmpty":"Нажмите «Поиск», чтобы найти дальнюю позицию.","anaSwapped":"Доски поменялись местами. Нажмите «Поиск» или «Авто».","anaProgress":"Поиск {round} · найдено состояний {count} · глубина {depth}","anaDone":"Обход завершён · ходов {depth} · состояний {count} · {time} с","anaAutoDone":"Авто завершено · поисков {round} · лучшее расстояние {depth} ходов · {time} с","anaStopped":"Поиск остановлен · показан найденный путь из {depth} ходов","anaStoppedEarly":"Поиск остановлен.","anaError":"Не удалось завершить поиск.","moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","tileBlockEditor":"РЕДАКТОР ПЛИТОК И БЛОКОВ","frameBlockEditor":"РЕДАКТОР РАМКИ И БЛОКОВ","hintGoalCaption":"Достигните заданного расположения","scramble":"🎲 Перемешать","scrambleRandom":"Перемешивание случайное","scrambleBfs":"Перемешивание BFS","scrambleBfsGoal":"BFS-перемешивание… Поиск собранной раскладки","scrambleBfsProgress":"BFS-перемешивание… Ходов от собранной раскладки: {depth}","scrambleBfsDone":"BFS-перемешивание завершено. Ходов от собранной раскладки: {depth}","scrambleBfsStopped":"BFS-перемешивание остановлено. Показана последняя найденная раскладка.","scrambleBfsStoppedEarly":"BFS-перемешивание остановлено.","scrambleBfsNoGoal":"BFS-перемешивание: собранная раскладка недостижима из текущей позиции.","scrambleBfsError":"Не удалось завершить BFS-перемешивание.","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Блок","palette":"Палитра","upperShape":"Форма блока","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","circleDiameter":"Диаметр (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","centerShift":"Сдвиг от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 3.00","shapeArrow":"Стрелка","arrowHead":"Размер стрелки","shapeOffset":"Сдвиг от центра","offsetDistance":"Расстояние сдвига","scrambleSteps":"Количество ходов скрамбла","startBoardTitle":"Стартовая доска","targetBoardTitle":"Целевая доска","hasTargetBoard":"Есть целевая доска","hasFixedFrame":"Есть рамка","fixedFrameTile":"Неподвижная плитка рамки","fixedFrameShape":"Башня на рамке","fixedTowerColor":"Цвет башни","fixedFrameDirection":"Направление / стороны","fixedFrameSize":"Размер / длина","frameShapeNone":"Нет башни","clearTowersWord1":"Удалить","clearTowersWord2":"башни","targetCopyTitle":"Копировать стартовую доску","targetClearTitle":"Очистить целевую доску","targetSwapTitle":"Поменять местами доски","clearAllMarkers":"Удалить маркеры","numberAllMarkers":"Расставить маркеры","clearAllTowers":"Удалить башни","markerColorLabel":"Цвет","markerColorBlack":"Черный","markerColorWhite":"Белый","targetSwapNeedsFull":"Чтобы поменять доски местами, заполните целевую доску всеми плитками.","targetHelp":"Перетащите плитки со стартовой доски. Для перестановки перетащите плитку на целевой; правый щелчок удаляет плитку.","targetEmpty":"На целевой доске нужно разместить хотя бы одну плитку.","clearMarker":"Очистить маркер","addModifier":"Добавить модификатор","removeModifier":"Удалить модификатор","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveDone":"Ходов в решении: {moves} · Время поиска: {time} с","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Поиск отменён. Время поиска: {time} с. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeScrew":"Шуруп","screw":"Шуруп","screwDiameter":"Диаметр (ширина плитки = 100%)","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы.","editorBondBlocked":"Невозможно перенести связку: край доски, вырез или другая связка.","phase3x3Bfs":"двунаправленный BFS","phaseSpecialBfs":"BFS с бандажами","phaseSpecialCut":"поэтапный поиск","phaseSpecialAstar":"общий поиск A*","phaseSpecialCheck":"проверка маршрута","phaseSpecialPattern":"поиск по кольцам","phaseSpecialMeeting":"встречный поиск"},"en":{"anaUseMarkers":"Match markers","anaUseColors":"Match colors","anaCompareBoards":"Compare boards","anaNoSymmetricPositions":"No symmetric positions in this sample.","anaPathView":"Solution path","anaTreeView":"Near / far states","anaFilterView":"Filter","anaSymmetry":"Symmetry","anaSymAny":"Any","anaSymVertical":"Vertical reflection","anaSymHorizontal":"Horizontal reflection","anaSymDiagonal":"Diagonal reflection","anaSymRotation":"Rotation","anaNear":"Near states","anaFar":"Far states","anaTreeStep":"{index} / {count} · moves from root: {depth}","anaPair":"Symmetric pair","anaDistance":"Distance between positions: {moves}","anaDistanceChecking":"Calculating the distance between positions…","anaDistanceLimit":"The distance search reached the memory limit.","anaDistanceUnreachable":"The right position is unreachable from the left.","anaDistanceError":"Could not calculate the distance between positions.","anaFilterFound":"Pair {index} / {count}","anaFilterEmpty":"The near and far samples contain no pairs with this symmetry.","anaSavePair":"Create puzzle","anaPairSame":"The start already matches the target.","anaPairChecking":"Checking the path from start to target…","anaPairProgress":"Checking the path from start to target · {count} states","anaPairLimit":"The search reached the memory limit before confirming a path.","anaPairUnreachable":"The target is unreachable from this start.","anaPairName":"{name} — symmetry {index}","anaPositionName":"{name} — variant {index}","anaPairSaved":"Added “{name}” to the catalog · solution: {depth} moves.","anaPairSaveError":"Could not save the puzzle.","adjustmentStep":"Adjustment step","anaMemory":"Memory budget — {budget} GiB · estimated limit — {count} states","anaMemoryReached":"Estimated memory limit reached ({budget} GiB) · {count} states · showing a path of {depth} moves","anaOpen":"Analyzer","anaTitle":"Puzzle analysis","anaSearch":"🔍 Search","anaSwap":"⇄ Swap","anaAuto":"↻ Auto","anaEmpty":"Press Search to find a distant position.","anaSwapped":"Boards swapped. Press Search or Auto.","anaProgress":"Search {round} · {count} states found · depth {depth}","anaDone":"Search complete · {depth} moves · {count} states · {time} s","anaAutoDone":"Auto complete · {round} searches · best distance {depth} moves · {time} s","anaStopped":"Search stopped · showing a path of {depth} moves","anaStoppedEarly":"Search stopped.","anaError":"Could not complete the search.","moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","tileBlockEditor":"TILE AND BLOCK EDITOR","frameBlockEditor":"FRAME AND BLOCK EDITOR","hintGoalCaption":"Reach the specified arrangement","scramble":"🎲 Scramble","scrambleRandom":"Random scramble","scrambleBfs":"Super scramble","scrambleBfsGoal":"Super scramble… Looking for a solved layout","scrambleBfsProgress":"Super scramble… Moves from solved layout: {depth}","scrambleBfsDone":"Super scramble complete. Moves from solved layout: {depth}","scrambleBfsStopped":"Super scramble stopped. Showing the last discovered layout.","scrambleBfsStoppedEarly":"Super scramble stopped.","scrambleBfsNoGoal":"Super scramble: no solved layout is reachable from the current position.","scrambleBfsError":"Could not finish the super scramble.","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Block","palette":"Palette","upperShape":"Block shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","circleDiameter":"Diameter (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","centerShift":"Offset from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 3.00","shapeArrow":"Arrow","arrowHead":"Arrowhead size","shapeOffset":"Shift from center","offsetDistance":"Offset distance","scrambleSteps":"Scramble moves","startBoardTitle":"Start board","targetBoardTitle":"Target board","hasTargetBoard":"Has target board","hasFixedFrame":"Has frame","fixedFrameTile":"Fixed frame tile","fixedFrameShape":"Tower on frame","fixedTowerColor":"Tower color","fixedFrameDirection":"Direction / sides","fixedFrameSize":"Size / length","frameShapeNone":"No tower","clearTowersWord1":"Remove","clearTowersWord2":"towers","targetCopyTitle":"Copy start board","targetClearTitle":"Clear target board","targetSwapTitle":"Swap start and target boards","clearAllMarkers":"Remove markers","numberAllMarkers":"Number markers","clearAllTowers":"Remove towers","markerColorLabel":"Color","markerColorBlack":"Black","markerColorWhite":"White","targetSwapNeedsFull":"Fill the target board with all tiles before swapping boards.","targetHelp":"Drag tiles from the start board. Drag within the target board to rearrange; right-click removes a tile.","targetEmpty":"Place at least one tile on the target board.","clearMarker":"Clear marker","addModifier":"Add another modifier","removeModifier":"Remove modifier","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveDone":"Solution moves: {moves} · Search time: {time} s","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Search time: {time} s. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeScrew":"Screw","screw":"Screw","screwDiameter":"Diameter (cell width = 100%)","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group.","editorBondBlocked":"Cannot move the bonded group: board edge, cut-out, or another bonded group.","phase3x3Bfs":"bidirectional BFS","phaseSpecialBfs":"bond-aware BFS","phaseSpecialCut":"staged search","phaseSpecialAstar":"full-board A*","phaseSpecialCheck":"validating route","phaseSpecialPattern":"ring-pattern search","phaseSpecialMeeting":"meet-in-the-middle search"}};
+var rus_eng = {"ru":{"printPuzzle":"Печать","anaUseMarkers":"Маркеры учитываем","anaUseColors":"Цвета учитываем","anaCompareBoards":"Сравнивать доски","anaNoSymmetricPositions":"В этой выборке нет симметричных позиций.","anaPathView":"Путь решения","anaTreeView":"Ближние / дальние","anaFilterView":"Фильтр","anaSymmetry":"Симметрия","anaSymAny":"Любая","anaSymVertical":"Вертикальное отражение","anaSymHorizontal":"Горизонтальное отражение","anaSymDiagonal":"Диагональное отражение","anaSymRotation":"Поворот","anaNear":"Ближние состояния","anaFar":"Дальние состояния","anaTreeStep":"{index} / {count} · ходов от корня: {depth}","anaPair":"Симметричная пара","anaDistance":"Между позициями: {moves}","anaDistanceChecking":"Считаю расстояние между позициями…","anaDistanceLimit":"Для поиска расстояния достигнут порог памяти.","anaDistanceUnreachable":"Из левой позиции правая недостижима.","anaDistanceError":"Не удалось вычислить расстояние между позициями.","anaFilterFound":"Пара {index} / {count}","anaFilterEmpty":"В выборке из ближних и дальних состояний нет пар с этой симметрией.","anaSavePair":"Создать головоломку","anaPairSame":"Старт и цель уже совпадают.","anaPairChecking":"Проверяю путь от старта к цели…","anaPairProgress":"Проверяю путь от старта к цели · состояний {count}","anaPairLimit":"Путь до цели не подтверждён до достижения порога памяти.","anaPairUnreachable":"Из этой стартовой позиции цель недостижима.","anaPairName":"{name} — симметрия {index}","anaPositionName":"{name} — вариант {index}","anaPairSaved":"В каталог добавлена «{name}» · решение: {depth} ходов.","anaPairSaveError":"Не удалось сохранить головоломку.","adjustmentStep":"Шаг настройки","anaMemory":"Бюджет памяти — {budget} ГиБ · расчётный порог — {count} состояний","anaMemoryReached":"Достигнут расчётный порог памяти ({budget} ГиБ) · состояний {count} · показан путь из {depth} ходов","anaOpen":"Анализатор","anaTitle":"Анализ головоломки","anaSearch":"🔍 Поиск","anaSwap":"⇄ Поменять","anaAuto":"↻ Авто","anaEmpty":"Нажмите «Поиск», чтобы найти дальнюю позицию.","anaSwapped":"Доски поменялись местами. Нажмите «Поиск» или «Авто».","anaProgress":"Поиск {round} · найдено состояний {count} · глубина {depth}","anaDone":"Обход завершён · ходов {depth} · состояний {count} · {time} с","anaAutoDone":"Авто завершено · поисков {round} · лучшее расстояние {depth} ходов · {time} с","anaStopped":"Поиск остановлен · показан найденный путь из {depth} ходов","anaStoppedEarly":"Поиск остановлен.","anaError":"Не удалось завершить поиск.","moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","tileBlockEditor":"РЕДАКТОР ПЛИТОК И БЛОКОВ","frameBlockEditor":"РЕДАКТОР РАМКИ И БЛОКОВ","hintGoalCaption":"Достигните заданного расположения","scramble":"🎲 Перемешать","scrambleRandom":"Перемешивание случайное","scrambleBfs":"Перемешивание BFS","scrambleBfsGoal":"BFS-перемешивание… Поиск собранной раскладки","scrambleBfsProgress":"BFS-перемешивание… Ходов от собранной раскладки: {depth}","scrambleBfsDone":"BFS-перемешивание завершено. Ходов от собранной раскладки: {depth}","scrambleBfsStopped":"BFS-перемешивание остановлено. Показана последняя найденная раскладка.","scrambleBfsStoppedEarly":"BFS-перемешивание остановлено.","scrambleBfsNoGoal":"BFS-перемешивание: собранная раскладка недостижима из текущей позиции.","scrambleBfsError":"Не удалось завершить BFS-перемешивание.","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Блок","palette":"Палитра","upperShape":"Форма блока","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","circleDiameter":"Диаметр (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","centerShift":"Сдвиг от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 3.18","shapeArrow":"Стрелка","arrowHead":"Размер стрелки","shapeOffset":"Сдвиг от центра","offsetDistance":"Расстояние сдвига","scrambleSteps":"Количество ходов скрамбла","startBoardTitle":"Стартовая доска","targetBoardTitle":"Целевая доска","hasTargetBoard":"Есть целевая доска","hasFixedFrame":"Есть рамка","fixedFrameTile":"Неподвижная плитка рамки","fixedFrameShape":"Башня на рамке","fixedTowerColor":"Цвет башни","fixedFrameDirection":"Направление / стороны","fixedFrameSize":"Размер / длина","frameShapeNone":"Нет башни","clearTowersWord1":"Удалить","clearTowersWord2":"башни","targetCopyTitle":"Копировать стартовую доску","targetClearTitle":"Очистить целевую доску","targetSwapTitle":"Поменять местами доски","clearAllMarkers":"Удалить маркеры","numberAllMarkers":"Расставить маркеры","clearAllTowers":"Удалить башни","markerColorLabel":"Цвет","markerColorBlack":"Черный","markerColorWhite":"Белый","targetSwapNeedsFull":"Чтобы поменять доски местами, заполните целевую доску всеми плитками.","targetHelp":"Перетащите плитки со стартовой доски. Для перестановки перетащите плитку на целевой; правый щелчок удаляет плитку.","targetEmpty":"На целевой доске нужно разместить хотя бы одну плитку.","clearMarker":"Очистить маркер","addModifier":"Добавить модификатор","removeModifier":"Удалить модификатор","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveDone":"Ходов в решении: {moves} · Время поиска: {time} с","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Поиск отменён. Время поиска: {time} с. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeScrew":"Шуруп","screw":"Шуруп","screwDiameter":"Диаметр (ширина плитки = 100%)","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы.","editorBondBlocked":"Невозможно перенести связку: край доски, вырез или другая связка.","phase3x3Bfs":"двунаправленный BFS","phaseSpecialBfs":"BFS с бандажами","phaseSpecialCut":"поэтапный поиск","phaseSpecialAstar":"общий поиск A*","phaseSpecialCheck":"проверка маршрута","phaseSpecialPattern":"поиск по кольцам","phaseSpecialMeeting":"встречный поиск","printTitle":"3D-печать головоломки","printDownload":"STL в ZIP","printPlanView":"Плоский вид","print3DView":"3D-вид","printAssembled":"В сборе","printOnBed":"Детали на столе","printSettings":"Размеры и допуски, мм","printReset":"Сбросить настройки","printHelp":"Левая кнопка — поворот, правая — сдвиг по горизонтали и вертикали, колесо — масштаб. Двойной щелчок — сброс вида.","printInvalid":"Проверьте диапазоны размеров.","printBuilding":"Построение деталей: {current} / {total}","printReady":"Готово · деталей: {count}","printFailed":"Не удалось построить или сохранить детали.","printNoWebGL":"3D-вид недоступен. Можно открыть плоский вид или скачать STL.","print_pitch":"Размер клетки","print_gap":"Допуски на рамке","print_radius":"Скругление углов","print_chamfer":"Фаска","print_pinGap":"Зазор штырьков","print_frameHeight":"Высота рамки","print_blockHeight":"Высота блоков","printSingle":"Один STL","printStepFile":"STEP","printBuild3D":"Построить 3D","print_resolution":"Шаг детализации","printTooFine":"Модель слишком велика для этого шага детализации. Увеличьте шаг.","printStepLimited":"Для этой геометрии пока доступен STL.","printStepGlyph":"STEP сохранён. Гравировка и фаски верхних блоков есть в STL.","print_pinHeight":"Высота штырька (60% высоты рамки)","print_blockGap":"Зазор под блоком","printBlockGapInvalid":"Зазор под блоком должен быть меньше высоты штырька."},"en":{"printPuzzle":"Print","anaUseMarkers":"Match markers","anaUseColors":"Match colors","anaCompareBoards":"Compare boards","anaNoSymmetricPositions":"No symmetric positions in this sample.","anaPathView":"Solution path","anaTreeView":"Near / far states","anaFilterView":"Filter","anaSymmetry":"Symmetry","anaSymAny":"Any","anaSymVertical":"Vertical reflection","anaSymHorizontal":"Horizontal reflection","anaSymDiagonal":"Diagonal reflection","anaSymRotation":"Rotation","anaNear":"Near states","anaFar":"Far states","anaTreeStep":"{index} / {count} · moves from root: {depth}","anaPair":"Symmetric pair","anaDistance":"Distance between positions: {moves}","anaDistanceChecking":"Calculating the distance between positions…","anaDistanceLimit":"The distance search reached the memory limit.","anaDistanceUnreachable":"The right position is unreachable from the left.","anaDistanceError":"Could not calculate the distance between positions.","anaFilterFound":"Pair {index} / {count}","anaFilterEmpty":"The near and far samples contain no pairs with this symmetry.","anaSavePair":"Create puzzle","anaPairSame":"The start already matches the target.","anaPairChecking":"Checking the path from start to target…","anaPairProgress":"Checking the path from start to target · {count} states","anaPairLimit":"The search reached the memory limit before confirming a path.","anaPairUnreachable":"The target is unreachable from this start.","anaPairName":"{name} — symmetry {index}","anaPositionName":"{name} — variant {index}","anaPairSaved":"Added “{name}” to the catalog · solution: {depth} moves.","anaPairSaveError":"Could not save the puzzle.","adjustmentStep":"Adjustment step","anaMemory":"Memory budget — {budget} GiB · estimated limit — {count} states","anaMemoryReached":"Estimated memory limit reached ({budget} GiB) · {count} states · showing a path of {depth} moves","anaOpen":"Analyzer","anaTitle":"Puzzle analysis","anaSearch":"🔍 Search","anaSwap":"⇄ Swap","anaAuto":"↻ Auto","anaEmpty":"Press Search to find a distant position.","anaSwapped":"Boards swapped. Press Search or Auto.","anaProgress":"Search {round} · {count} states found · depth {depth}","anaDone":"Search complete · {depth} moves · {count} states · {time} s","anaAutoDone":"Auto complete · {round} searches · best distance {depth} moves · {time} s","anaStopped":"Search stopped · showing a path of {depth} moves","anaStoppedEarly":"Search stopped.","anaError":"Could not complete the search.","moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","tileBlockEditor":"TILE AND BLOCK EDITOR","frameBlockEditor":"FRAME AND BLOCK EDITOR","hintGoalCaption":"Reach the specified arrangement","scramble":"🎲 Scramble","scrambleRandom":"Random scramble","scrambleBfs":"Super scramble","scrambleBfsGoal":"Super scramble… Looking for a solved layout","scrambleBfsProgress":"Super scramble… Moves from solved layout: {depth}","scrambleBfsDone":"Super scramble complete. Moves from solved layout: {depth}","scrambleBfsStopped":"Super scramble stopped. Showing the last discovered layout.","scrambleBfsStoppedEarly":"Super scramble stopped.","scrambleBfsNoGoal":"Super scramble: no solved layout is reachable from the current position.","scrambleBfsError":"Could not finish the super scramble.","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Block","palette":"Palette","upperShape":"Block shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","circleDiameter":"Diameter (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","centerShift":"Offset from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 3.18","shapeArrow":"Arrow","arrowHead":"Arrowhead size","shapeOffset":"Shift from center","offsetDistance":"Offset distance","scrambleSteps":"Scramble moves","startBoardTitle":"Start board","targetBoardTitle":"Target board","hasTargetBoard":"Has target board","hasFixedFrame":"Has frame","fixedFrameTile":"Fixed frame tile","fixedFrameShape":"Tower on frame","fixedTowerColor":"Tower color","fixedFrameDirection":"Direction / sides","fixedFrameSize":"Size / length","frameShapeNone":"No tower","clearTowersWord1":"Remove","clearTowersWord2":"towers","targetCopyTitle":"Copy start board","targetClearTitle":"Clear target board","targetSwapTitle":"Swap start and target boards","clearAllMarkers":"Remove markers","numberAllMarkers":"Number markers","clearAllTowers":"Remove towers","markerColorLabel":"Color","markerColorBlack":"Black","markerColorWhite":"White","targetSwapNeedsFull":"Fill the target board with all tiles before swapping boards.","targetHelp":"Drag tiles from the start board. Drag within the target board to rearrange; right-click removes a tile.","targetEmpty":"Place at least one tile on the target board.","clearMarker":"Clear marker","addModifier":"Add another modifier","removeModifier":"Remove modifier","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveDone":"Solution moves: {moves} · Search time: {time} s","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Search time: {time} s. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeScrew":"Screw","screw":"Screw","screwDiameter":"Diameter (cell width = 100%)","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group.","editorBondBlocked":"Cannot move the bonded group: board edge, cut-out, or another bonded group.","phase3x3Bfs":"bidirectional BFS","phaseSpecialBfs":"bond-aware BFS","phaseSpecialCut":"staged search","phaseSpecialAstar":"full-board A*","phaseSpecialCheck":"validating route","phaseSpecialPattern":"ring-pattern search","phaseSpecialMeeting":"meet-in-the-middle search","printTitle":"3D print the puzzle","printDownload":"STL in ZIP","printPlanView":"Top view","print3DView":"3D view","printAssembled":"Assembled","printOnBed":"Parts on bed","printSettings":"Dimensions and clearances, mm","printReset":"Reset settings","printHelp":"Drag with the left button to rotate or the right button to pan. Scroll to zoom. Double-click to reset the view.","printInvalid":"Check the allowed settings ranges.","printBuilding":"Building parts: {current} / {total}","printReady":"Ready · {count} parts","printFailed":"Could not build or save the parts.","printNoWebGL":"The 3D view is unavailable. The top view and STL download are available.","print_pitch":"Cell pitch","print_gap":"Frame clearance","print_radius":"Corner radius","print_chamfer":"Chamfer","print_pinGap":"Pin clearance","print_frameHeight":"Frame height","print_blockHeight":"Block height","printSingle":"Single STL","printStepFile":"STEP","printBuild3D":"Build 3D preview","print_resolution":"Detail step","printTooFine":"This model is too large at this detail step. Choose a coarser step.","printStepLimited":"This geometry currently requires STL.","printStepGlyph":"STEP saved. Engraved labels and upper-block chamfers are available in STL.","print_pinHeight":"Pin height (60% of frame height)","print_blockGap":"Clearance under blocks","printBlockGapInvalid":"The clearance under the block must be less than the pin height."}};
 
 var LAST_STATUS = null, LAST_DIALOG = null;
 var pulseOn = true;
@@ -2430,25 +2510,20 @@ function axisLimit(m, s, dx, dy) {
   return circCirc(m, s, dx, dy);
 }
 
+function sameBond(a,b) {
+  return a.bond > 0 && a.bond === b.bond;
+}
+
 function travel(from, to) {
   var t=cfg.tiles[layout[from]];
   if(!t.upper)return 1;
   var r0=Math.floor(from/n),c0=from%n;
   var dx=to%n-c0,dy=Math.floor(to/n)-r0;
-  var M=cshapesOf(t,c0,r0);
-  if(!M.length)return 1;
-  var broad=sweptBounds(groupBounds(M),dx,dy),pieceSweeps=M.map(function(s){return sweptBounds(shapeBounds(s),dx,dy);});
   var lim=Infinity;
   for(var i=0;i<layout.length;i++) {
-    var id=layout[i];
-    if(id<0||i===from||!cfg.tiles[id].upper)continue;
-    var other=cshapesOf(cfg.tiles[id],i%n,Math.floor(i/n));
-    if(!other.length||!boundsOverlap(broad,groupBounds(other)))continue;
-    for(var a=0;a<M.length;a++)for(var b=0;b<other.length;b++) {
-      if(!boundsOverlap(pieceSweeps[a],shapeBounds(other[b])))continue;
-      lim=Math.min(lim,axisLimit(M[a],other[b],dx,dy));
-      if(lim<=0)return 0;
-    }
+    if(i===from || layout[i]<0)continue;
+    lim=Math.min(lim,upperPairLimit(from,i,dx,dy,layout));
+    if(lim<=0)return 0;
   }
   // Scramble and the older staged solvers call travel(), not the full
   // move planner. Apply the same immovable frame obstacles here as well.
@@ -2851,6 +2926,7 @@ function conflictSet() {
     items.forEach(function(item){if(boundsOverlap(groupBounds(fsh),groupBounds(item.sh))&&collide(fsh,item.sh))bad[item.id]=true;});
   }
   for(var a=0;a<items.length;a++)for(var b=a+1;b<items.length;b++) {
+    if(sameBond(cfg.tiles[items[a].id],cfg.tiles[items[b].id]))continue;
     if(!boundsOverlap(groupBounds(items[a].sh),groupBounds(items[b].sh)))continue;
     if(collide(items[a].sh,items[b].sh)){bad[items[a].id]=true;bad[items[b].id]=true;}
   }
@@ -3181,7 +3257,16 @@ function beginEditorFloat(boardHost, items, bondGroup){
     to.appendChild(node);
     moved.push({node:node,slot:slot});
   }
-  items.forEach(function(item){lift(item.node,layers[item.role]||layers.base);});
+  var liftedUppers=new Set();
+  items.forEach(function(item){
+    var node=item.node, parent=node.parentNode;
+    if(item.role==='upper' && parent && parent.classList.contains('bond-upper-group')) node=parent;
+    if(item.role==='upper'){
+      if(liftedUppers.has(node)) return;
+      liftedUppers.add(node);
+    }
+    lift(node,layers[item.role]||layers.base);
+  });
   if(bondGroup){
     var oldSvg=bondGroup.ownerSVGElement;
     if(oldSvg){
@@ -3229,7 +3314,7 @@ function editorFloatTargetTiles(parts,bonded){
   var items=parts.map(function(p){
     var node=p.node,container=node.parentNode;
     var role=container.classList.contains('target-layer-base')?'base'
-      :container.classList.contains('target-layer-up')?'upper'
+      :node.classList.contains('up')?'upper'
       :container.classList.contains('target-layer-low')?'low':'marker';
     return {node:node,role:role};
   });
@@ -3462,12 +3547,67 @@ function fillUp(u, t) {
   u.innerHTML = '<div class="up-pulse">' + h + screwMarkup(t) + '</div>';
 }
 
+// Keep separate editable shapes, but shade the union of overlapping blocks.
+function syncBondedUppers(host,state,conflicts) {
+  var parents=new Map(), groups=new Map();
+  var nodes=Array.from(host.querySelectorAll('.up:not(.bond-upper-group)'));
+  nodes.forEach(function(node){
+    var id=node._tileId,tile=cfg.tiles[id],cell=state.indexOf(id);
+    if(!tile || tile.bond<=0 || cell<0) return;
+    var shapes=shapesOf(tile,cell%n,Math.floor(cell/n));
+    if(tile.screw) {
+      var screw=screwVisualSpec(tile),r=screw.size*UPK/200;
+      shapes.push(C(cell%n+(screw.left-50)*UPK/100+r,
+        Math.floor(cell/n)+(screw.top-50)*UPK/100+r,r));
+    }
+    if(!groups.has(tile.bond)) groups.set(tile.bond,[]);
+    groups.get(tile.bond).push({node:node,shapes:shapes});
+  });
+  groups.forEach(function(parts){
+    while(parts.length){
+      var component=[parts.shift()];
+      for(var a=0;a<component.length;a++)for(var b=parts.length-1;b>=0;b--){
+        if(collide(component[a].shapes,parts[b].shapes)) component.push(parts.splice(b,1)[0]);
+      }
+      if(component.length<2) continue;
+      var members=component.map(function(part){return part.node;});
+      var key=members.map(function(node){return node._tileId;}).sort(function(a,b){return a-b;}).join(',');
+      var group=members[0].parentNode;
+      if(group._bondUpperKey!==key){
+        group=document.createElement('div');
+        group.className='up bond-upper-group';
+        group._bondUpperKey=key;
+        host.appendChild(group);
+      }
+      var color=cfg.tiles[members[0]._tileId].upColor;
+      var bad=members.some(function(node){return conflicts[node._tileId];});
+      group.style.setProperty('--upline',bad?'#d12f2f':shade(color,-0.6));
+      group.style.setProperty('--side',bad?'#9e1f1f':shade(color,-0.45));
+      members.forEach(function(node){parents.set(node,group);});
+    }
+  });
+  nodes.forEach(function(node){
+    var parent=parents.get(node), joined=!!parent, tile=cfg.tiles[node._tileId];
+    if(joined!==node.classList.contains('bond-upper-member') || (joined && node.classList.contains('is-baked'))) {
+      node._desiredRasterKey=null;
+      fillUp(node,tile);
+      node.classList.toggle('bond-upper-member',joined);
+    }
+    if(joined) node.style.setProperty('--bond-fill',tile.upColor);
+    var dest=parent||host;
+    if(node.parentNode!==dest) dest.appendChild(node);
+  });
+  Array.from(host.querySelectorAll('.bond-upper-group')).forEach(function(group){
+    if(!group.children.length) group.remove();
+  });
+}
+
 function setUpline(id) {
   var e=els[id];if(!e||!e.u)return;
   var bad=!!badIds[id],t=cfg.tiles[id],line=bad?'#d12f2f':shade(t.upColor,-0.6),side=bad?'#9e1f1f':shade(t.upColor,-0.45);
   if(e.u._line!==line){e.u.style.setProperty('--upline',line);e.u._line=line;}
   if(e.u._side!==side){e.u.style.setProperty('--side',side);e.u._side=side;}
-  prepareUpperRaster(e.u,t,bad);
+  if(!e.u.classList.contains('bond-upper-member')) prepareUpperRaster(e.u,t,bad);
 }
 
 function refreshTile(id) {
@@ -3740,9 +3880,21 @@ function renderFrameInto(host,interactive,box){
 }
 function frameFixedLimit(from,state,dx,dy){
   if(!frameTilesEnabled())return Infinity;
-  var moving=cfg.tiles[state[from]];
+  var id=state[from], moving=cfg.tiles[id];
   if(!moving || !moving.upper)return Infinity;
-  var A=cshapesOf(moving,from%n,Math.floor(from/n));
+  var cache=searchCollisionCaches.get(cfg), direction=collisionDirection(dx,dy);
+  if(!cache || !cache.frame || direction<0)return computeFrameFixedLimit(from,state,dx,dy);
+  var slot=direction*cache.span+cache.upperIds[id]*cache.cells+from;
+  var value=cache.frame[slot];
+  if(value===0){
+    var limit=computeFrameFixedLimit(from,state,dx,dy);
+    cache.frame[slot]=limit===0?-1:limit;
+    return limit;
+  }
+  return value===-1?0:value;
+}
+function computeFrameFixedLimit(from,state,dx,dy){
+  var A=cshapesOf(cfg.tiles[state[from]],from%n,Math.floor(from/n));
   if(!A.length)return Infinity;
   var sweep=sweptBounds(groupBounds(A),dx,dy),best=Infinity;
   for(var i=0;i<cfg.frameTiles.length;i++){
@@ -3779,6 +3931,7 @@ function renderBoardSurface(anim, outlineLayer, bondLayer, cutLayer, frameLayer,
     slots[i].classList.remove('drop');
   }
   if (mode === 'edit') badIds = conflictSet(); else badIds = {};
+  syncBondedUppers(upLayer,layout,badIds);
   Object.keys(els).forEach(function (k) {
     var e = els[k], cell = layout.indexOf(+k);
     e.b.classList.toggle('sel', mode === 'edit' && cell === sel);
@@ -4101,7 +4254,37 @@ function drawMini(previewCanvas,previewLayout) {
       ctx.clip(outlinePath,'evenodd');ctx.translate(-pad,-pad);
     }
   }
+  var bondGroups = new Map(), bondedCells = new Set();
+  targetLayout.forEach(function(id, pos) {
+    if (id < 0) return;
+    var bond = cfg.tiles[id].bond;
+    if (!(bond > 0)) return;
+    if (!bondGroups.has(bond)) bondGroups.set(bond, []);
+    bondGroups.get(bond).push(pos);
+  });
+  bondGroups.forEach(function(cells) {
+    if (cells.length < 2) return;
+    var d = buildContourPath(contourCellsFromIndices(cells), s, s, Math.min(0.24, g / s), false);
+    if (!d) return;
+    var contour = new Path2D(d);
+    ctx.save();
+    ctx.translate(pad, pad);
+    ctx.save();
+    ctx.clip(contour, 'evenodd');
+    cells.forEach(function(pos) {
+      bondedCells.add(pos);
+      ctx.fillStyle = cfg.tiles[targetLayout[pos]].color;
+      ctx.fillRect((pos % n) * s, Math.floor(pos / n) * s, s + 0.25, s + 0.25);
+    });
+    ctx.restore();
+    ctx.strokeStyle = shade(cfg.tiles[targetLayout[cells[0]]].color, -0.5);
+    ctx.lineWidth = Math.max(0.5, s * 0.018);
+    ctx.lineJoin = 'round';
+    ctx.stroke(contour);
+    ctx.restore();
+  });
   for (i = 0; i < n * boardRows; i++) {
+    if (bondedCells.has(i)) continue;
     r = Math.floor(i / n); c = i % n;
     id = targetLayout[i];
     rrect(ctx, pad + c * s + g, pad + r * s + g, s - 2 * g, s - 2 * g, s * 0.14);
@@ -4313,9 +4496,11 @@ function renderLayoutPreview(surface, host, target, prefix) {
       // the initial screw animation after every move on the start board.
       upperClone.classList.remove('screw-animate','screw-resize');
       upperClone.setAttribute('data-target-tile-id',id);
+      upperClone._tileId=id;
       layers.upLayer.appendChild(centers(upperClone,pos,true));
     }
   }
+  syncBondedUppers(layers.upLayer,target,badIds);
   // Regenerate the *same* bonded silhouette renderer for target positions.
   var oldLayout=layout, bondHost=$('bondOverlayLayer'),oldMarkup=bondHost.innerHTML;
   try{
@@ -4786,36 +4971,61 @@ function cellStep(cell, dx, dy) {
   return isCut(dest) ? -1 : dest;
 }
 
-var specialCirclePairCache = null;
+// All solvers use the exact clearance, including partial travel for push
+// timing. Allocate only rows touched by the current search and drop them
+// when the last search using this board ends.
+var searchCollisionCaches=new WeakMap();
+function beginSearchCollisions() {
+  var owner=cfg;
+  var cache=searchCollisionCaches.get(owner);
+  if(!cache){
+    var upperIds=new Int16Array(owner.tiles.length).fill(-1),upperCount=0;
+    owner.tiles.forEach(function(tile,id){if(tile.upper)upperIds[id]=upperCount++;});
+    var cells=owner.layout.length, span=upperCount*cells;
+    cache={users:0,cells:cells,span:span,upperIds:upperIds,pairs:new Array(span*4),
+      frame:frameTilesEnabled()?new Float64Array(span*4):null};
+    searchCollisionCaches.set(owner,cache);
+  }
+  cache.users++;
+  return function(){if(--cache.users===0)searchCollisionCaches.delete(owner);};
+}
+
+function collisionDirection(dx,dy) {
+  if(dx===0) return dy===-1?0:dy===1?1:-1;
+  if(dy===0) return dx===-1?2:dx===1?3:-1;
+  return -1;
+}
+
 function upperPairLimit(from, other, dx, dy, state) {
-  var a = cfg.tiles[state[from]], b = cfg.tiles[state[other]];
-  if (!a || !b || !a.upper || !b.upper) return Infinity;
-  var cacheKey = null;
-  if (specialCirclePairCache && a.body==='circle' && b.body==='circle' &&
-      !a.bars && !a.bars2 && !a.hooks && !b.bars && !b.bars2 && !b.hooks) {
-    cacheKey=[collisionEnvKey,a.cr,b.cr,(from%n)-(other%n),
-      Math.floor(from/n)-Math.floor(other/n),dx,dy].join('/');
-    if(specialCirclePairCache.has(cacheKey))return specialCirclePairCache.get(cacheKey);
+  var fromId=state[from],otherId=state[other];
+  var a=cfg.tiles[fromId],b=cfg.tiles[otherId];
+  if(!a || !b || !a.upper || !b.upper || sameBond(a,b))return Infinity;
+  var cache=searchCollisionCaches.get(cfg),direction=collisionDirection(dx,dy);
+  if(!cache || direction<0)return computeUpperPairLimit(a,b,from,other,dx,dy);
+  var rowId=direction*cache.span+cache.upperIds[fromId]*cache.cells+from;
+  var row=cache.pairs[rowId]||(cache.pairs[rowId]=new Float64Array(cache.span));
+  var col=cache.upperIds[otherId]*cache.cells+other;
+  var value=row[col];
+  if(value===0){
+    var limit=computeUpperPairLimit(a,b,from,other,dx,dy);
+    row[col]=limit===0?-1:limit;
+    return limit;
   }
-  var A = cshapesOf(a, from % n, Math.floor(from / n));
-  var B = cshapesOf(b, other % n, Math.floor(other / n));
-  if (!A.length || !B.length || !boundsOverlap(sweptBounds(groupBounds(A), dx, dy), groupBounds(B))) {
-    if(cacheKey!==null)specialCirclePairCache.set(cacheKey,Infinity);
-    return Infinity;
-  }
-  var best = Infinity;
-  for (var i = 0; i < A.length; i++) {
-    var swept = sweptBounds(shapeBounds(A[i]), dx, dy);
-    for (var j = 0; j < B.length; j++) {
-      if (!boundsOverlap(swept, shapeBounds(B[j]))) continue;
-      best = Math.min(best, axisLimit(A[i], B[j], dx, dy));
-      if (best <= 0) {
-        if(cacheKey!==null)specialCirclePairCache.set(cacheKey,0);
-        return 0;
-      }
+  return value===-1?0:value;
+}
+
+function computeUpperPairLimit(a,b,from,other,dx,dy) {
+  var A=cshapesOf(a,from%n,Math.floor(from/n)),B=cshapesOf(b,other%n,Math.floor(other/n));
+  if(!A.length || !B.length || !boundsOverlap(sweptBounds(groupBounds(A),dx,dy),groupBounds(B)))return Infinity;
+  var best=Infinity;
+  for(var i=0;i<A.length;i++){
+    var swept=sweptBounds(shapeBounds(A[i]),dx,dy);
+    for(var j=0;j<B.length;j++){
+      if(!boundsOverlap(swept,shapeBounds(B[j])))continue;
+      best=Math.min(best,axisLimit(A[i],B[j],dx,dy));
+      if(best<=0)return 0;
     }
   }
-  if(cacheKey!==null)specialCirclePairCache.set(cacheKey,best);
   return best;
 }
 
@@ -5221,8 +5431,7 @@ async function scrambleByBfs() {
   renderList();
 
   var chosen = null;
-  var previousCircleCache = specialCirclePairCache;
-  specialCirclePairCache = new Map();
+  var releaseCollisions=beginSearchCollisions();
   try {
     var start = layout.slice(), types = solverEquivalentTypes(), hasTarget = hasTargetLayout(cfg);
     // A compact key keeps the visited set smaller than serialized arrays.
@@ -5294,7 +5503,7 @@ async function scrambleByBfs() {
     console.error(error);
     setStatus(msg('scrambleBfsError'), 'err');
   } finally {
-    specialCirclePairCache = previousCircleCache;
+    releaseCollisions();
     busy = scrambleRunning = scrambleBfsRunning = scrambleBfsStop = false;
     if (chosen) {
       layout = chosen.state;
@@ -7307,10 +7516,6 @@ async function specialOlympicSearch(start,ctx){
 }
 
 async function specialFindRoute(start,method){
-  // Memoize translation-invariant circular collisions only during the search.
-  // This is an optimization of the exact collision checker, not a rule change.
-  var formerCircleCache=specialCirclePairCache;
-  specialCirclePairCache=new Map();
   try {
   var ctx=specialSolverContext();
   if(ctx.key(start)===ctx.goalKey)return [];
@@ -7374,7 +7579,6 @@ async function specialFindRoute(start,method){
     // Release search-local successors before the next attempt or level switch.
     if(ctx && ctx.neighborsMemo)ctx.neighborsMemo.clear();
     if(ctx && ctx.clearEstimateCache)ctx.clearEstimateCache();
-    specialCirclePairCache=formerCircleCache;
   }
 }
 
@@ -7649,7 +7853,7 @@ async function specialApplyMove(step,records,animateStep){
   var record=motionRecord(plan),fast=!!(pb && pb.precompute),jump=!!(pb && pb.jumpToEnd);
   if(!fast && !jump && animateStep){
     var ok=await new Promise(function(resolve){
-      animateMotion(plan,0,plan.end,Math.max(70,Math.min(360,SOLVE_STEP_MS*plan.end)),resolve);
+      animateMotion(plan,0,plan.end,solutionMotionDuration(plan),resolve);
     });
     if(!ok || solveAbort)return false;
   }
@@ -7829,14 +8033,98 @@ async function solveSmallBidirectionalBFS(records, animateStep) {
 // algorithm never invents a move through a hook, wall, or bandaged group.
 // Irreversible predecessors outside reversible neighborhoods are handled by
 // the independent forward BFS option in the menu.
+// Search-local tables use the same swept shapes as gameplay. The push graph
+// still changes with the arrangement; geometric contact between two placed
+// blocks and contact with the fixed frame do not.
+function createPhysicalBfsNeighbors(key) {
+  var directions=[[0,-1],[0,1],[-1,0],[1,0]], cells=cfg.layout.length;
+  var tiles=cfg.tiles, upperIds=new Int16Array(tiles.length).fill(-1), upperCount=0;
+  tiles.forEach(function(tile,id){if(tile.upper)upperIds[id]=upperCount++;});
+  var span=cells*upperCount, rim=frameTilesEnabled();
+  var targets=directions.map(function(dir){
+    return Int8Array.from({length:cells},function(_,cell){return cellStep(cell,dir[0],dir[1]);});
+  });
+  var contacts=directions.map(function(){return new Uint8Array(span*span);});
+  var frameContacts=rim ? directions.map(function(){return new Uint8Array(span);}) : null;
+
+  return function(state, onlyDirection, wantedKey) {
+    var occupied=[], upperCells=[], bondMasks=new Map();
+    for(var cell=0;cell<cells;cell++){
+      var id=state[cell];
+      if(id<0) continue;
+      occupied.push(cell);
+      var group=tiles[id].bond;
+      if(group>0) bondMasks.set(group,(bondMasks.get(group)||0)|(1<<cell));
+      if(upperIds[id]>=0) upperCells.push(cell);
+    }
+    var origin=wantedKey===undefined ? key(state) : null, seen=new Set(), out=[];
+    var graph=new Uint32Array(cells);
+    var start=onlyDirection===undefined ? 0 : onlyDirection;
+    var finish=onlyDirection===undefined ? directions.length : onlyDirection+1;
+    for(var d=start;d<finish;d++){
+      var dx=directions[d][0],dy=directions[d][1], destinations=targets[d], table=contacts[d];
+      var blocked=0;
+      for(var i=0;i<occupied.length;i++){
+        var from=occupied[i], moving=state[from], to=destinations[from];
+        graph[from]=(bondMasks.get(tiles[moving].bond)||0)&~(1<<from);
+        if(to<0) blocked|=1<<from;
+        else if(state[to]>=0) graph[from]|=1<<to;
+      }
+      for(var i=0;i<upperCells.length;i++){
+        var from=upperCells[i], moving=state[from], placed=upperIds[moving]*cells+from;
+        if(frameContacts){
+          var frame=frameContacts[d], fixed=frame[placed];
+          if(!fixed) frame[placed]=fixed=frameFixedLimit(from,state,dx,dy)<1-MOTION_EPS ? 2 : 1;
+          if(fixed===2) blocked|=1<<from;
+        }
+        for(var j=0;j<upperCells.length;j++){
+          var other=upperCells[j], bit=1<<other;
+          if(other===from || (graph[from]&bit)) continue;
+          var at=placed*span+upperIds[state[other]]*cells+other, contact=table[at];
+          if(!contact) table[at]=contact=upperPairLimit(from,other,dx,dy,state)<1-MOTION_EPS ? 2 : 1;
+          if(contact===2) graph[from]|=bit;
+        }
+      }
+      var movedSets=new Set();
+      for(var i=0;i<occupied.length;i++){
+        var cell=occupied[i], moves=1<<cell,pending=moves;
+        // Delays change the animation, but every reachable contact must
+        // finish its full step. If any member is blocked, the plan fails.
+        while(pending && !(moves&blocked)){
+          var bit=pending&-pending;
+          pending^=bit;
+          var reached=graph[31-Math.clz32(bit)]&~moves;
+          moves|=reached;
+          pending|=reached;
+        }
+        if((moves&blocked)||movedSets.has(moves)) continue;
+        movedSets.add(moves);
+        var next=state.slice();
+        for(var bits=moves;bits;bits&=bits-1) next[31-Math.clz32(bits&-bits)]=-1;
+        for(var bits=moves;bits;bits&=bits-1){
+          var from=31-Math.clz32(bits&-bits);
+          next[destinations[from]]=state[from];
+        }
+        var newKey=key(next);
+        var move={cell:cell,dx:dx,dy:dy};
+        if(wantedKey!==undefined){
+          if(newKey===wantedKey) return move;
+        }else if(newKey!==origin&&!seen.has(newKey)){
+          seen.add(newKey);
+          out.push({state:next,key:newKey,move:move,direction:d});
+        }
+      }
+    }
+    return wantedKey===undefined ? out : null;
+  };
+}
+
 async function bondedBidirectionalBFS(start,goal){
   var types=solverEquivalentTypes(),key=function(lay){return solverCanonicalKey(lay,types);};
   var sk=key(start),gk=key(goal);
   if(sk===gk)return [];
-  var ctx={key:key,neighborsMemo:null},holeCount=start.filter(function(v){return v===-1;}).length;
-  var getNext=function(state){
-    return holeCount===1 ? specialSolverNeighbors(state,ctx) : targetMultipleHoleNeighbors(state,ctx);
-  };
+  if(!bondIsConnected(start)||!bondIsConnected(goal)) return null;
+  var getNext=createPhysicalBfsNeighbors(key);
   var front=new Map([[sk,{state:start,previous:null,move:null}]]);
   var back=new Map([[gk,{state:goal,previous:null,move:null}]]);
   var fq=[sk],bq=[gk],frontDepth=0,backDepth=0,expanded=0,capacity=solverMemoryCapacity(start.length),lastYield=Date.now();
@@ -7863,8 +8151,9 @@ async function bondedBidirectionalBFS(start,goal){
         if(!forward){
           // A step generated from the goal is only a valid predecessor
           // if an actual game move can return from it to the goal.
-          var returns=getNext(edge.state),backMove=null;
-          for(var r=0;r<returns.length;r++)if(returns[r].key===parentKey){backMove=returns[r].move;break;}
+          // The sum of occupied positions moves along one axis, so a return
+          // gesture can only use the opposite direction.
+          var backMove=getNext(edge.state,edge.direction^1,parentKey);
           if(!backMove)continue;
           move=backMove;
         }
@@ -8029,6 +8318,7 @@ function snapshotState() {
 async function runSolver() {
   var snap = snapshotState();
   var records = [];
+  var releaseCollisions=beginSearchCollisions();
 
   try {
     await solverSleep(30);
@@ -8136,7 +8426,7 @@ async function runSolver() {
           updatePlaybackUI();
           updateUI();
           setStatus(solverSolvedStatus(records.length), 'ok');
-          if (seekEnd) setTimeout(function(){ if (pb && pb.winShown) openWin({hideTime:true}); }, 320);
+          if (seekEnd) pbShowFinish(320);
           return;
         }
 
@@ -8148,7 +8438,7 @@ async function runSolver() {
         updateUI();
       }
       setStatus(solverSolvedStatus(records.length), 'ok');
-      setTimeout(function(){ openWin({hideTime: true}); }, 320);
+      pbShowFinish(320);
       return;
     }
 
@@ -8162,6 +8452,8 @@ async function runSolver() {
     if (pb) exitPlayback();
     renderAll(true);
     setStatus(solverFailedStatus(), 'err');
+  } finally {
+    releaseCollisions();
   }
 }
 
@@ -8197,41 +8489,86 @@ function abortSolve() {
 var pb = null;
 var PB_STEP_MS = 220;
 
-function pbSchedule() {
-  if (!pb || pb.live || pb.precompute) return;
+function solutionMotionDuration(plan) {
+  return Math.max(70,Math.min(360,SOLVE_STEP_MS*plan.end));
+}
+
+function pbStopTimer() {
   if (pb.timer) clearTimeout(pb.timer);
-  if (pb.paused || pb.index >= pb.solution.length) { pb.timer = null; return; }
-  pb.timer = setTimeout(function() {
-    if (!pb || pb.paused || pb.live || pb.precompute) return;
-    pbStepForward(consecutiveSlideCount(pb.solution,pb.index,3));
-    pbSchedule();
-  }, PB_STEP_MS);
+  pb.timer = null;
 }
 
-function pbStepForward(count) {
-  if (!pb || pb.precompute) return;
-  var target = Math.min(pb.solution.length, pb.index + count);
-  while (pb.index < target) {
-    var m = pb.solution[pb.index];
-    applyMotionRecord(layout,m,false);
-    hist.push(m);
-    pb.index++;
-  }
-  renderAll(true);
-  updatePlaybackUI();
+function pbCancelMotion() {
+  if (!pb.animating) return false;
+  pb.animating = false;
+  ++motionSerial;
+  if (motionFrame) cancelAnimationFrame(motionFrame);
+  motionFrame = 0;
+  return true;
 }
 
-function pbStepBackward(count) {
-  if (!pb || pb.precompute) return;
-  var target = Math.max(0, pb.index - count);
-  while (pb.index > target) {
-    pb.index--;
-    var m = pb.solution[pb.index];
-    applyMotionRecord(layout,m,true);
-    hist.pop();
+function pbSchedule(delay) {
+  if (!pb || pb.live || pb.precompute || pb.animating) return;
+  pbStopTimer();
+  if (pb.paused || pb.index >= pb.solution.length) return;
+  var session=pb;
+  pb.timer=setTimeout(function() {
+    if (pb!==session || session.paused || session.animating) return;
+    pb.timer=null;
+    pbAnimateStep(false,consecutiveSlideCount(pb.solution,pb.index,3));
+  },delay);
+}
+
+function pbMotionPlan(records,reverse) {
+  var first=records[0], saved=first.motion;
+  if (saved) {
+    // The same delays describe the original push when played in either
+    // direction. Validate against the current replay position.
+    return Object.assign({},saved,{state:layout.slice(),owner:cfg,size:n});
   }
-  renderAll(true);
+  var dx=first.b%n-first.a%n,dy=Math.floor(first.b/n)-Math.floor(first.a/n);
+  var parts=records.map(function(move) {
+    return {from:move.a,to:move.b,id:layout[reverse?move.b:move.a],delay:0};
+  });
+  return makeMotionPlan(first.a,dx,dy,layout,parts,1,1);
+}
+
+function pbAnimateStep(reverse,count) {
+  if (!pb || pb.live || pb.precompute || pb.animating || !count) return;
+  var session=pb, start=reverse?pb.index-1:pb.index;
+  var records=pb.solution.slice(start,start+count);
+  if (start<0 || !records.length) return;
+  var plan=pbMotionPlan(records,reverse);
+  var duration=solutionMotionDuration(plan);
+  session.animating=true;
   updatePlaybackUI();
+  animateMotion(plan,reverse?plan.end:0,reverse?0:plan.end,duration,function(ok){
+    if (pb!==session) return;
+    session.animating=false;
+    if (ok) {
+      records.forEach(function(move){
+        applyMotionRecord(layout,move,reverse);
+        if (reverse) hist.pop();
+        else hist.push(move);
+      });
+      session.index+=reverse?-records.length:records.length;
+      if(session.index===session.solution.length) session.paused=true;
+    }
+    renderAll(false);
+    updatePlaybackUI();
+    if (ok) pbSchedule(Math.max(0,PB_STEP_MS-duration));
+  });
+}
+
+function pbManualStep(reverse) {
+  if (!pb || pb.live || pb.precompute || (pb.animating && pb.paused)) return;
+  pb.winShown=true;
+  closeWin();
+  pb.paused=true;
+  pbStopTimer();
+  if (pbCancelMotion()) renderAll(false);
+  if (reverse ? pb.index>0 : pb.index<pb.solution.length) pbAnimateStep(reverse,1);
+  else updatePlaybackUI();
 }
 
 function pbSeek(newIndex) {
@@ -8240,8 +8577,13 @@ function pbSeek(newIndex) {
   // Never seek beyond available records; >> uses a separate fast-forward request.
   if (pb.live) return;
   newIndex = Math.max(0, Math.min(pb.solution.length, newIndex));
-  if (newIndex === pb.index) return;
-  if (pb.timer) { clearTimeout(pb.timer); pb.timer = null; }
+  pbStopTimer();
+  var motionCancelled=pbCancelMotion();
+  if (newIndex === pb.index) {
+    if(motionCancelled) renderAll(false);
+    updatePlaybackUI();
+    return;
+  }
   layout = pb.baseLayout.slice();
   hist = pb.baseHist.slice();
   redo = pb.baseRedo.slice();
@@ -8251,7 +8593,7 @@ function pbSeek(newIndex) {
     hist.push(m);
   }
   pb.index = newIndex;
-  renderAll(true);
+  renderAll(false);
   updatePlaybackUI();
 }
 
@@ -8260,7 +8602,7 @@ function pbTogglePause() {
   if (pb.paused) {
     pb.paused = false;
     updatePlaybackUI();
-    if (!pb.live) pbSchedule();
+    if (!pb.live) pbSchedule(0);
   } else {
     pb.paused = true;
     pb.pauseIndex = pb.index;
@@ -8276,12 +8618,21 @@ function pbTogglePause() {
 
 function exitPlayback() {
   if (!pb) return;
-  if (pb.timer) { clearTimeout(pb.timer); pb.timer = null; }
+  pbStopTimer();
+  var motionCancelled=pbCancelMotion();
   pb = null;
+  if (motionCancelled) renderAll(false);
   hidePlaybackUI();
   updateUI();
   renderList();
   updateSolveButtonLabel();
+}
+
+function pbShowFinish(delay) {
+  var finished=pb;
+  setTimeout(function(){
+    if (pb && pb===finished && pb.winShown && pb.index===pb.solution.length) openWin({hideTime:true});
+  },delay);
 }
 
 function showPlaybackUI() { $('pbRow').classList.remove('hidden'); }
@@ -8308,8 +8659,9 @@ function updatePlaybackUI() {
   var pauseTitle = pb.paused ? tr('play') : tr('pause');
   pauseBtn.title = pauseTitle;
   pauseBtn.setAttribute('aria-label', pauseTitle);
-  ['pbStart','pbPrev','pbNext'].forEach(function(id) {
-    $(id).disabled = !!(pb.live || pb.precompute || pb.jumpToEnd);
+  $('pbStart').disabled = !!(pb.live || pb.precompute || pb.jumpToEnd);
+  ['pbPrev','pbNext'].forEach(function(id) {
+    $(id).disabled = $('pbStart').disabled || !!(pb.animating && pb.paused);
   });
   $('pbEnd').disabled = !!pb.jumpToEnd;
   if (!pb.live && pb.index >= pb.solution.length && pb.solution.length > 0 && !pb.winShown) {
@@ -8317,7 +8669,7 @@ function updatePlaybackUI() {
     pb.paused = true;
     if (pb.timer) { clearTimeout(pb.timer); pb.timer = null; }
     updatePlaybackUI();
-    setTimeout(function() { if (pb && pb.winShown) openWin({ hideTime: true }); }, 260);
+    pbShowFinish(260);
   }
 }
 
@@ -8792,6 +9144,15 @@ function analyzerSingleHoleNeighbors(singleMoves) {
 }
 
 async function analyzerSweep(start, stateLimit, stopped, progress, isTarget) {
+  var releaseCollisions=beginSearchCollisions();
+  try {
+    return await analyzerSweepWithCache(start,stateLimit,stopped,progress,isTarget);
+  } finally {
+    releaseCollisions();
+  }
+}
+
+async function analyzerSweepWithCache(start, stateLimit, stopped, progress, isTarget) {
   var types = solverEquivalentTypes();
   var equivalent = new Set(types).size !== types.length;
   var holes = start.filter(function(id){return id === -1;}).length;
@@ -8815,7 +9176,9 @@ async function analyzerSweep(start, stateLimit, stopped, progress, isTarget) {
     for (var i = 0; i < value.length; i++) state[i] = value.charCodeAt(i) - 2;
     return state;
   }
-  var searchContext = {key: function(state){return pack(state, true);}, neighborsMemo: null};
+  var physicalNeighbors = singleHole ? null : createPhysicalBfsNeighbors(function(state) {
+    return pack(state, true);
+  });
   // Split large collections and allocate blocks only as the queue grows.
   var visited = Array.from({length: 32}, function(){return new Set();});
   var blockBits = 16, blockSize = 1 << blockBits, blockMask = blockSize - 1;
@@ -8846,7 +9209,9 @@ async function analyzerSweep(start, stateLimit, stopped, progress, isTarget) {
   var memoryReached = false, lastYield = performance.now(), lastReport = 0;
   while (head < count && !stopped() && !memoryReached && !reachedTarget) {
     var state = unpack(stateBlocks[head >>> blockBits][head & blockMask]);
-    var next = singleHole ? neighbors(state, singleMoves) : targetMultipleHoleNeighbors(state, searchContext);
+    var next = singleHole ? neighbors(state, singleMoves) : physicalNeighbors(state);
+    // Keep the same BFS order, including which position wins a depth tie.
+    if (!singleHole) next.sort(function(a,b){return a.move.cell-b.move.cell || a.direction-b.direction;});
     for (var i = 0; i < next.length; i++) {
       var entry = singleHole ? next[i] : next[i].state;
       var key = singleHole ? pack(entry, equivalent) : next[i].key;
@@ -8914,6 +9279,7 @@ async function runAnalyzer(command) {
   var rounds = 0, best = null, result = null, source = analyzer.source;
   if (analyzer.view!=='path') source=analyzerDisplayedPosition(0).state || source;
   var startTime = performance.now();
+  var releaseCollisions=beginSearchCollisions();
   try {
     renderAnalyzer();
     await analyzer.distanceWork;
@@ -8943,6 +9309,7 @@ async function runAnalyzer(command) {
     console.error(error);
     setAnalyzerStatus('anaError');
   } finally {
+    releaseCollisions();
     analyzer.job = null;
     renderAnalyzer();
   }
@@ -9381,7 +9748,7 @@ function editorPointInUpperShape(shape, x, y) {
 
 function editorHitAt(p) {
   if (!S || !cfg) return {cell: -1, tier: 'tile'};
-  var boardRect=board.getBoundingClientRect(),layers=upLayer.children;
+  var boardRect=board.getBoundingClientRect(),layers=upLayer.querySelectorAll('.up:not(.bond-upper-group)');
   // Later siblings are painted above earlier ones. Transparent gaps stay clickable.
   for (var i=layers.length-1;i>=0;i--) {
     var upper=layers[i],id=upper._tileId;
@@ -10028,6 +10395,1501 @@ $('addPuzBtn').addEventListener('click', addPuzzle);
 $('launchBtn').addEventListener('click', launchEditor);
 $('cancelBtn').addEventListener('click', cancelEditor);
 $('clearBtn').addEventListener('click', function () { if (mode === 'edit') replaceCfg(defaultCfg(n, '', boardRows)); });
+function printRailSection(profile,z) {
+  const height=z*10/profile.height, index=Math.max(0,Math.min(100,Math.min(height,10-height)*20));
+  const i=Math.min(99,Math.floor(index)), t=index-i;
+  const [a,b]=[profile.samples[i],profile.samples[i+1]];
+  return [profile.unit*(a[0]+(b[0]-a[0])*t),profile.unit*(a[1]+(b[1]-a[1])*t)];
+}
+
+function buildPrintMesh(part) {
+  const {bounds, step, layers} = part;
+  function distance(shape,x,y) {
+    if (shape.kind==='circle') return Math.hypot(x-shape.x,y-shape.y)-shape.r;
+    if (shape.kind==='rect') {
+      const u=Math.abs(x-shape.x)-shape.w+shape.r, v=Math.abs(y-shape.y)-shape.h+shape.r;
+      return Math.hypot(Math.max(0,u),Math.max(0,v))+Math.min(Math.max(u,v),0)-shape.r;
+    }
+    let nearest=Infinity, inside=false;
+    for(let i=0,j=shape.points.length-1;i<shape.points.length;j=i++) {
+      const [a,b]=shape.points[j], [c,d]=shape.points[i];
+      const dx=c-a,dy=d-b;
+      const t=Math.max(0,Math.min(1,((x-a)*dx+(y-b)*dy)/(dx*dx+dy*dy||1)));
+      nearest=Math.min(nearest,(x-a-t*dx)**2+(y-b-t*dy)**2);
+      if ((b>y)!==(d>y) && x<a+(y-b)*dx/dy) inside=!inside;
+    }
+    return (inside?-1:1)*Math.sqrt(nearest);
+  }
+  function union(shapes,x,y) {
+    let d=Infinity;
+    for (const shape of shapes) d=Math.min(d,distance(shape,x,y));
+    return d;
+  }
+  // The XY section is measured on the straight sides of the donor STEP.
+  function railSection(z) {return printRailSection(part.profile,z);}
+  function applySection(rects,section) {
+    const [left,right]=section;
+    return rects.map(rect=>{
+      const center=(right+left)/2, delta=(right-left)/2;
+      return {...rect,x:rect.x+center,y:rect.y-center,w:rect.w+delta,h:rect.h+delta,
+        r:Math.max(0,Math.min(rect.r,rect.w+delta,rect.h+delta))};
+    });
+  }
+  function glyph(mask,x,y) {
+    const u=(x-mask.x)/mask.unit, v=(mask.top-y)/mask.unit;
+    const i=Math.floor(u),j=Math.floor(v);
+    if (i<0 || j<0 || i+1>=mask.w || j+1>=mask.h) return 1;
+    const a=j*mask.w+i, f=u-i, g=v-j, d=mask.data;
+    return (128-(d[a]*(1-f)+d[a+1]*f)*(1-g)-(d[a+mask.w]*(1-f)+d[a+mask.w+1]*f)*g)/128*mask.unit;
+  }
+  const nx=Math.ceil((bounds[3]-bounds[0])/step)+4;
+  const ny=Math.ceil((bounds[4]-bounds[1])/step)+4;
+  const nz=Math.ceil((bounds[5]-bounds[2])/step)+4;
+  const x0=bounds[0]-step*1.179, y0=bounds[1]-step*1.233, z0=bounds[2]-step*1.371;
+  function slice(k,out) {
+    const z=z0+k*step, active=[];
+    for (const layer of layers) {
+      const slab=Math.max(layer.bottom-z,z-layer.top);
+      if (slab>step*2) continue;
+      const endDistance=layer.bevelAt==='top' ? layer.top-z
+        : layer.bevelAt==='bottom' ? z-layer.bottom : Math.min(z-layer.bottom,layer.top-z);
+      const bevel=layer.bevel ? Math.max(0,layer.bevel-endDistance) : 0;
+      const section=layer.section ? railSection(z) : null;
+      const shapes=layer.section==='tile' ? applySection(layer.shapes,section) : layer.shapes;
+      const holes=layer.section==='frame' ? applySection(layer.holes,section) : layer.holes;
+      active.push({shapes,holes,slab,bevel});
+    }
+    for (let j=0;j<ny;j++) for(let i=0;i<nx;i++) {
+      const x=x0+i*step,y=y0+j*step;
+      let d=step*3;
+      for (const {shapes,holes,slab,bevel} of active) {
+        const outer=union(shapes,x,y), hole=holes ? -union(holes,x,y) : -Infinity;
+        d=Math.min(d,Math.max(slab,outer+bevel,hole));
+      }
+      for (const cut of part.cuts) {
+        const slab=Math.max(cut.bottom-z,z-cut.top);
+        if (slab>step*2) continue;
+        const xy=cut.glyph ? glyph(cut.glyph,x,y) : union(cut.shapes,x,y);
+        d=Math.max(d,-Math.max(slab,xy));
+      }
+      // Avoid zero-valued grid vertices, which can collapse tetrahedra.
+      out[j*nx+i]=Math.abs(d)<1e-5 ? (d<0?-1e-5:1e-5) : d;
+    }
+  }
+  const tets=[[0,1,3,7],[0,1,5,7],[0,2,3,7],[0,2,6,7],[0,4,5,7],[0,4,6,7]];
+  const corners=Array.from({length:8},()=>[0,0,0]);
+  let a=new Float64Array(nx*ny),b=new Float64Array(nx*ny);
+  let output=new Float32Array(90000), size=0;
+  function triangle(p,q,r,inside) {
+    const u=q.map((v,i)=>v-p[i]),v=r.map((w,i)=>w-p[i]);
+    const normal=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+    if (normal.reduce((sum,n,i)=>sum+n*(inside[i]-p[i]),0)>0) [q,r]=[r,q];
+    if (size+9>output.length) {
+      const bigger=new Float32Array(output.length*2);
+      bigger.set(output);output=bigger;
+    }
+    output.set(p,size);output.set(q,size+3);output.set(r,size+6);size+=9;
+  }
+  function edge(i,j,values) {
+    if (j<i) [i,j]=[j,i];
+    const t=values[i]/(values[i]-values[j]);
+    return corners[i].map((v,k)=>v+t*(corners[j][k]-v));
+  }
+  slice(0,a);
+  for(let k=0;k<nz-1;k++) {
+    slice(k+1,b);
+    for(let j=0;j<ny-1;j++) for(let i=0;i<nx-1;i++) {
+      const p=j*nx+i;
+      const values=[a[p],a[p+1],a[p+nx],a[p+nx+1],b[p],b[p+1],b[p+nx],b[p+nx+1]];
+      const mask=values.reduce((bits,v,l)=>bits|(v<0?1<<l:0),0);
+      if (!mask || mask===255) continue;
+      for(let l=0;l<8;l++) {
+        corners[l][0]=x0+(i+(l&1))*step;
+        corners[l][1]=y0+(j+((l>>1)&1))*step;
+        corners[l][2]=z0+(k+(l>>2))*step;
+      }
+      for(const tet of tets) {
+        const inside=tet.filter(index=>mask&(1<<index)),outside=tet.filter(index=>!(mask&(1<<index)));
+        if (!inside.length || !outside.length) continue;
+        if(inside.length===2) {
+          const [p0,p1,p2,p3]=inside.flatMap(l=>outside.map(m=>edge(l,m,values)));
+          triangle(p0,p1,p3,corners[inside[0]]);
+          triangle(p0,p3,p2,corners[inside[0]]);
+        } else {
+          const one=inside.length===1, hub=one?inside[0]:outside[0];
+          const [p0,p1,p2]=(one?outside:inside).map(l=>edge(hub,l,values));
+          triangle(p0,p1,p2,corners[inside[0]]);
+        }
+      }
+    }
+    [a,b]=[b,a];
+  }
+  const vertexIds=new Map(), points=[], faces=new Int32Array(size/3);
+  for(let i=0;i<size;i+=3) {
+    const x=output[i],y=output[i+1],z=output[i+2],key=x+','+y+','+z;
+    let id=vertexIds.get(key);
+    if(id===undefined) {id=points.length/3;vertexIds.set(key,id);points.push(x,y,z);}
+    faces[i/3]=id;
+  }
+  vertexIds.clear();
+  simplifyPrintSurface(points,faces,.032);
+  let length=0;
+  for(let i=0;i<faces.length;i+=3) {
+    if(faces[i]<0) continue;
+    for(let j=0;j<3;j++) {
+      const offset=faces[i+j]*3;
+      output[length++]=points[offset];output[length++]=points[offset+1];output[length++]=points[offset+2];
+    }
+  }
+  return output.slice(0,length);
+}
+
+function simplifyPrintSurface(points, faces, tolerance) {
+  const n=points.length/3;
+  const quadrics=new Float64Array(n*10);
+  const terms=new Float64Array(10);
+  function normal(ax,ay,az,bx,by,bz,cx,cy,cz) {
+    return [(by-ay)*(cz-az)-(bz-az)*(cy-ay),
+      (bz-az)*(cx-ax)-(bx-ax)*(cz-az),(bx-ax)*(cy-ay)-(by-ay)*(cx-ax)];
+  }
+  function faceNormal(a,b,c) {
+    return normal(points[a],points[a+1],points[a+2],points[b],points[b+1],points[b+2],points[c],points[c+1],points[c+2]);
+  }
+  for (let i=0;i<faces.length;i+=3) {
+    const a=faces[i]*3,b=faces[i+1]*3,c=faces[i+2]*3;
+    let [x,y,z]=faceNormal(a,b,c);
+    const length=Math.hypot(x,y,z);
+    if (!length) continue;
+    x/=length;y/=length;z/=length;
+    const d=-(x*points[a]+y*points[a+1]+z*points[a+2]);
+    terms.set([x*x,x*y,x*z,x*d,y*y,y*z,y*d,z*z,z*d,d*d]);
+    // Area weighting keeps the error independent of sample density.
+    for (let j=0;j<3;j++) {
+      const q=faces[i+j]*10;
+      for (let k=0;k<10;k++) quadrics[q+k]+=terms[k]*length;
+    }
+  }
+  const allowed=tolerance*tolerance;
+  const locked=new Uint8Array(n), removed=new Uint8Array(n);
+  const heads=new Int32Array(n), next=new Int32Array(faces.length);
+  const neighbors=new Float64Array(n);
+  let live=faces.length/3;
+  for (let pass=0;pass<9;pass++) {
+    heads.fill(-1);locked.fill(0);
+    for (let i=0;i<faces.length;i++) {
+      const v=faces[i];
+      if (v<0) continue;
+      next[i]=heads[v];heads[v]=i;
+    }
+    let changes=0;
+    for (let a=pass%2 ? n-1 : 0;a>=0 && a<n;a+=pass%2 ? -1 : 1) {
+      if (removed[a] || locked[a] || heads[a]<0) continue;
+      const va=a*3,qa=a*10;
+      const x0=points[va],y0=points[va+1],z0=points[va+2];
+      const candidates=[];
+      const stamp=pass*n+a+1;
+      for (let e=heads[a];e!==-1;e=next[e]) {
+        const i=e-e%3;
+        for (let j=i;j<i+3;j++) {
+          const b=faces[j];
+          if (b<0 || b===a || neighbors[b]===stamp) continue;
+          neighbors[b]=stamp;
+          if (locked[b]) continue;
+          const vb=b*3,qb=b*10;
+          const x1=points[vb],y1=points[vb+1],z1=points[vb+2];
+          for (let k=0;k<10;k++) terms[k]=quadrics[qa+k]+quadrics[qb+k];
+          const [xx,xy,xz,xd,yy,yz,yd,zz,zd,dd]=terms;
+          const weight=xx+yy+zz;
+          let best=Infinity,position=null;
+          // Minimize the quadric along the edge, including its endpoints.
+          const dx=x1-x0,dy=y1-y0,dz=z1-z0;
+          const curvature=xx*dx*dx+yy*dy*dy+zz*dz*dz+2*(xy*dx*dy+xz*dx*dz+yz*dy*dz);
+          const slope=dx*(xx*x0+xy*y0+xz*z0+xd)+dy*(xy*x0+yy*y0+yz*z0+yd)+dz*(xz*x0+yz*y0+zz*z0+zd);
+          for (const t of [curvature>1e-14 ? Math.max(0,Math.min(1,-slope/curvature)) : 0.5,0,1]) {
+            const x=Math.fround(x0+dx*t),y=Math.fround(y0+dy*t),z=Math.fround(z0+dz*t);
+            const error=Math.max(0,xx*x*x+yy*y*y+zz*z*z+dd+2*(xy*x*y+xz*x*z+yz*y*z+xd*x+yd*y+zd*z))/weight;
+            if (error<best) {best=error;position=[x,y,z];}
+          }
+          if (best<=allowed) candidates.push({b,position,score:best+1e-9*(dx*dx+dy*dy+dz*dz)});
+        }
+      }
+      candidates.sort((p,q)=>p.score-q.score);
+      for (const {b,position} of candidates) {
+        const shared=[],affected=[];
+        let valid=true;
+        // Only the two vertices opposite the collapsed edge may be common
+        // to both one-rings. Also reject the four-face tetrahedron case.
+        for (let e=heads[a];e!==-1;e=next[e]) {
+          const i=e-e%3;
+          const v=faces[i+(e+1-i)%3],w=faces[i+(e+2-i)%3];
+          if (v===b || w===b) shared.push(v===b?w:v);
+          else affected.push(i);
+        }
+        if (shared.length!==2 || shared[0]===shared[1]) continue;
+        for (let e=heads[b];e!==-1;e=next[e]) {
+          const i=e-e%3;
+          const v=faces[i+(e+1-i)%3],w=faces[i+(e+2-i)%3];
+          if (v===a || w===a) continue;
+          const commonV=neighbors[v]===stamp,commonW=neighbors[w]===stamp;
+          if ((commonV && !shared.includes(v)) || (commonW && !shared.includes(w)) || (commonV && commonW)) {
+            valid=false;break;
+          }
+          affected.push(i);
+        }
+        if (!valid) continue;
+        const [x,y,z]=position,vb=b*3;
+        for (const i of affected) {
+          const v=faces[i]*3,w=faces[i+1]*3,u=faces[i+2]*3;
+          const [nx,ny,nz]=faceNormal(v,w,u);
+          const moved=k=>k===va || k===vb;
+          const [rx,ry,rz]=normal(
+            moved(v)?x:points[v],moved(v)?y:points[v+1],moved(v)?z:points[v+2],
+            moved(w)?x:points[w],moved(w)?y:points[w+1],moved(w)?z:points[w+2],
+            moved(u)?x:points[u],moved(u)?y:points[u+1],moved(u)?z:points[u+2]);
+          const lengths=Math.hypot(nx,ny,nz)*Math.hypot(rx,ry,rz);
+          if (lengths<1e-19 || nx*rx+ny*ry+nz*rz<0.35*lengths) {valid=false;break;}
+        }
+        if (!valid) continue;
+        points[va]=x;points[va+1]=y;points[va+2]=z;
+        for (let k=0;k<10;k++) quadrics[qa+k]+=quadrics[b*10+k];
+        for (const v of [a,b]) for (let e=heads[v];e!==-1;e=next[e]) {
+          const i=e-e%3;
+          if (faces[i]<0) continue;
+          for (let j=i;j<i+3;j++) locked[faces[j]]=1;
+          if (faces[i]===a || faces[i+1]===a || faces[i+2]===a) {
+            if (v===b) {faces[i]=faces[i+1]=faces[i+2]=-1;live--;}
+          } else if (v===b) faces[e]=a;
+        }
+        removed[b]=1;changes++;
+        break;
+      }
+    }
+    if (!changes || live<32) break;
+  }
+  return faces;
+}
+
+// Half profiles sampled every 0.05 mm from Frame 3x3.STEP at 20 mm pitch.
+const [stepTileProfile,stepFrameProfile]=[[[-1e-06,1e-06],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,-0.0],[0.0,-0.0],[0.0,-0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[-0.041955,-0.041955],[-0.08391,-0.08391],[-0.125865,-0.125865],[-0.16782,-0.16782],[-0.209775,-0.209775],[-0.25173,-0.25173],[-0.293685,-0.293685],[-0.33564,-0.33564],[-0.377595,-0.377595],[-0.41955,-0.41955],[-0.461505,-0.461505],[-0.50346,-0.50346],[-0.545415,-0.545415],[-0.58737,-0.58737],[-0.629325,-0.629325],[-0.67128,-0.67128],[-0.713235,-0.713235],[-0.75519,-0.75519],[-0.797145,-0.797145],[-0.8391,-0.8391],[-0.881055,-0.881055],[-0.92301,-0.92301],[-0.964965,-0.964965],[-1.00692,-1.00692],[-1.048875,-1.048875],[-1.09083,-1.09083],[-1.132784,-1.132784],[-1.17252,-1.174739],[-1.204795,-1.216694],[-1.230616,-1.258649],[-1.250865,-1.300604],[-1.266127,-1.342559],[-1.276788,-1.384514],[-1.283093,-1.426469],[-1.28518,-1.468424],[-1.283093,-1.426469],[-1.276788,-1.384514],[-1.266127,-1.342559],[-1.250865,-1.300604],[-1.230616,-1.258649],[-1.204795,-1.216694],[-1.17252,-1.174739],[-1.132784,-1.132784],[-1.09083,-1.09083],[-1.048875,-1.048875],[-1.00692,-1.00692],[-0.964965,-0.964965],[-0.92301,-0.92301],[-0.881055,-0.881055],[-0.8391,-0.8391],[-0.797145,-0.797145],[-0.75519,-0.75519],[-0.713235,-0.713235],[-0.67128,-0.67128],[-0.629325,-0.629325],[-0.58737,-0.58737],[-0.545415,-0.545415],[-0.50346,-0.50346],[-0.461505,-0.461505],[-0.41955,-0.41955],[-0.377595,-0.377595],[-0.33564,-0.33564],[-0.293685,-0.295905],[-0.25173,-0.263629],[-0.209775,-0.237809],[-0.16782,-0.217559],[-0.125865,-0.202297],[-0.08391,-0.191636],[-0.041955,-0.185331],[-1e-06,-0.183244]],[[-0.699999,0.699999],[-0.65,0.65],[-0.6,0.6],[-0.55,0.55],[-0.5,0.5],[-0.45,0.45],[-0.4,0.4],[-0.35,0.35],[-0.3,0.3],[-0.25,0.25],[-0.2,0.2],[-0.15,0.15],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.100475,0.1],[-0.10377,0.1],[-0.110237,0.1],[-0.119957,0.1],[-0.133051,0.1],[-0.149698,0.1],[-0.17014,0.1],[-0.194707,0.088586],[-0.223848,0.046631],[-0.258187,0.004676],[-0.298361,-0.037279],[-0.340316,-0.079234],[-0.382271,-0.121189],[-0.424226,-0.163144],[-0.466181,-0.205099],[-0.508136,-0.247054],[-0.550091,-0.289009],[-0.592046,-0.330964],[-0.634001,-0.372919],[-0.675955,-0.414874],[-0.71791,-0.456829],[-0.759865,-0.498784],[-0.80182,-0.540739],[-0.843775,-0.582694],[-0.88573,-0.624649],[-0.927685,-0.666604],[-0.96964,-0.708559],[-1.011595,-0.750514],[-1.05355,-0.792469],[-1.095505,-0.834424],[-1.13746,-0.876379],[-1.179415,-0.918334],[-1.22137,-0.960289],[-1.263325,-1.002244],[-1.30528,-1.041979],[-1.347235,-1.074254],[-1.38919,-1.100075],[-1.431145,-1.120325],[-1.4731,-1.135587],[-1.515055,-1.146247],[-1.55701,-1.152552],[-1.598965,-1.154639],[-1.55701,-1.152552],[-1.515055,-1.146247],[-1.4731,-1.135587],[-1.431145,-1.120325],[-1.38919,-1.100075],[-1.347235,-1.074254],[-1.30528,-1.041979],[-1.263325,-1.002244],[-1.22137,-0.960289],[-1.179415,-0.918334],[-1.13746,-0.876379],[-1.095505,-0.834424],[-1.05355,-0.792469],[-1.011595,-0.750514],[-0.96964,-0.708559],[-0.927685,-0.666604],[-0.88573,-0.624649],[-0.843775,-0.582694],[-0.80182,-0.540739],[-0.759865,-0.498784],[-0.71791,-0.456829],[-0.675955,-0.414874],[-0.634001,-0.372919],[-0.592046,-0.330964],[-0.550091,-0.289009],[-0.514085,-0.247054],[-0.49105,-0.205099],[-0.478089,-0.163144],[-0.473893,-0.121189],[-0.478089,-0.079234],[-0.49105,-0.037279],[-0.514085,0.004676],[-0.550286,0.046631],[-0.608062,0.088586],[-0.773118,0.13054]]];
+const printSettingsDefaults={pitch:20, frameHeight:10, blockHeight:3.8, gap:.35, radius:.65, chamfer:.45, blockGap:0, pinGap:0, resolution:.4};
+const printForm=$('printForm'), printDialog=$('printDialog');
+let printJob=null, printModel=null, printViewer=null, printTimer=0;
+
+function printRect(x,y,w,h,r=0) {
+  return {kind:'rect',x,y,w,h,r:Math.max(0,Math.min(r,w,h))};
+}
+
+function printShapeBounds(shape) {
+  if (shape.kind==='rect') return [shape.x-shape.w,shape.y-shape.h,shape.x+shape.w,shape.y+shape.h];
+  if (shape.kind==='circle') return [shape.x-shape.r,shape.y-shape.r,shape.x+shape.r,shape.y+shape.r];
+  return [Math.min(...shape.points.map(p=>p[0])),Math.min(...shape.points.map(p=>p[1])),
+    Math.max(...shape.points.map(p=>p[0])),Math.max(...shape.points.map(p=>p[1]))];
+}
+
+function printBounds(boxes) {
+  return boxes.reduce((a,b)=>[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.max(a[3],b[3])],
+    [Infinity,Infinity,-Infinity,-Infinity]);
+}
+
+function printShape(shape,pitch) {
+  if (shape.k==='c') return {kind:'circle',x:shape.x*pitch,y:-shape.y*pitch,r:shape.r*pitch};
+  if (shape.k==='r') return printRect((shape.x0+shape.x1)*pitch/2,-(shape.y0+shape.y1)*pitch/2,
+    (shape.x1-shape.x0)*pitch/2,(shape.y1-shape.y0)*pitch/2);
+  return {kind:'polygon',points:shape.pts.map(([x,y])=>[x*pitch,-y*pitch])};
+}
+
+function printContains(shape,x,y) {
+  if (shape.kind==='circle') return (x-shape.x)**2+(y-shape.y)**2 < shape.r**2;
+  if (shape.kind==='rect') return Math.abs(x-shape.x)<shape.w && Math.abs(y-shape.y)<shape.h;
+  let inside=false;
+  for(let i=0,j=shape.points.length-1;i<shape.points.length;j=i++) {
+    const [a,b]=shape.points[j],[c,d]=shape.points[i];
+    if ((b>y)!==(d>y) && x<a+(y-b)*(c-a)/(d-b)) inside=!inside;
+  }
+  return inside;
+}
+
+// Distance from the center to the footprint edge, measured with an
+// axis-aligned square so concave outlines cannot cut across the pin.
+function printSquareRoom(shape,x,y) {
+  if (!printContains(shape,x,y)) return 0;
+  const dx=Math.abs(x-shape.x), dy=Math.abs(y-shape.y);
+  if (shape.kind==='circle') return (Math.sqrt(2*shape.r**2-(dx-dy)**2)-dx-dy)/2;
+  if (shape.kind==='rect') return Math.min(shape.w-dx,shape.h-dy);
+  let room=Infinity;
+  for(let i=0,j=shape.points.length-1;i<shape.points.length;j=i++) {
+    const [ax,ay]=shape.points[j], [bx,by]=shape.points[i];
+    const u=ax-x,v=ay-y,du=bx-ax,dv=by-ay;
+    room=Math.min(room,Math.max(Math.abs(u),Math.abs(v)));
+    // Along a segment the maximum of |x| and |y| can change slope only
+    // where they are equal, or at an endpoint.
+    for(const sign of [-1,1]) {
+      const t=(sign*v-u)/(du-sign*dv);
+      if(t>0 && t<1) room=Math.min(room,Math.abs(u+t*du));
+    }
+  }
+  return room;
+}
+
+function fitPrintPin(shapes, limit) {
+  let best={x:0,y:0,half:0};
+  const edgeClearance=.04;
+  for(const shape of shapes) {
+    const [left,bottom,right,top]=printShapeBounds(shape);
+    const l=Math.max(-limit,left), b=Math.max(-limit,bottom);
+    const r=Math.min(limit,right), t=Math.min(limit,top);
+    if(l>=r || b>=t) continue;
+    if(shape.kind==='rect') {
+      const centered=Math.min(shape.x-l,r-shape.x,shape.y-b,t-shape.y)-edgeClearance;
+      const square=Math.abs(shape.w-shape.h)<1e-6;
+      const candidate=square&&centered>=2
+        ? {x:shape.x,y:shape.y,half:centered}
+        : {x:(l+r)/2,y:(b+t)/2,half:Math.min(r-l,t-b)/2-edgeClearance};
+      if(candidate.half>best.half) best=candidate;
+      continue;
+    }
+    let candidate={x:(l+r)/2,y:(b+t)/2,half:0};
+    function sample(x,y) {
+      const half=Math.min(limit-Math.abs(x),limit-Math.abs(y),
+        printSquareRoom(shape,x,y))-edgeClearance;
+      if(half>candidate.half) candidate={x,y,half};
+    }
+    const dx=(r-l)/12,dy=(t-b)/12;
+    for(let i=0;i<=12;i++) for(let j=0;j<=12;j++) sample(l+i*dx,b+j*dy);
+    for(let scale=.5;scale*Math.max(dx,dy)>.005;scale/=2) {
+      const {x,y}=candidate;
+      for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++) sample(x+i*dx*scale,y+j*dy*scale);
+    }
+    if(candidate.half>best.half) best=candidate;
+  }
+  return best;
+}
+
+// Trace the outline of the available axis-aligned block footprint. Internal
+// edges cancel so the pin and socket each have a single continuous profile.
+function printMountOutline(boxes, expansion=0) {
+  const snap=value=>Math.round(value*1e6)/1e6;
+  const rects=boxes.map(([l,b,r,t])=>[
+    snap(l-expansion),snap(b-expansion),snap(r+expansion),snap(t+expansion)
+  ]);
+  const xs=[...new Set(rects.flatMap(([l,,r])=>[l,r]))].sort((a,b)=>a-b);
+  const ys=[...new Set(rects.flatMap(([,b,,t])=>[b,t]))].sort((a,b)=>a-b);
+  const edges=new Map();
+  for(let i=1;i<xs.length;i++) for(let j=1;j<ys.length;j++) {
+    const l=xs[i-1],r=xs[i],b=ys[j-1],t=ys[j];
+    if(!rects.some(([x,y,maxX,maxY])=>l>=x&&r<=maxX&&b>=y&&t<=maxY)) continue;
+    const corners=[[l,b],[r,b],[r,t],[l,t]];
+    corners.forEach((a,k)=>{
+      const c=corners[(k+1)%4];
+      if(!edges.delete(c+'/'+a)) edges.set(a+'/'+c,[a,c]);
+    });
+  }
+  const next=new Map([...edges.values()].map(([a,b])=>[a.toString(),b]));
+  const first=next.keys().next().value, points=[];
+  let key=first;
+  while(next.has(key)) {
+    const point=next.get(key);
+    points.push(point);
+    next.delete(key);
+    key=point.toString();
+  }
+  if(points.length<4 || next.size || key!==first || points.length!==edges.size) return null;
+  return {kind:'polygon',points:points.filter(([x,y],i)=>{
+    const [ax,ay]=points[(i+points.length-1)%points.length];
+    const [bx,by]=points[(i+1)%points.length];
+    return (x!==ax || x!==bx) && (y!==ay || y!==by);
+  })};
+}
+
+function fitPrintFootprintMount(shapes,limit,gap) {
+  if(shapes.some(shape=>shape.kind!=='rect'||shape.r)) return null;
+  const edge=.04;
+  const boxes=shapes.map(shape=>{
+    const [l,b,r,t]=printShapeBounds(shape);
+    return [Math.max(-limit,l)+edge,Math.max(-limit,b)+edge,
+      Math.min(limit,r)-edge,Math.min(limit,t)-edge];
+  }).filter(([l,b,r,t])=>r>l&&t>b);
+  if(!boxes.length) return null;
+  const pin=printMountOutline(boxes), socket=printMountOutline(boxes,gap);
+  if(!pin || !socket) return null;
+  return {pin,socket};
+}
+
+function offsetPrintMount(shape,x,y) {
+  if(shape.kind==='polygon') return {...shape,points:shape.points.map(([px,py])=>[px+x,py+y])};
+  return {...shape,x:shape.x+x,y:shape.y+y};
+}
+
+function printMarkerMask(marker,pitch,dx=0,dy=0) {
+  const canvas=document.createElement('canvas');
+  canvas.width=canvas.height=128;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  ctx.font='bold 90px Arial, sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';
+  ctx.fillText(marker,64,65,106);
+  const rgba=ctx.getImageData(0,0,128,128).data;
+  const data=new Uint8Array(128*128);
+  for(let i=0;i<data.length;i++) data[i]=rgba[4*i+3];
+  return {w:128,h:128,x:dx-.4*pitch,top:dy+.4*pitch,unit:.8*pitch/128,data};
+}
+
+function printPinHeight(frameHeight) {
+  return Math.round(frameHeight*60)/100;
+}
+
+function printPlan(puzzle,state,settings) {
+  const {pitch,frameHeight,blockHeight,gap,radius,chamfer,blockGap,pinGap,resolution}=settings;
+  const pinHeight=printPinHeight(frameHeight);
+  const cols=puzzle.n, rows=puzzleRows(puzzle);
+  const unit=pitch/20, baseTop=frameHeight, halfHeight=baseTop/2;
+  const tiles=puzzle.tiles, fixed=Array.isArray(puzzle.frameTiles);
+  const parts=[], upperCuts=[];
+  const guideAndBevelInset=Math.max(...stepTileProfile.map(([left,right],i)=>
+    Math.max(-left,-right)*unit+Math.max(0,chamfer-i*baseTop/200)));
+  const wall=7*unit+(fixed?pitch:0);
+  const outer=printRect((cols-1)*pitch/2,(rows-1)*pitch/2,
+    cols*pitch/2+wall,rows*pitch/2+wall,Math.max(radius,1.1*unit));
+
+  function part(name,color,layers,cuts=[],flip=false,offset=[0,0,0]) {
+    const bounds=printBounds(layers.flatMap(layer=>layer.shapes.map(shape=>{
+      const b=printShapeBounds(shape), extra=layer.section==='tile'?1.5*unit:0;
+      return [b[0]-extra,b[1]-extra,b[2]+extra,b[3]+extra];
+    })));
+    const section=layers.find(layer=>layer.section)?.section;
+    const profile=section ? {unit,height:baseTop,samples:section==='tile'?stepTileProfile:stepFrameProfile} : null;
+    // Sample closely around walls narrowed by a flush square socket.
+    const step=cuts.some(cut=>cut.flushSquare) ? Math.min(resolution,.1) : resolution;
+    parts.push({name,color,layers,cuts,flip,offset,step,profile,bounds:[bounds[0],bounds[1],
+      Math.min(...layers.map(layer=>layer.bottom)),bounds[2],bounds[3],Math.max(...layers.map(layer=>layer.top))]});
+  }
+
+  function upper(tile,x,y,name,baseCuts,isFixed) {
+    if (!tile.upper) return false;
+    const shapes=shapesOf(tile,0,0).map(shape=>printShape(shape,pitch));
+    if (!shapes.length && tile.screw) {
+      const s=screwVisualSpec(tile);
+      shapes.push({kind:'circle',x:(s.left+s.size/2-50)*UPK*pitch/100,
+        y:-(s.top+s.size/2-50)*UPK*pitch/100,r:s.size*UPK*pitch/200});
+    }
+    if (!shapes.length) return false;
+    const points=shapes.map(shape=>{
+      const [l,b,r,t]=printShapeBounds(shape), center=[(l+r)/2,(b+t)/2];
+      if (printContains(shape,...center)) return center;
+      // Find an interior mounting point on concave shapes.
+      for(let j=1;j<12;j++) for(let i=1;i<12;i++) {
+        const q=[l+(r-l)*i/12,b+(t-b)*j/12];
+        if (printContains(shape,...q)) return q;
+      }
+      return center;
+    });
+    // Keep material between the socket and the nearest guide or tile edge.
+    const socketEdge=(pitch-gap)/2-guideAndBevelInset-radius*(1-Math.SQRT1_2)-pinGap;
+    const socketLimit=socketEdge-.8;
+    const minSquareHalf=2;
+    const body=shapes[0];
+    const flushSquare=shapes.length===1 && body.kind==='rect' && body.w>=minSquareHalf &&
+      Math.abs(body.w-body.h)<1e-6 &&
+      Math.max(Math.abs(body.x)+body.w,Math.abs(body.y)+body.h)<=socketEdge-.12;
+    const fitted=flushSquare ? {x:body.x,y:body.y,half:body.w} : fitPrintPin(shapes,socketLimit);
+    const footprint=fitted.half<minSquareHalf ? fitPrintFootprintMount(shapes,socketLimit,pinGap) : null;
+    const needsPad=!footprint&&fitted.half<minSquareHalf;
+    let {x:px,y:py,half:pinHalf}=fitted;
+    const pads=[];
+    if(needsPad) {
+      // A very thin or completely offset footprint still needs a mounting pad.
+      const limit=Math.max(0,socketLimit-minSquareHalf);
+      [px,py]=points.reduce((a,b)=>Math.hypot(...a)<Math.hypot(...b)?a:b)
+        .map(a=>Math.max(-limit,Math.min(limit,a)));
+      pinHalf=minSquareHalf;
+      pads.push(printRect(px,py,pinHalf+.32,pinHalf+.32,.24));
+    }
+    const pin=footprint?.pin ?? printRect(px,py,pinHalf,pinHalf);
+    for(const [tx,ty] of footprint ? [] : points) {
+      const dx=tx-px,dy=ty-py,len=Math.hypot(dx,dy);
+      if (len<.3) continue;
+      // Keep already supported footprints clear underneath.
+      if ([0,.15,.3,.5,.7,.85,1].every(t=>shapes.some(shape=>printContains(shape,px+dx*t,py+dy*t)))) continue;
+      const a=-dy/len*.7,b=dx/len*.7;
+      pads.push({kind:'polygon',points:[[px+a,py+b],[tx+a,ty+b],[tx-a,ty-b],[px-a,py-b]]});
+    }
+    const cuts=tile.marker?[{bottom:blockHeight-.65,top:blockHeight+.3,glyph:printMarkerMask(tile.marker,pitch,...points[0])}]:[];
+    part(name,tile.upColor,[
+      {shapes:[pin],bottom:-pinHeight,top:.42,bevel:.2,bevelAt:flushSquare?'bottom':null},
+      ...(pads.length ? [{shapes:pads,bottom:0,top:Math.min(1.4,blockHeight*.6)}] : []),
+      {shapes,bottom:0,top:blockHeight,bevel:Math.min(chamfer,.45),bevelAt:flushSquare?'top':null}
+    ],cuts,true,[x,y,baseTop+blockGap]);
+    const socket=footprint?.socket ?? printRect(px,py,pinHalf+pinGap,pinHalf+pinGap);
+    baseCuts.push({shapes:[isFixed ? offsetPrintMount(socket,x,y) : socket],
+      bottom:baseTop+blockGap-pinHeight-pinGap,top:baseTop+.5,flushSquare});
+    return true;
+  }
+
+  const grouped=new Map();
+  state.forEach((id,cell)=>{
+    if(id<0) return;
+    const tile=tiles[id], tag=tile.bond?'bond-'+tile.bond:'tile-'+(id+1);
+    if(!grouped.has(tag)) grouped.set(tag,[]);
+    grouped.get(tag).push({id,tile,x:cell%cols*pitch,y:(rows-1-Math.floor(cell/cols))*pitch});
+  });
+  for(const [tag,items] of grouped) {
+    const [ox,oy]=[items[0].x,items[0].y];
+    const shapes=[], cuts=[];
+    for(const {tile,x,y,id} of items) {
+      const dx=x-ox,dy=y-oy, half=(pitch-gap)/2;
+      shapes.push(printRect(dx,dy,half,half,radius));
+      for(const other of items) {
+        if(other.y===y && other.x===x+pitch) shapes.push(printRect(dx+pitch/2,dy,gap/2+.4,half-radius));
+        if(other.x===x && other.y===y+pitch) shapes.push(printRect(dx,dy+pitch/2,half-radius,gap/2+.4));
+      }
+      const topCuts=[], topName='top-'+(id+1);
+      const hasTop=upper(tile,x,y,topName,topCuts,false);
+      for(const cut of topCuts) {
+        cut.shapes[0]=offsetPrintMount(cut.shapes[0],dx,dy);cuts.push(cut);
+      }
+      if (!hasTop && tile.marker) cuts.push({bottom:baseTop-.75,top:baseTop+.45,glyph:printMarkerMask(tile.marker,pitch,dx,dy)});
+    }
+    part(tag,items[0].tile.color,[{shapes,bottom:0,top:baseTop,section:'tile',bevel:chamfer,
+      grid:items.length>1?items.map(item=>({x:item.x-ox,y:item.y-oy})):null,pitch,gap,radius}],
+      cuts,false,[ox,oy,0]);
+  }
+
+  // Edge cutouts are supported by the surrounding ring. Interior cuts have
+  // no connection to the ring without a bottom, so keep them separate.
+  const edgeCuts=new Set(), pending=[];
+  for(let i=0;i<state.length;i++) {
+    const c=i%cols,r=Math.floor(i/cols);
+    if(state[i]===-2 && (c===0 || c===cols-1 || r===0 || r===rows-1)) pending.push(i);
+  }
+  while(pending.length) {
+    const i=pending.pop(), c=i%cols,r=Math.floor(i/cols);
+    if(edgeCuts.has(i)) continue;
+    edgeCuts.add(i);
+    const neighbors=[c>0?i-1:-1,c+1<cols?i+1:-1,r>0?i-cols:-1,r+1<rows?i+cols:-1];
+    for(const j of neighbors) if(state[j]===-2 && !edgeCuts.has(j)) pending.push(j);
+  }
+  const openings=[];
+  for(let i=0;i<state.length;i++) {
+    const x=i%cols*pitch,y=(rows-1-Math.floor(i/cols))*pitch;
+    if(!edgeCuts.has(i)) openings.push(printRect(x,y,pitch/2+gap,pitch/2+gap));
+    if(state[i]!==-2 || edgeCuts.has(i)) continue;
+    const name='blocked-'+(i+1), size=(pitch-gap)/2;
+    part(name,'#a2b0c5',[{shapes:[printRect(x,y,size,size,radius)],
+      bottom:0,top:baseTop,section:'tile',bevel:chamfer}]);
+  }
+  if(!edgeCuts.size) openings.splice(0,openings.length,
+    printRect(outer.x,outer.y,cols*pitch/2+gap,rows*pitch/2+gap));
+
+  if (fixed) puzzle.frameTiles.forEach((tile,i)=>{
+    if (!tile || !isFrameIndex(i,cols,rows)) return;
+    const column=i%(cols+2)-1, row=Math.floor(i/(cols+2))-1;
+    const name='frame-top-'+i;
+    upper(tile,column*pitch,(rows-1-row)*pitch,name,upperCuts,true);
+  });
+
+  // The donor CAD has a 5 × 2.57 mm flat recess, 1 mm deep per half.
+  // At the seam the paired recesses admit a flat-blade screwdriver.
+  const right=outer.x+outer.w, notchDepth=2.57*unit, overrun=2;
+  const pryCut={shapes:[printRect(right+(overrun-notchDepth)/2,outer.y,(notchDepth+overrun)/2,2.5*unit)],
+    bottom:halfHeight-unit,top:halfHeight+unit};
+  upperCuts.push(pryCut);
+  const lowerCuts=upperCuts.map(cut=>({...cut,bottom:baseTop-cut.top,top:baseTop-cut.bottom}));
+  const ring={shapes:[outer],holes:openings,section:'frame',bevel:chamfer,pitch,gap};
+  part('frame-lower','#a2b0c5',[{...ring,bottom:0,top:halfHeight}],lowerCuts,false);
+  part('frame-upper','#a2b0c5',[{...ring,bottom:halfHeight,top:baseTop}],upperCuts,true);
+  parts.at(-1).mirrorHeight=baseTop;
+  return {parts};
+}
+
+function mirrorPrintMesh(mesh,height) {
+  const reflected=new Float64Array(mesh.length);
+  for(let i=0;i<mesh.length;i+=9) for(let vertex=0;vertex<3;vertex++) {
+    const from=i+3*((3-vertex)%3), to=i+3*vertex;
+    reflected[to]=mesh[from];reflected[to+1]=mesh[from+1];reflected[to+2]=height-mesh[from+2];
+  }
+  return reflected;
+}
+
+function makeFifteenPrintStep(parts,title,bed) {
+  const rows=[];
+  const add=entity=>{rows.push(entity);return '#'+rows.length;};
+  const name=value=>"'"+String(value).replace(/[^\x20-\x7e]/g,'_').replaceAll("'","''")+"'";
+  const real=n=>Number(n.toFixed(9)).toString().replace(/^(-?\d+)$/,'$1.');
+  const tuple=values=>'('+values.join(',')+')';
+  const num=values=>tuple(values.map(real));
+  const sub=(a,b)=>a.map((x,i)=>x-b[i]);
+  const neg=a=>a.map(x=>-x);
+  const dot=(a,b)=>a.reduce((sum,x,i)=>sum+x*b[i],0);
+  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+  const unit=a=>a.map(x=>x/Math.hypot(...a));
+  const point=p=>add("CARTESIAN_POINT('',"+num(p)+")");
+  const direction=d=>add("DIRECTION('',"+num(unit(d))+")");
+  const X=[1,0,0],Z=[0,0,1];
+  function axis(p,n,u) {
+    u ||= Math.abs(n[0])<0.9 ? unit(cross([0,1,0],n)) : [0,1,0];
+    return add("AXIS2_PLACEMENT_3D('',"+[point(p),direction(n),direction(u)].join(',')+")");
+  }
+  const line=(a,b)=>({a,b});
+  const arc=(a,b,c,n)=>({a,b,c,n});
+  const rev=e=>({...e,a:e.b,b:e.a,n:e.n && neg(e.n)});
+  const reversed=loop=>loop.slice().reverse().map(rev);
+  function rounded([l,b,r,t],radius,z) {
+    if (radius<1e-8) return polygon([[l,b,z],[r,b,z],[r,t,z],[l,t,z]]);
+    const d=radius,p=[[l+d,b,z],[r-d,b,z],[r,b+d,z],[r,t-d,z],[r-d,t,z],[l+d,t,z],[l,t-d,z],[l,b+d,z]];
+    const centers=[[r-d,b+d,z],[r-d,t-d,z],[l+d,t-d,z],[l+d,b+d,z]];
+    return p.map((a,i)=>i%2 ? arc(a,p[(i+1)%8],centers[i>>1],Z) : line(a,p[i+1]));
+  }
+  function polygon(points) {return points.map((p,i)=>line(p,points[(i+1)%points.length]));}
+  const plane=(p,n)=>({type:'PLANE',p,n});
+  function writer(label,placement,refine) {
+    const [sx,sz,dx,dy,dz]=placement;
+    const transform=p=>[p[0]*sx+dx,p[1]+dy,p[2]*sz+dz];
+    const rotate=n=>[n[0]*sx,n[1],n[2]*sz];
+    const key=p=>p.map(v=>Math.round(v*1e6)).join(',');
+    const vertices=new Map(),edges=new Map(),faces=[],pending=[];
+    function vertex(p) {
+      const k=key(p);
+      if (!vertices.has(k)) vertices.set(k,add("VERTEX_POINT('',"+point(transform(p))+")"));
+      return vertices.get(k);
+    }
+    function encodeFace(loops,surface,same) {
+      const bounds=loops.map((loop,i)=>{
+        const references=loop.map(e=>{
+          const a=vertex(e.a),b=vertex(e.b);
+          const k=(a<b ? a+b : b+a)+(e.c ? ':'+key(e.c) : '');
+          let edge=edges.get(k);
+          if (!edge) {
+            const curve=e.ellipse ? add("ELLIPSE('',"+axis(transform(e.c),rotate(e.n),rotate(e.ellipse.u))+','+real(e.ellipse.major)+','+real(e.ellipse.minor)+')')
+              : e.c ? add("CIRCLE('',"+axis(transform(e.c),rotate(e.n),rotate(sub(e.a,e.c)))+','+real(Math.hypot(...sub(e.a,e.c)))+')')
+              : add("LINE('',"+point(transform(e.a))+','+add("VECTOR('',"+direction(rotate(sub(e.b,e.a)))+",1.)")+")");
+            edge={start:a,id:add("EDGE_CURVE('',"+[a,b,curve,'.T.'].join(',')+")")};
+            edges.set(k,edge);
+          }
+          return add("ORIENTED_EDGE('',*,*,"+edge.id+','+(edge.start===a?'.T.':'.F.')+')');
+        });
+        const id=add("EDGE_LOOP('',"+tuple(references)+')');
+        return add((i ? 'FACE_BOUND' : 'FACE_OUTER_BOUND')+"('',"+id+",.T.)");
+      });
+      const {type,p,n,u,params=[]}=surface;
+      const geometry=type==='extrusion' ? add("SURFACE_OF_LINEAR_EXTRUSION('',"+
+        add("CIRCLE('',"+axis(transform(p),rotate(n),rotate(u))+","+real(params[0])+")")+","+
+        add("VECTOR('',"+direction(rotate(surface.d))+",1.)")+")") :
+        add(type+"('',"+[axis(transform(p),rotate(n),u&&rotate(u)),...params.map(real)].join(',')+")");
+      faces.push(add("ADVANCED_FACE('',"+tuple(bounds)+','+geometry+','+(same?'.T.':'.F.')+')'));
+    }
+    return {
+      face(loops,surface,same=true){
+        if(refine)pending.push({loops,surface,same});
+        else encodeFace(loops,surface,same);
+      },
+      solid(){
+        if(refine){
+          const byZ=new Map();
+          for(const {loops} of pending)for(const loop of loops)for(const edge of loop){
+            const z=edge.a[2];
+            if(!byZ.has(z))byZ.set(z,new Map());
+            byZ.get(z).set(snap(edge.a),edge.a);
+          }
+          for(const {loops,surface,same} of pending){
+            const refined=loops.map(loop=>loop.flatMap(edge=>{
+              if(edge.a[2]!==edge.b[2])return [edge];
+              const points=byZ.get(edge.a[2]),cuts=[];
+              for(const point of points.values()){
+                const t=parameter(edge,point);
+                if(t>1e-7 && t<1-1e-7 && Math.hypot(...sub(point,interpolate(edge,t)))<1e-6)
+                  cuts.push({t,point});
+              }
+              const ordered=[edge.a,...cuts.sort((a,b)=>a.t-b.t).map(c=>c.point),edge.b];
+              return ordered.slice(0,-1).map((a,i)=>({...edge,a,b:ordered[i+1]}));
+            }));
+            encodeFace(refined,surface,same);
+          }
+        }
+        return add('MANIFOLD_SOLID_BREP('+name(label)+','+add("CLOSED_SHELL('',"+tuple(faces)+")")+")");
+      }
+    };
+  }
+  function horizontal(w,loops,z,up) {
+    w.face(loops,plane([0,0,z],up?Z:neg(Z)));
+  }
+  const surfaceOfArc=(a,b)=>{
+    const d=sub(b.c,a.c),u=sub(a.a,a.c),r=Math.hypot(...u);
+    if(Math.hypot(d[0],d[1])<1e-8) return {type:'CYLINDRICAL_SURFACE',p:a.c,n:Z,u,params:[r]};
+    return {type:'extrusion',p:a.c,n:Z,u,params:[r],d};
+  };
+  function walls(w,low,high){
+    for(let i=0;i<low.length;i++){
+      const a=low[i],b=high[i];
+      const loop=[a,line(a.b,b.b),rev(b),line(b.a,a.a)];
+      const surface=a.c?surfaceOfArc(a,b):plane(a.a,unit(cross(sub(a.b,a.a),sub(b.a,a.a))));
+      w.face([loop],surface,!a.c||dot(a.n,Z)>0);
+    }
+  }
+  function rectAt(shape,z,inset=0,section=null,radius=shape.r){
+    const [left,right]=section||[0,0];
+    return rounded([shape.x-shape.w+left+inset,shape.y-shape.h-right+inset,
+      shape.x+shape.w+right-inset,shape.y+shape.h-left-inset],radius,z);
+  }
+  function circleAt(shape,z) {
+    const {x,y,r}=shape, p=[[x+r,y,z],[x,y+r,z],[x-r,y,z],[x,y-r,z]];
+    return p.map((a,i)=>arc(a,p[(i+1)%4],[x,y,z],Z));
+  }
+  function polyAt(shape,z) {
+    const points=shape.points.map(([x,y])=>[x,y,z]);
+    return polygon(area(points)>0?points:points.reverse());
+  }
+  function area(points) {
+    return points.reduce((sum,a,i)=>{const b=points[(i+1)%points.length];return sum+a[0]*b[1]-a[1]*b[0];},0)/2;
+  }
+  const snap=p=>p.slice(0,2).map(x=>Math.round(x*1e6)).join(',');
+  const TAU=Math.PI*2;
+  const xyCross=(a,b)=>a[0]*b[1]-a[1]*b[0];
+  function angle(a,b){return (Math.atan2(xyCross(a,b),a[0]*b[0]+a[1]*b[1])+TAU)%TAU;}
+  function interpolate(e,t) {
+    if(!e.c)return e.a.map((x,i)=>x+t*(e.b[i]-x));
+    const u=sub(e.a,e.c),v=sub(e.b,e.c),sign=Math.sign(e.n[2]),q=sign*angle(sign>0?u:v,sign>0?v:u)*t;
+    return [e.c[0]+u[0]*Math.cos(q)-u[1]*Math.sin(q),e.c[1]+u[0]*Math.sin(q)+u[1]*Math.cos(q),e.a[2]];
+  }
+  function parameter(e,p){
+    if(snap(e.a)===snap(p))return 0;
+    if(snap(e.b)===snap(p))return 1;
+    if(!e.c){
+      const u=sub(e.b,e.a),v=sub(p,e.a);
+      return dot(u,v)/dot(u,u);
+    }
+    const u=sub(e.a,e.c),v=sub(e.b,e.c),q=sub(p,e.c),positive=e.n[2]>0;
+    return (positive?angle(u,q):angle(q,u))/(positive?angle(u,v):angle(v,u));
+  }
+  function lineCircle(l,c){
+    const d=sub(l.b,l.a),u=sub(l.a,c.c),a=dot(d,d),b=2*dot(u,d),v=dot(u,u)-dot(sub(c.a,c.c),sub(c.a,c.c));
+    const det=b*b-4*a*v;
+    return det<0?[]:[(-b-Math.sqrt(det))/(2*a),(-b+Math.sqrt(det))/(2*a)].map(t=>interpolate(l,t));
+  }
+  function intersection(a,b){
+    if(!a.c&&!b.c){
+      const u=sub(a.b,a.a),v=sub(b.b,b.a),w=sub(b.a,a.a),d=xyCross(u,v);
+      if(Math.abs(d)>1e-10)return [interpolate(a,xyCross(w,v)/d)];
+      return Math.abs(xyCross(w,u))<1e-8?[a.a,a.b,b.a,b.b]:[];
+    }
+    if(!a.c)return lineCircle(a,b);
+    if(!b.c)return lineCircle(b,a);
+    const d=sub(b.c,a.c),length=Math.hypot(d[0],d[1]),r=Math.hypot(...sub(a.a,a.c)),s=Math.hypot(...sub(b.a,b.c));
+    if(length<1e-9)return Math.abs(r-s)<1e-8?[a.a,a.b,b.a,b.b]:[];
+    if(length>r+s+1e-9||length<Math.abs(r-s)-1e-9)return [];
+    const x=(length*length+r*r-s*s)/(2*length),y=Math.sqrt(Math.max(0,r*r-x*x));
+    return [-1,1].map(sign=>[a.c[0]+(x*d[0]-sign*y*d[1])/length,a.c[1]+(x*d[1]+sign*y*d[0])/length,a.a[2]]);
+  }
+  function includes(shape,x,y){
+    if(shape.kind==='rect'){
+      const u=Math.abs(x-shape.x)-shape.w+shape.r,v=Math.abs(y-shape.y)-shape.h+shape.r;
+      return Math.hypot(Math.max(0,u),Math.max(0,v))+Math.min(Math.max(u,v),0)<shape.r;
+    }
+    return printContains(shape,x,y);
+  }
+  function footprints(shapes,z){
+    return shapes.flatMap(shape=>shape.kind==='rect'?rectAt(shape,z):shape.kind==='circle'?circleAt(shape,z):polyAt(shape,z));
+  }
+  // Intersect and trim planar line and circle edges before making the
+  // boundary of a union or difference. No STL data participates.
+  function region(shapes,z,solid){
+    const edges=footprints(shapes,z),knots=edges.map(()=>[0,1]);
+    for(let i=0;i<edges.length;i++)for(let j=i+1;j<edges.length;j++){
+      const a=edges[i],b=edges[j];
+      for(const p of intersection(a,b)){
+        const u=parameter(a,p),v=parameter(b,p);
+        if(u>=-1e-7&&u<=1+1e-7&&v>=-1e-7&&v<=1+1e-7){
+          if(u>1e-8&&u<1-1e-8)knots[i].push(u);
+          if(v>1e-8&&v<1-1e-8)knots[j].push(v);
+        }
+      }
+    }
+    const unique=new Map();
+    edges.forEach((edge,i)=>{
+      const params=knots[i].sort((a,b)=>a-b);
+      for(let j=1;j<params.length;j++){
+        const a=params[j-1],b=params[j];
+        if(b-a<1e-8)continue;
+        const mid=(a+b)/2,p=interpolate(edge,mid);
+        const u=unit(sub(interpolate(edge,mid+Math.min((b-a)/8,.001)),p));
+        const l=solid(p[0]-u[1]*.00002,p[1]+u[0]*.00002);
+        const r=solid(p[0]+u[1]*.00002,p[1]-u[0]*.00002);
+        if(l===r) continue;
+        const span={...edge,a:interpolate(edge,a),b:interpolate(edge,b)};
+        const e=l?span:rev(span);
+        if(snap(e.a)!==snap(e.b))unique.set(snap(e.a)+'/'+snap(e.b)+'/'+snap(p),e);
+      }
+    });
+    const tails=new Map();
+    for(const edge of unique.values()){
+      const key=snap(edge.a);
+      if(!tails.has(key))tails.set(key,[]);
+      tails.get(key).push(edge);
+    }
+    const loops=[];
+    while(tails.size){
+      const root=tails.keys().next().value, result=[];
+      let key=root;
+      do{
+        const list=tails.get(key);
+        if(!list||!list.length)throw new Error('step-geometry');
+        const edge=list.shift(); if(!list.length)tails.delete(key);
+        result.push(edge);key=snap(edge.b);
+      }while(key!==root);
+      if(result.length>=2)loops.push(result);
+    }
+    return loops;
+  }
+  function containsLoop(loop,[x,y]){
+    const points=loop.flatMap(e=>e.c?[e.a,interpolate(e,.25),interpolate(e,.5),interpolate(e,.75)]:[e.a]);
+    let inside=false;
+    for(let i=0,j=points.length-1;i<points.length;j=i++){
+      const [a,b]=points[j],[c,d]=points[i];
+      if((b>y)!==(d>y)&&x<(c-a)*(y-b)/(d-b)+a)inside=!inside;
+    }
+    return inside;
+  }
+  function planeLoops(w,loops,z,up){
+    const positive=[],negative=[];
+    for(const loop of loops){
+      const vertices=loop.flatMap(e=>e.c?[e.a,interpolate(e,.5)]:[e.a]);
+      (area(vertices)>0?positive:negative).push(loop);
+    }
+    for(const outer of positive){
+      const holes=negative.filter(h=>containsLoop(outer,h[0].a));
+      const bounds=[outer,...holes];
+      horizontal(w,up?bounds:bounds.map(reversed),z,up);
+    }
+  }
+  const atZ=(loop,z)=>loop.map(e=>({...e,a:[e.a[0],e.a[1],z],b:[e.b[0],e.b[1],z],c:e.c&&[e.c[0],e.c[1],z]}));
+  function upperSolids(w,part){
+    const layers=part.layers;
+    const heights=[...new Set(layers.flatMap(l=>[l.bottom,l.top]))].sort((a,b)=>a-b);
+    const profile=heights.slice(0,-1).map((bottom,i)=>{
+      const top=heights[i+1],z=(bottom+top)/2;
+      const shapes=layers.filter(l=>l.bottom<z&&z<l.top).flatMap(l=>l.shapes);
+      const filled=(x,y)=>shapes.some(shape=>includes(shape,x,y));
+      return {shapes,filled,loops:region(shapes,z,filled)};
+    });
+    profile.forEach(({loops},i)=>loops.forEach(loop=>walls(w,atZ(loop,heights[i]),atZ(loop,heights[i+1]))));
+    heights.forEach((z,i)=>{
+      const bottom=profile[i-1],top=profile[i];
+      const shapes=[...(bottom?.shapes||[]),...(top?.shapes||[])];
+      const below=region(shapes,z,(x,y)=>bottom?.filled(x,y)&&!top?.filled(x,y));
+      const above=region(shapes,z,(x,y)=>top?.filled(x,y)&&!bottom?.filled(x,y));
+      // Split horizontal boundaries where a neighboring slab meets them,
+      // so every edge can be sewn to its wall.
+      planeLoops(w,below,z,true);planeLoops(w,above,z,false);
+    });
+  }
+  function sockets(w,cuts,bottom,top,faces){
+    for(const cut of cuts){
+      const shape=cut.shapes[0],lo=Math.max(bottom,cut.bottom),hi=Math.min(top,cut.top);
+      const outline=shape.kind==='polygon' ? polyAt : rectAt;
+      const outerLow=outline(shape,lo),outerHigh=outline(shape,hi);
+      if(lo===bottom)faces[0].push(reversed(outerLow));
+      else horizontal(w,[outerLow],lo,true);
+      if(hi===top)faces[1].push(reversed(outerHigh));
+      else horizontal(w,[reversed(outerHigh)],hi,false);
+      walls(w,reversed(outerLow),reversed(outerHigh));
+    }
+  }
+  function gridOutline(rects,pitch) {
+    const edges=new Map();
+    for(const {x,y} of rects){
+      const points=[[x-pitch/2,y-pitch/2],[x+pitch/2,y-pitch/2],[x+pitch/2,y+pitch/2],[x-pitch/2,y+pitch/2]];
+      for(let i=0;i<4;i++){
+        const a=points[i],b=points[(i+1)%4],reverse=snap(b)+'/'+snap(a);
+        if(edges.has(reverse))edges.delete(reverse);
+        else edges.set(snap(a)+'/'+snap(b),{a,b});
+      }
+    }
+    const byStart=new Map();
+    for(const edge of edges.values()){
+      const key=snap(edge.a);
+      if(!byStart.has(key))byStart.set(key,[]);
+      byStart.get(key).push(edge);
+    }
+    const loops=[];
+    while(byStart.size){
+      const start=byStart.keys().next().value, points=[];
+      let key=start, previous=null;
+      do{
+        const choices=byStart.get(key);
+        if(!choices?.length)throw new Error('step-geometry');
+        let index=0;
+        if(previous && choices.length>1){
+          const d=sub(previous.b,previous.a);
+          index=choices.findIndex(e=>xyCross(d,sub(e.b,e.a))>0);
+          if(index<0)index=0;
+        }
+        const edge=choices.splice(index,1)[0];
+        if(!choices.length)byStart.delete(key);
+        points.push(edge.a);previous=edge;key=snap(edge.b);
+      }while(key!==start);
+      loops.push(points.filter((p,i)=>Math.abs(xyCross(sub(p,points[(i+points.length-1)%points.length]),
+        sub(points[(i+1)%points.length],p)))>1e-7));
+    }
+    return loops;
+  }
+
+  function gridProfile(points,z,offset,section,rounding) {
+    // Normal at a CCW polygon edge points to its right. The two negative
+    // guide sides on the X/Y axes are intentionally different.
+    function amount(normal) {
+      if(normal[0]<0||normal[1]>0)return offset-section[0];
+      return offset+section[1];
+    }
+    const corners=points.map((p,i)=>{
+      const u=unit(sub(p,points[(i+points.length-1)%points.length]));
+      const v=unit(sub(points[(i+1)%points.length],p));
+      const a=[u[1],-u[0]],b=[v[1],-v[0]];
+      const q=[p[0]+a[0]*amount(a)+b[0]*amount(b),p[1]+a[1]*amount(a)+b[1]*amount(b),z];
+      const r=xyCross(u,v)>0?rounding:0;
+      return {a:[q[0]-u[0]*r,q[1]-u[1]*r,z],b:[q[0]+v[0]*r,q[1]+v[1]*r,z],
+        c:[q[0]-u[0]*r+v[0]*r,q[1]-u[1]*r+v[1]*r,z],r};
+    });
+    return corners.flatMap((p,i)=>{
+      const next=corners[(i+1)%corners.length].a, edge=line(p.b,next);
+      return p.r>0?[arc(p.a,p.b,p.c,Z),edge]:[edge];
+    });
+  }
+
+  function railSolid(w,part){
+    const layer=part.layers[0],{bottom,top,section}=layer, ring=section==='frame';
+    const tileGrid=!ring&&layer.grid ? gridOutline(layer.grid,layer.pitch) : null;
+    const frameGrid=ring&&layer.holes.length>1 ? gridOutline(layer.holes,layer.pitch) : null;
+    if(ring&&!layer.holes.length)throw new Error('step-geometry');
+    const outer=layer.shapes[0],inner=ring?layer.holes[0]:null;
+    const tool=ring?part.cuts.find(cut=>cut.shapes?.[0].kind==='rect'&&cut.shapes[0].x+cut.shapes[0].w>outer.x+outer.w):null;
+    const seam=part.profile.height/2,lower=top===seam;
+    const split=tool?(lower?tool.bottom:tool.top):0;
+    const h=part.profile.height;
+    const levels=[bottom,top,bottom+layer.bevel,top-layer.bevel];
+    if(tool)levels.push(split);
+    // Preserve the bends in the measured guide profile with a geometric
+    // approximation finer than the STL sampling step.
+    function profileKnots(a,b) {
+      const table=part.profile.samples;
+      let max=.008/part.profile.unit, split=-1;
+      for(let i=a+1;i<b;i++){
+        const t=(i-a)/(b-a);
+        const deviation=Math.max(...table[i].map((v,k)=>Math.abs(v-table[a][k]-(table[b][k]-table[a][k])*t)));
+        if(deviation>max){max=deviation;split=i;}
+      }
+      return split<0?[a]:profileKnots(a,split).concat(profileKnots(split,b));
+    }
+    for(const i of profileKnots(0,100).concat(100)) levels.push(i*h/200,h-i*h/200);
+    const zList=[...new Set(levels.filter(z=>z>=bottom&&z<=top).map(z=>Number(z.toFixed(8))))].sort((a,b)=>a-b);
+    const notch=tool&&tool.shapes[0], cutX=notch&&notch.x-notch.w, cutY0=notch&&notch.y-notch.h, cutY1=notch&&notch.y+notch.h;
+    function isNotched(z){return !!tool && (lower?z>split:z<split);}
+    function outline(z,cut){
+      const inset=Math.max(0,layer.bevel-Math.min(z-bottom,top-z));
+      const loop=rectAt(outer,z,inset,ring?null:printRailSection(part.profile,z));
+      if(tileGrid)return tileGrid.map(points=>gridProfile(points,z,-layer.gap/2-inset,
+        printRailSection(part.profile,z),layer.radius));
+      if(!tool)return [loop];
+      return [loop.flatMap(e=>{
+        if(e.c||Math.abs(e.a[0]-e.b[0])>1e-8||e.b[1]<=e.a[1])return [e];
+        const x=e.a[0],p=[x,cutY0,z],q=[x,cutY1,z];
+        const middle=cut?[p,[cutX,cutY0,z],[cutX,cutY1,z],q]:[p,q];
+        const pts=[e.a,...middle,e.b];
+        return pts.slice(0,-1).map((p,i)=>line(p,pts[i+1]));
+      })];
+    }
+    const aperture=z=>frameGrid?frameGrid.map(points=>reversed(gridProfile(points,z,layer.gap,
+      printRailSection(part.profile,z),0))):[reversed(rectAt(inner,z,0,printRailSection(part.profile,z)))];
+    for(let i=0;i<zList.length-1;i++){
+      const lo=zList[i],hi=zList[i+1],cut=isNotched((lo+hi)/2);
+      const low=outline(lo,cut),high=outline(hi,cut);
+      if(inner){low.push(...aperture(lo));high.push(...aperture(hi));}
+      low.forEach((loop,j)=>walls(w,loop,high[j]));
+    }
+    if(tool){
+      const x=outer.x+outer.w-Math.max(0,layer.bevel-Math.min(split-bottom,top-split));
+      const mouth=polygon([[cutX,cutY0,split],[x,cutY0,split],[x,cutY1,split],[cutX,cutY1,split]]);
+      horizontal(w,[lower?mouth:reversed(mouth)],split,lower);
+    }
+    const bottomLoops=outline(bottom,isNotched(bottom)),topLoops=outline(top,isNotched(top));
+    if(inner){bottomLoops.push(...aperture(bottom));topLoops.push(...aperture(top));}
+    sockets(w,part.cuts.filter(cut=>cut.shapes&&cut!==tool),bottom,top,[bottomLoops,topLoops]);
+    planeLoops(w,bottomLoops,bottom,false);
+    planeLoops(w,topLoops,top,true);
+  }
+
+  const solids=printScene(parts,bed).entries.map(({part,sign,offset:[x,y,z]})=>{
+    const w=writer(part.name,[sign,sign,x,y,z],!part.profile);
+    if(part.profile)railSolid(w,part);
+    else upperSolids(w,part);
+    return w.solid();
+  });
+  const app=add("APPLICATION_CONTEXT('core data for automotive mechanical design processes')");
+  add("APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,"+app+")");
+  const pc=add("PRODUCT_CONTEXT('',"+app+",'mechanical')");
+  const product=add('PRODUCT('+[name(title),name(title),"''",tuple([pc])].join(',')+')');
+  const form=add("PRODUCT_DEFINITION_FORMATION('','',"+product+")");
+  const pd=add("PRODUCT_DEFINITION('design','',"+form+','+add("PRODUCT_DEFINITION_CONTEXT('part definition',"+app+",'design')")+")");
+  const shape=add("PRODUCT_DEFINITION_SHAPE('','',"+pd+")");
+  const mm=add('(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.))');
+  const rad=add('(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.))');
+  const sr=add('(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT())');
+  const tol=add("UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.000001),"+mm+",'distance_accuracy_value','')");
+  const context=add("(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT(("+tol+")) GLOBAL_UNIT_ASSIGNED_CONTEXT("+tuple([mm,rad,sr])+") REPRESENTATION_CONTEXT('','3D'))");
+  const representation=add("ADVANCED_BREP_SHAPE_REPRESENTATION('',"+tuple([axis([0,0,0],Z,X),...solids])+','+context+')');
+  add('SHAPE_DEFINITION_REPRESENTATION('+shape+','+representation+')');
+  add("PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,("+product+"))");
+  return 'ISO-10303-21;\nHEADER;\nFILE_DESCRIPTION((\'Fifteen Pro analytic geometry\'),\'2;1\');\nFILE_NAME('+name(title)+','+name(new Date().toISOString())+
+    ",('Fifteen Pro'),(''),'Fifteen Pro','Fifteen Pro','');\nFILE_SCHEMA(('AUTOMOTIVE_DESIGN'));\nENDSEC;\nDATA;\n"+
+    rows.map((entity,i)=>'#'+(i+1)+'='+entity+';').join('\n')+'\nENDSEC;\nEND-ISO-10303-21;\n';
+}
+
+
+function printNormal(v,i) {
+  const ax=v[i+3]-v[i],ay=v[i+4]-v[i+1],az=v[i+5]-v[i+2];
+  const bx=v[i+6]-v[i],by=v[i+7]-v[i+1],bz=v[i+8]-v[i+2];
+  const x=ay*bz-az*by,y=az*bx-ax*bz,z=ax*by-ay*bx;
+  const length=Math.hypot(x,y,z)||1;
+  return [x/length,y/length,z/length];
+}
+
+function printStl(part,{sign=part.flip?-1:1,offset}={}) {
+  const {mesh}=part;
+  const buffer=new Uint8Array(84+50*mesh.length/9), d=new DataView(buffer.buffer);
+  buffer.set(new TextEncoder().encode('Fifteen Pro - '+part.name+' - mm'));
+  d.setUint32(80,mesh.length/9,true);
+  if(!offset) {
+    let left=Infinity,front=Infinity,lowest=Infinity;
+    for(let i=0;i<mesh.length;i+=3) {
+      left=Math.min(left,mesh[i]*sign);front=Math.min(front,mesh[i+1]);
+      lowest=Math.min(lowest,mesh[i+2]*sign);
+    }
+    offset=[-left,-front,-lowest];
+  }
+  const [dx,dy,dz]=offset;
+  const vertices=new Map(), occupied=new Set(), triangle=new Float64Array(9);
+  for(let i=0,at=84;i<mesh.length;i+=9,at+=50) {
+    for(let j=0;j<9;j+=3) {
+      const x=mesh[i+j]*sign+dx, y=mesh[i+j+1]+dy, z=mesh[i+j+2]*sign+dz;
+      const original=mesh[i+j]+','+mesh[i+j+1]+','+mesh[i+j+2];
+      let point=vertices.get(original);
+      if(!point) {
+        const a=Math.fround(x), b=Math.fround(y), c=Math.fround(z);
+        let adjusted=c, key=a+','+b+','+c, attempt=0;
+        // Float32 STL coordinates can otherwise weld two distinct vertices
+        // after moving the part to the positive print-bed coordinates.
+        while(occupied.has(key)) {
+          adjusted=Math.fround(c+(++attempt)*Math.max(1e-7,Math.abs(c)*2**-23));
+          key=a+','+b+','+adjusted;
+        }
+        occupied.add(key);point=[a,b,adjusted];vertices.set(original,point);
+      }
+      triangle.set(point,j);
+    }
+    printNormal(triangle,0).forEach((v,k)=>d.setFloat32(at+k*4,v,true));
+    triangle.forEach((v,k)=>d.setFloat32(at+12+k*4,v,true));
+  }
+  return buffer;
+}
+
+function printZip(files) {
+  const table=Uint32Array.from({length:256},(_,i)=>{
+    for(let k=0;k<8;k++) i=(i>>>1)^((i&1)?0xedb88320:0);
+    return i;
+  });
+  const encoder=new TextEncoder(), chunks=[], central=[];
+  let offset=0, total=0;
+  for(const [file,bytes] of files) {
+    const name=encoder.encode(file);
+    let crc=0xffffffff;
+    for(const byte of bytes) crc=(crc>>>8)^table[(crc^byte)&255];
+    crc=(crc^0xffffffff)>>>0;
+    const local=new Uint8Array(30+name.length), l=new DataView(local.buffer);
+    l.setUint32(0,0x04034b50,true);l.setUint16(4,20,true);l.setUint16(12,33,true);
+    l.setUint32(14,crc,true);l.setUint32(18,bytes.length,true);l.setUint32(22,bytes.length,true);
+    l.setUint16(26,name.length,true);local.set(name,30);
+    const entry=new Uint8Array(46+name.length), c=new DataView(entry.buffer);
+    c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(14,33,true);
+    c.setUint32(16,crc,true);c.setUint32(20,bytes.length,true);c.setUint32(24,bytes.length,true);
+    c.setUint16(28,name.length,true);c.setUint32(42,offset,true);entry.set(name,46);
+    chunks.push(local,bytes);central.push(entry);
+    offset+=local.length+bytes.length;total+=entry.length;
+  }
+  const end=new Uint8Array(22), e=new DataView(end.buffer);
+  e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);
+  e.setUint32(12,total,true);e.setUint32(16,offset,true);
+  return new Blob([...chunks,...central,end],{type:'application/zip'});
+}
+
+function printSave(blob,name) {
+  const url=URL.createObjectURL(blob), link=document.createElement('a');
+  link.href=url;link.download=name;
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+function printPlacements(parts,bed) {
+  if (!bed) return parts.map(part=>part.offset);
+  const widest=Math.max(...parts.map(p=>p.bounds[3]-p.bounds[0]));
+  const area=parts.reduce((a,{bounds:b})=>a+(b[3]-b[0]+4)*(b[4]-b[1]+4),0);
+  const width=Math.max(widest+4,Math.sqrt(area)*1.25);
+  let x=0,y=0,row=0;
+  return parts.map(({bounds:b,flip})=>{
+    const w=b[3]-b[0]+4,h=b[4]-b[1]+4;
+    if (x+w>width && x>0) {x=0;y+=row;row=0;}
+    const offset=[x-(flip?-b[3]:b[0]),y-b[1],flip?b[5]:-b[2]];
+    x+=w;row=Math.max(row,h);return offset;
+  });
+}
+
+function printScene(parts,bed) {
+  const placements=printPlacements(parts,bed);
+  const entries=parts.map((part,i)=>{
+    const flip=bed && part.flip, [x,y,z]=placements[i], b=part.bounds;
+    return {part,sign:flip?-1:1,offset:placements[i],
+      rect:[x+(flip?-b[3]:b[0]),y+b[1],x+(flip?-b[0]:b[3]),y+b[4]],
+      height:z+(flip?-b[2]:b[5])};
+  });
+  return {entries,bounds:printBounds(entries.map(entry=>entry.rect)),height:Math.max(...entries.map(entry=>entry.height))};
+}
+
+// A flat preview draws the construction primitives directly. It does not
+// allocate the 3D grid or wait for STL triangulation.
+function drawFlatPrint(scene) {
+  const canvas=$('printFlat'), ctx=canvas.getContext('2d');
+  const surface=document.createElement('canvas');
+  surface.width=canvas.width;surface.height=canvas.height;
+  const face=surface.getContext('2d');
+  const [left,bottom,right,top]=scene.bounds;
+  const scale=Math.min((canvas.width-30)/(right-left),(canvas.height-30)/(top-bottom));
+  const cx=(left+right)/2,cy=(bottom+top)/2;
+  function paint(shape,section=null) {
+    face.beginPath();
+    if(shape.kind==='circle') face.arc(shape.x,shape.y,shape.r,0,Math.PI*2);
+    else if(shape.kind==='rect') {
+      const shift=section?(section[1]+section[0])/2:0,delta=section?(section[1]-section[0])/2:0;
+      const w=shape.w+delta,h=shape.h+delta;
+      const x=shape.x+shift-w,y=shape.y-shift-h,r=Math.min(shape.r,w,h);
+      if(r>0&&face.roundRect)face.roundRect(x,y,2*w,2*h,r);
+      else face.rect(x,y,2*w,2*h);
+    } else {
+      shape.points.forEach(([x,y],i)=>i?face.lineTo(x,y):face.moveTo(x,y));
+      face.closePath();
+    }
+    face.fill();
+  }
+  ctx.fillStyle='#202a37';ctx.fillRect(0,0,canvas.width,canvas.height);
+  for(const {part,sign,offset:[x,y]} of scene.entries.slice().sort((a,b)=>a.height-b.height)){
+    face.clearRect(0,0,surface.width,surface.height);
+    face.save();
+    face.translate(canvas.width/2+(x-cx)*scale,canvas.height/2-(y-cy)*scale);
+    face.scale(sign*scale,-scale);
+    const layers=part.layers.slice().sort((a,b)=>sign*((a.top+a.bottom)-(b.top+b.bottom)));
+    const z=sign>0?part.bounds[5]:part.bounds[2];
+    for(const layer of layers){
+      const section=layer.section?printRailSection(part.profile,(layer.bottom+layer.top)/2):null;
+      face.fillStyle=part.color;
+      for(const shape of layer.shapes)paint(shape,layer.section==='tile'?section:null);
+      if(layer.holes){
+        face.globalCompositeOperation='destination-out';
+        for(const hole of layer.holes)paint(hole,section);
+        face.globalCompositeOperation='source-over';
+      }
+    }
+    face.globalCompositeOperation='source-atop';
+    face.fillStyle='#78899e';
+    for(const cut of part.cuts)if(cut.shapes&&cut.bottom<=z&&z<=cut.top){
+      for(const shape of cut.shapes)paint(shape);
+    }
+    face.restore();ctx.drawImage(surface,0,0);
+  }
+}
+
+function createFifteenPrintViewer(canvas) {
+  const gl=canvas.getContext('webgl',{antialias:true});
+  if(!gl) return null;
+  function compile(type,source) {
+    const shader=gl.createShader(type);
+    gl.shaderSource(shader,source);gl.compileShader(shader);
+    if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
+    return shader;
+  }
+  const vertex=compile(gl.VERTEX_SHADER,`
+    attribute vec3 p,n;
+    uniform vec3 center,offset,color;
+    uniform vec2 yaw,pitch,scale;
+    uniform vec2 pan;
+    uniform float s;
+    varying vec3 paint;
+    vec3 rotate(vec3 v) {
+      vec3 a=vec3(yaw.x*v.x-yaw.y*v.y,yaw.y*v.x+yaw.x*v.y,v.z);
+      return vec3(a.x,pitch.x*a.y-pitch.y*a.z,pitch.y*a.y+pitch.x*a.z);
+    }
+    void main() {
+      vec3 q=rotate(p*vec3(s,1.,s)+offset-center);
+      gl_Position=vec4(q.xy*scale+pan,-q.z*max(scale.x,scale.y)*.065,1.);
+      float light=max(0.,dot(rotate(n*vec3(s,1.,s)),normalize(vec3(-.4,-.5,1.))));
+      paint=color*(.48+.52*light);
+    }`);
+  const fragment=compile(gl.FRAGMENT_SHADER,`precision mediump float; varying vec3 paint;
+    void main(){gl_FragColor=vec4(paint,1.);}`);
+  const program=gl.createProgram();gl.attachShader(program,vertex);gl.attachShader(program,fragment);gl.linkProgram(program);
+  gl.deleteShader(vertex);gl.deleteShader(fragment);
+  if(!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+  const u=Object.fromEntries(['center','offset','color','yaw','pitch','scale','s','pan'].map(k=>[k,gl.getUniformLocation(program,k)]));
+  const position=gl.getAttribLocation(program,'p'),normal=gl.getAttribLocation(program,'n');
+  const buffers=new Map();
+  let scene=null, yaw=-.48,pitch=-.68,zoom=1, panX=0, panY=0, drag=null, pending=0;
+  function draw() {
+    pending=0;
+    if(!scene || !canvas.clientWidth) return;
+    const ratio=Math.min(devicePixelRatio||1,2), width=Math.round(canvas.clientWidth*ratio),height=Math.round(canvas.clientHeight*ratio);
+    if(canvas.width!==width || canvas.height!==height) {canvas.width=width;canvas.height=height;}
+    gl.viewport(0,0,width,height);gl.clearColor(.125,.165,.216,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    gl.useProgram(program);gl.enable(gl.DEPTH_TEST);
+    const [l,b,r,t]=scene.bounds, scale=1.8*zoom/Math.hypot(r-l,t-b,scene.height);
+    gl.uniform3f(u.center,(l+r)/2,(t+b)/2,scene.height/2);
+    gl.uniform2f(u.yaw,Math.cos(yaw),Math.sin(yaw));gl.uniform2f(u.pitch,Math.cos(pitch),Math.sin(pitch));
+    gl.uniform2f(u.scale,scale*Math.min(1,height/width),scale*Math.min(1,width/height));
+    gl.uniform2f(u.pan,2*panX/canvas.clientWidth,-2*panY/canvas.clientHeight);
+    gl.enableVertexAttribArray(position);gl.enableVertexAttribArray(normal);
+    for(const {part,offset,sign} of scene.entries) {
+      if(!buffers.has(part)) {
+        const packed=new Float32Array(part.mesh.length*2);
+        for(let i=0;i<part.mesh.length;i+=9) {
+          const n=printNormal(part.mesh,i);
+          for(let j=0;j<9;j+=3) {packed.set(part.mesh.subarray(i+j,i+j+3),(i+j)*2);packed.set(n,(i+j)*2+3);}
+        }
+        const buffer=gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,packed,gl.STATIC_DRAW);
+        buffers.set(part,buffer);
+      }
+      gl.bindBuffer(gl.ARRAY_BUFFER,buffers.get(part));
+      gl.vertexAttribPointer(position,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(normal,3,gl.FLOAT,false,24,12);
+      const c=/^#[\da-f]{6}$/i.test(part.color) ? parseInt(part.color.slice(1),16):0xb0bfd3;
+      gl.uniform3f(u.color,(c>>16)/255,((c>>8)&255)/255,(c&255)/255);
+      gl.uniform3fv(u.offset,offset);gl.uniform1f(u.s,sign);
+      gl.drawArrays(gl.TRIANGLES,0,part.mesh.length/3);
+    }
+  }
+  function redraw(){if(!pending) pending=requestAnimationFrame(draw);}
+  function reset(){yaw=-.48;pitch=-.68;zoom=1;panX=panY=0;redraw();}
+  function clear(){for(const b of buffers.values()) gl.deleteBuffer(b);buffers.clear();scene=null;}
+  canvas.addEventListener('pointerdown',event=>{
+    if(drag || (event.button!==0 && event.button!==2)) return;
+    drag={id:event.pointerId,pan:event.button===2,x:event.clientX,y:event.clientY};
+    canvas.setPointerCapture(event.pointerId);
+  });
+  canvas.addEventListener('pointermove',event=>{
+    if(drag?.id!==event.pointerId || !(event.buttons & (drag.pan?2:1))) return;
+    const dx=event.clientX-drag.x;
+    const dy=event.clientY-drag.y;
+    if(drag.pan) {
+      panX+=dx;
+      panY+=dy;
+    } else {
+      yaw+=dx*.012;
+      pitch+=dy*.012;
+    }
+    drag.x=event.clientX;drag.y=event.clientY;redraw();
+  });
+  canvas.addEventListener('lostpointercapture',event=>{if(drag?.id===event.pointerId) drag=null;});
+  canvas.addEventListener('contextmenu',event=>event.preventDefault());
+  canvas.addEventListener('wheel',event=>{
+    event.preventDefault();zoom=Math.max(.35,Math.min(5,zoom*Math.exp(-event.deltaY*.001)));redraw();
+  },{passive:false});
+  canvas.addEventListener('dblclick',reset);
+  canvas.addEventListener('keydown',event=>{
+    if(event.key==='ArrowLeft') yaw-=.14;
+    else if(event.key==='ArrowRight') yaw+=.14;
+    else if(event.key==='ArrowUp') pitch-=.14;
+    else if(event.key==='ArrowDown') pitch+=.14;
+    else if(event.key==='+' || event.key==='=') zoom=Math.min(5,zoom*1.15);
+    else if(event.key==='-') zoom=Math.max(.35,zoom/1.15);
+    else if(event.key==='Home') reset();
+    else return;
+    event.preventDefault();redraw();
+  });
+  if(typeof ResizeObserver==='function') new ResizeObserver(redraw).observe(canvas);
+  return {clear,show(value){scene=value;redraw();}};
+}
+
+function fitPrintDialog() {
+  if(!printDialog.open)return;
+  const work=document.querySelector('.app').getBoundingClientRect(), boardRect=board.getBoundingClientRect();
+  const right=Math.min(document.documentElement.clientWidth,work.right);
+  const left=Math.max(0,Math.min(boardRect.left,right-Math.min(360,work.width)));
+  printDialog.style.left=left+'px';
+  printDialog.style.width=Math.max(0,right-left)+'px';
+  const top=Math.max(6,Math.min(boardRect.top,window.innerHeight-printDialog.offsetHeight-6));
+  printDialog.style.top=top+'px';
+}
+
+function setPrintExports(disabled) {
+  ['downloadPrintStl','downloadPrintKit','downloadPrintStep','showPrint3D'].forEach(id=>$(id).disabled=disabled);
+}
+
+function updatePrintPreview() {
+  if (!printModel)return;
+  const scene=printScene(printModel.parts,$('printLayout').value==='bed');
+  drawFlatPrint(scene);
+  if(printViewer&&!$('print3D').hidden)printViewer.show(scene);
+  fitPrintDialog();
+}
+
+function cancelPrintBuild() {
+  clearTimeout(printTimer);
+  if(printJob && printJob.worker) printJob.worker.terminate();
+  printJob=null;
+}
+
+function rebuildPrint() {
+  cancelPrintBuild();
+  if(printViewer) printViewer.clear();
+  printModel=null;
+  $('print3D').hidden=true;$('printHelp').hidden=true;
+  setPrintExports(true);
+  if (!printDialog.open) return;
+  const fields=printForm.elements;
+  const settings=Object.fromEntries(Object.keys(printSettingsDefaults).map(key=>[key,Number(fields[key].value)]));
+  const pinHeight=printPinHeight(settings.frameHeight);
+  fields.pinHeight.value=fields.frameHeight.validity.valid ? pinHeight : '';
+  const error=!printForm.checkValidity() ? 'printInvalid'
+    : settings.blockGap>=pinHeight ? 'printBlockGapInvalid' : '';
+  if(error) {
+    $('printStatus').textContent=tr(error);
+    return;
+  }
+  printModel=printPlan(cfg,layout,settings);
+  setPrintExports(false);
+  $('printStatus').textContent=tr('printReady',{count:printModel.parts.length});
+  updatePrintPreview();
+}
+
+function printCombinedStl(parts,bed) {
+  const files=printScene(parts,bed).entries.map(({part,sign,offset})=>printStl(part,{sign,offset}));
+  const header=new Uint8Array(84);
+  header.set(new TextEncoder().encode(bed ? 'Fifteen Pro - parts on bed - mm' : 'Fifteen Pro - assembled - mm'));
+  new DataView(header.buffer).setUint32(80,files.reduce((n,bytes)=>n+(bytes.length-84)/50,0),true);
+  return new Blob([header,...files.map(bytes=>bytes.subarray(84))],{type:'model/stl'});
+}
+
+function buildPrintPreview3D() {
+  try {
+    if(!printViewer) printViewer=createFifteenPrintViewer($('print3D'));
+    if(!printViewer) throw new Error('WebGL');
+    $('print3D').hidden=false;$('printHelp').hidden=false;
+    printViewer.show(printScene(printModel.parts,$('printLayout').value==='bed'));
+    fitPrintDialog();
+  } catch(error) {
+    $('printStatus').textContent=tr('printNoWebGL');
+  }
+}
+
+function buildPrintMeshes(done) {
+  if(!printModel || printJob)return;
+  const model=printModel;
+  if(model.parts.every(part=>part.mesh)){done();return;}
+  const tooLarge=model.parts.some(({bounds:b,step})=>
+    ((b[3]-b[0])*(b[4]-b[1])+(b[5]-b[2])*(b[3]-b[0]+b[4]-b[1]))/step**2>1300000);
+  if(tooLarge){$('printStatus').textContent=tr('printTooFine');return;}
+  setPrintExports(true);
+  const job={worker:null};
+  printJob=job;
+  function progress(i,mesh) {
+    if (printJob!==job) return;
+    if(!mesh.length) {fail();return;}
+    model.parts[i].mesh=mesh;
+    const completed=i+1, next=model.parts[completed];
+    if (next?.mirrorHeight) {progress(completed,mirrorPrintMesh(mesh,next.mirrorHeight));return;}
+    $('printStatus').textContent=tr('printBuilding',{current:completed,total:model.parts.length});
+    if(completed===model.parts.length) {
+      if(job.worker) job.worker.terminate();
+      printJob=null;
+      setPrintExports(false);
+      $('printStatus').textContent=tr('printReady',{count:model.parts.length});
+      try{done();}catch(error){console.error(error);$('printStatus').textContent=tr('printFailed');}
+    }
+  }
+  function fail() {
+    cancelPrintBuild();
+    setPrintExports(false);
+    $('printStatus').textContent=tr('printFailed');
+  }
+  function fallback() {
+    let i=0;
+    function next() {
+      if (printJob!==job) return;
+      try {progress(i,buildPrintMesh(model.parts[i]));}
+      catch(error) {console.error(error);fail();return;}
+      if(++i<model.parts.length && printJob===job) setTimeout(next,0);
+    }
+    setTimeout(next,0);
+  }
+  $('printStatus').textContent=tr('printBuilding',{current:0,total:model.parts.length});
+  const workerCode=printRailSection.toString()+'\n'+simplifyPrintSurface.toString()+ '\n' + buildPrintMesh.toString()+`
+    self.onmessage=function(event){
+      event.data.forEach(function(part,i){
+        const mesh=buildPrintMesh(part);
+        self.postMessage({i,mesh},[mesh.buffer]);
+      });
+    };`;
+  const url=URL.createObjectURL(new Blob([workerCode],{type:'text/javascript'}));
+  try {
+    job.worker=new Worker(url);
+    job.worker.onmessage=event=>progress(event.data.i,event.data.mesh);
+    job.worker.onerror=()=>{
+      if (printJob!==job) return;
+      job.worker.terminate();job.worker=null;fallback();
+    };
+    job.worker.postMessage(model.parts.filter(part=>!part.mirrorHeight));
+  } catch(error) {
+    if(job.worker) job.worker.terminate();
+    job.worker=null;fallback();
+  } finally {URL.revokeObjectURL(url);}
+}
+
+$('printBtn').addEventListener('click',()=>{
+  if(mode!=='edit' || printDialog.open) return;
+  printDialog.showModal();fitPrintDialog();rebuildPrint();
+});
+printDialog.addEventListener('close',()=>{
+  cancelPrintBuild();printModel=null;
+  if(printViewer) printViewer.clear();
+});
+printForm.addEventListener('submit',event=>event.preventDefault());
+printForm.addEventListener('input',()=>{
+  cancelPrintBuild();setPrintExports(true);printTimer=setTimeout(rebuildPrint,100);
+});
+window.addEventListener('resize',fitPrintDialog);
+$('showPrint3D').addEventListener('click',()=>buildPrintMeshes(buildPrintPreview3D));
+$('downloadPrintStl').addEventListener('click',()=>{
+  const bed=$('printLayout').value==='bed';
+  buildPrintMeshes(()=>printSave(printCombinedStl(printModel.parts,bed),'Fifteen-Pro-print.stl'));
+});
+$('printLayout').addEventListener('change',updatePrintPreview);
+$('printReset').addEventListener('click',()=>{
+  for(const [key,value] of Object.entries(printSettingsDefaults)) printForm.elements[key].value=value;
+  rebuildPrint();
+});
+$('downloadPrintKit').addEventListener('click',()=>buildPrintMeshes(()=>{
+  try {
+    const files=printModel.parts.map(part=>[part.name+'.stl',printStl(part)]);
+    printSave(printZip(files),'Fifteen-Pro-print.zip');
+  } catch(error) {
+    console.error(error);$('printStatus').textContent=tr('printFailed');
+  }
+}));
+$('downloadPrintStep').addEventListener('click',()=>{
+  if(!printModel)return;
+  try {
+    const step=makeFifteenPrintStep(printModel.parts,cfg.name,$('printLayout').value==='bed');
+    printSave(new Blob([step],{type:'model/step'}),'Fifteen-Pro-print.step');
+    if(printModel.parts.some(part=>!part.profile || part.cuts.some(cut=>cut.glyph)))
+      $('printStatus').textContent=tr('printStepGlyph');
+  } catch(error) {
+    if(error.message==='step-geometry') $('printStatus').textContent=tr('printStepLimited');
+    else {console.error(error);$('printStatus').textContent=tr('printFailed');}
+  }
+});
+
 $('copyBtn').addEventListener('click', copyPuzzle);
 $('pasteBtn').addEventListener('click', pasteFlow);
 $('deleteBtn').addEventListener('click', deletePuzzle);
@@ -10333,26 +12195,8 @@ $('pbStart').addEventListener('click', function () {
   pbSeek(0);
   updatePlaybackUI();
 });
-$('pbPrev').addEventListener('click', function () {
-  if (!pb || pb.precompute) return;
-  pb.winShown = true;
-  closeWin();
-  if (!pb.paused) {
-    pb.paused = true;
-    if (pb.timer) { clearTimeout(pb.timer); pb.timer = null; }
-  }
-  pbSeek(pb.index - 1);
-});
-$('pbNext').addEventListener('click', function () {
-  if (!pb || pb.precompute) return;
-  pb.winShown = true;
-  closeWin();
-  if (!pb.paused) {
-    pb.paused = true;
-    if (pb.timer) { clearTimeout(pb.timer); pb.timer = null; }
-  }
-  if (pb.index + 1 <= pb.solution.length) pbSeek(pb.index + 1);
-});
+$('pbPrev').addEventListener('click', function () {pbManualStep(true);});
+$('pbNext').addEventListener('click', function () {pbManualStep(false);});
 $('pbEnd').addEventListener('click', function () {
   if (!pb || pb.jumpToEnd) return;
   if (pb.live) {
@@ -10605,7 +12449,7 @@ function handleEditorDelete(e) {
 }
 
 document.addEventListener('keydown', function (e) {
-  if ($('analyzerDialog').open) return;
+  if ($('analyzerDialog').open || printDialog.open) return;
   if (e.key === 'Escape') {
     if (!$('askPop').classList.contains('hidden')) { closeAskPop(); return; }
     if (!$('confirmPop').classList.contains('hidden')) { closeConfirmPop(); return; }
