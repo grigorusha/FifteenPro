@@ -77,6 +77,13 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
 .up-pulse{position:absolute;inset:0;transform-origin:50% 50%;will-change:transform;pointer-events:none}
 .game-board-surface.pulse .up-pulse{animation:upperPulse var(--pulse-duration,2.2s) ease-in-out infinite}
 @keyframes upperPulse{0%,100%{transform:scale(1)}50%{transform:scale(var(--pulse-scale,0.94))}}
+/* Keep Gecko's filtered contours and baked bitmaps at a fixed scale. */
+.game-board-surface.gecko-pulse .up-pulse{will-change:auto}
+.game-board-surface.gecko-pulse.pulse .up-pulse{animation:none}
+.game-board-surface.gecko-pulse.pulse:not(.scrambling) .up:not(.bond-upper-member):not(.bond-upper-group){
+  animation:upperOpacityPulse var(--pulse-duration,2.2s) ease-in-out infinite
+}
+@keyframes upperOpacityPulse{0%,100%{opacity:1}50%{opacity:.9}}
 .mk{display:flex;align-items:center;justify-content:center}
 .mkb{display:flex;align-items:center;justify-content:center;font-weight:900;line-height:1}
 .mkb.mk-outline{text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000}
@@ -1274,7 +1281,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
   <section class="about-block" id="aboutBlock" aria-labelledby="aboutTitle">
     <div class="about-head">
       <h2 id="aboutTitle" data-i18n="aboutTitle">О Программе</h2>
-      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 3.48</div>
+      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 3.59</div>
       <div class="language-control lang-top">
         <span data-i18n="chooseLanguage">выберите язык</span>
         <div class="seg" id="languageSeg" aria-label="Язык / Language">
@@ -1585,7 +1592,7 @@ var BUILTIN_TEXTS = [
 ];
 
 var UI_LANG = detectLanguage();
-var rus_eng = {"ru":{"printPuzzle":"Печать","anaUseMarkers":"Маркеры учитываем","anaUseColors":"Цвета учитываем","anaCompareBoards":"Сравнивать доски","anaNoSymmetricPositions":"В этой выборке нет симметричных позиций.","anaPathView":"Путь решения","anaTreeView":"Ближние / дальние","anaFilterView":"Фильтр","anaSymmetry":"Симметрия","anaSymAny":"Любая","anaSymVertical":"Вертикальное отражение","anaSymHorizontal":"Горизонтальное отражение","anaSymDiagonal":"Диагональное отражение","anaSymRotation":"Поворот","anaNear":"Ближние состояния","anaFar":"Дальние состояния","anaTreeStep":"{index} / {count} · ходов от корня: {depth}","anaPair":"Симметричная пара","anaDistance":"Между позициями: {moves}","anaDistanceChecking":"Считаю расстояние между позициями…","anaDistanceLimit":"Для поиска расстояния достигнут порог памяти.","anaDistanceUnreachable":"Из левой позиции правая недостижима.","anaDistanceError":"Не удалось вычислить расстояние между позициями.","anaFilterFound":"Пара {index} / {count}","anaFilterEmpty":"В выборке из ближних и дальних состояний нет пар с этой симметрией.","anaSavePair":"Создать головоломку","anaPairSame":"Старт и цель уже совпадают.","anaPairChecking":"Проверяю путь от старта к цели…","anaPairProgress":"Проверяю путь от старта к цели · состояний {count}","anaPairLimit":"Путь до цели не подтверждён до достижения порога памяти.","anaPairUnreachable":"Из этой стартовой позиции цель недостижима.","anaPairName":"{name} — симметрия {index}","anaPositionName":"{name} — вариант {index}","anaPairSaved":"В каталог добавлена «{name}» · решение: {depth} ходов.","anaPairSaveError":"Не удалось сохранить головоломку.","adjustmentStep":"Шаг настройки","anaMemory":"Бюджет памяти — {budget} ГиБ · расчётный порог — {count} состояний","anaMemoryReached":"Достигнут расчётный порог памяти ({budget} ГиБ) · состояний {count} · показан путь из {depth} ходов","anaOpen":"Анализатор","anaTitle":"Анализ головоломки","anaSearch":"🔍 Поиск","anaSwap":"⇄ Поменять","anaAuto":"↻ Авто","anaEmpty":"Нажмите «Поиск», чтобы найти дальнюю позицию.","anaSwapped":"Доски поменялись местами. Нажмите «Поиск» или «Авто».","anaProgress":"Поиск {round} · найдено состояний {count} · глубина {depth}","anaDone":"Обход завершён · ходов {depth} · состояний {count} · {time} с","anaAutoDone":"Авто завершено · поисков {round} · лучшее расстояние {depth} ходов · {time} с","anaStopped":"Поиск остановлен · показан найденный путь из {depth} ходов","anaStoppedEarly":"Поиск остановлен.","anaError":"Не удалось завершить поиск.","moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","tileBlockEditor":"РЕДАКТОР ПЛИТОК И БЛОКОВ","frameBlockEditor":"РЕДАКТОР РАМКИ И БЛОКОВ","hintGoalCaption":"Достигните заданного расположения","scramble":"🎲 Перемешать","scrambleRandom":"Перемешивание случайное","scrambleBfs":"Перемешивание BFS","scrambleBfsGoal":"BFS-перемешивание… Поиск собранной раскладки","scrambleBfsProgress":"BFS-перемешивание… Ходов от собранной раскладки: {depth}","scrambleBfsDone":"BFS-перемешивание завершено. Ходов от собранной раскладки: {depth}","scrambleBfsStopped":"BFS-перемешивание остановлено. Показана последняя найденная раскладка.","scrambleBfsStoppedEarly":"BFS-перемешивание остановлено.","scrambleBfsNoGoal":"BFS-перемешивание: собранная раскладка недостижима из текущей позиции.","scrambleBfsError":"Не удалось завершить BFS-перемешивание.","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Блок","palette":"Палитра","upperShape":"Форма блока","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","circleDiameter":"Диаметр (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","centerShift":"Сдвиг от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 3.48","shapeArrow":"Стрелка","arrowHead":"Размер стрелки","arrowSharpness":"Острота","shapeOffset":"Сдвиг от центра","offsetDistance":"Расстояние сдвига","scrambleSteps":"Количество ходов скрамбла","startBoardTitle":"Стартовая доска","targetBoardTitle":"Целевая доска","hasTargetBoard":"Есть целевая доска","hasFixedFrame":"Есть рамка","fixedFrameTile":"Неподвижная плитка рамки","fixedFrameShape":"Башня на рамке","fixedTowerColor":"Цвет башни","fixedFrameDirection":"Направление / стороны","fixedFrameSize":"Размер / длина","frameShapeNone":"Нет башни","clearTowersWord1":"Удалить","clearTowersWord2":"башни","targetCopyTitle":"Копировать стартовую доску","targetClearTitle":"Очистить целевую доску","targetSwapTitle":"Поменять местами доски","clearAllMarkers":"Удалить маркеры","numberAllMarkers":"Расставить маркеры","clearAllTowers":"Удалить башни","markerColorLabel":"Цвет","markerColorBlack":"Черный","markerColorWhite":"Белый","targetSwapNeedsFull":"Чтобы поменять доски местами, заполните целевую доску всеми плитками.","targetHelp":"Перетащите плитки со стартовой доски. Для перестановки перетащите плитку на целевой; правый щелчок удаляет плитку.","targetEmpty":"На целевой доске нужно разместить хотя бы одну плитку.","clearMarker":"Очистить маркер","addModifier":"Добавить модификатор","removeModifier":"Удалить модификатор","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveDone":"Ходов в решении: {moves} · Время поиска: {time} с","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Поиск отменён. Время поиска: {time} с. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","phaseStagedRemainder4":"оставшаяся область 4×4","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeScrew":"Шуруп","screw":"Шуруп","screwDiameter":"Диаметр (ширина плитки = 100%)","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы.","editorBondBlocked":"Невозможно перенести связку: край доски, вырез или другая связка.","phase3x3Bfs":"двунаправленный BFS","phaseSpecialBfs":"BFS с бандажами","phaseSpecialCut":"поэтапный поиск","phaseSpecialAstar":"общий поиск A*","phaseSpecialCheck":"проверка маршрута","phaseSpecialPattern":"поиск по кольцам","phaseSpecialMeeting":"встречный поиск","printTitle":"3D-печать головоломки","printDownload":"STL в ZIP","printPlanView":"Плоский вид","print3DView":"3D-вид","printAssembled":"В сборе","printOnBed":"Детали на столе","printSettings":"Размеры и допуски, мм","printReset":"Сбросить настройки","printHelp":"Левая кнопка — поворот, правая — сдвиг по горизонтали и вертикали, колесо — масштаб. Двойной щелчок — сброс вида.","printInvalid":"Проверьте диапазоны размеров.","printBuilding":"Построение деталей: {current} / {total}","printReady":"Готово · деталей: {count} · уникальных плиток: {tiles} · уникальных блоков: {blocks}","printFailed":"Не удалось построить или сохранить детали.","printNoWebGL":"3D-вид недоступен. Можно открыть плоский вид или скачать STL.","print_pitch":"Размер клетки","print_gap":"Допуски на рамке","print_radius":"Скругление углов","print_chamfer":"Фаска","print_pinGap":"Допуски на штырьках","printTrimPins":"Разрешить обрезать штырьки","print_frameHeight":"Высота рамки","print_blockHeight":"Высота блоков","printSingle":"Один STL","printStepFile":"STEP","printBuild3D":"Построить 3D","print_resolution":"Шаг детализации","printTooFine":"Модель слишком велика для этого шага детализации. Увеличьте шаг.","printStepLimited":"Для этой геометрии пока доступен STL.","print_pinHeight":"Высота штырька","print_blockGap":"Зазор под блоком","printBlockGapInvalid":"Зазор под блоком должен быть меньше высоты штырька.","print_frameThickness":"Толщина рамки","print_frameRadius":"Скругление рамки","printFrameRadiusInvalid":"Уменьшите внешнее скругление или увеличьте толщину рамки.","printFrameGroup":"Рамка","printTilesGroup":"Плитки","printBlocksGroup":"Блоки","printTextGroup":"Надписи","printOtherGroup":"Прочее","printRing":"Печатать кольцо","printFrameText":"Надпись на рамке","printTextMode":"Вид надписи","printTextNone":"Нет","printTextRaised":"Выпуклый","printTextEngraved":"Вогнутый","printTextInlay":"Цветной","printTextFont":"Шрифт","printTextSize":"Размер","printTextSpacing":"Межбуквенный интервал","printTextThickness":"Толщина надписи","printTextDepthInvalid":"Уменьшите толщину надписи, чтобы углубление не дошло до разъёма рамки.","printFramePinGap":"Зазор под блоком рамки должен быть меньше высоты его штырька.","solveStoppedManual":"Поиск остановлен пользователем.","solveStoppedExhausted":"Доступные состояния перебраны, подходящая цель не найдена.","solveStoppedMemory":"Достигнут расчётный лимит памяти ({budget} ГиБ).","solveStoppedStagedGoal":"Не удалось составить полную целевую раскладку для поэтапного поиска.","solveStoppedWorker":"Вычислительный поток IDA* завершился с ошибкой.","solveStoppedUnsolvable":"Для классической доски проверка чётности показала, что цель недостижима.","solveStoppedInvalidRoute":"Найденный маршрут не прошёл проверку ходов или цели.","solveStoppedNoRoute":"Выбранный алгоритм завершил попытки без проверенного решения.","solveStoppedError":"Поиск прерван внутренней ошибкой. {error}","solveStopMethod":"Алгоритм — {method}","solveStopStage":"Этап — {stage}","solveStopDepth":"Глубина поиска — {depth} ходов","solveStopTime":"Время поиска — {time} с","solveStopPriorLimit":"На одной из попыток достигнут лимит памяти ({budget} ГиБ)","solveStopPlayback":"Воспроизведение решения, ход {index} из {total}"},"en":{"printPuzzle":"Print","anaUseMarkers":"Match markers","anaUseColors":"Match colors","anaCompareBoards":"Compare boards","anaNoSymmetricPositions":"No symmetric positions in this sample.","anaPathView":"Solution path","anaTreeView":"Near / far states","anaFilterView":"Filter","anaSymmetry":"Symmetry","anaSymAny":"Any","anaSymVertical":"Vertical reflection","anaSymHorizontal":"Horizontal reflection","anaSymDiagonal":"Diagonal reflection","anaSymRotation":"Rotation","anaNear":"Near states","anaFar":"Far states","anaTreeStep":"{index} / {count} · moves from root: {depth}","anaPair":"Symmetric pair","anaDistance":"Distance between positions: {moves}","anaDistanceChecking":"Calculating the distance between positions…","anaDistanceLimit":"The distance search reached the memory limit.","anaDistanceUnreachable":"The right position is unreachable from the left.","anaDistanceError":"Could not calculate the distance between positions.","anaFilterFound":"Pair {index} / {count}","anaFilterEmpty":"The near and far samples contain no pairs with this symmetry.","anaSavePair":"Create puzzle","anaPairSame":"The start already matches the target.","anaPairChecking":"Checking the path from start to target…","anaPairProgress":"Checking the path from start to target · {count} states","anaPairLimit":"The search reached the memory limit before confirming a path.","anaPairUnreachable":"The target is unreachable from this start.","anaPairName":"{name} — symmetry {index}","anaPositionName":"{name} — variant {index}","anaPairSaved":"Added “{name}” to the catalog · solution: {depth} moves.","anaPairSaveError":"Could not save the puzzle.","adjustmentStep":"Adjustment step","anaMemory":"Memory budget — {budget} GiB · estimated limit — {count} states","anaMemoryReached":"Estimated memory limit reached ({budget} GiB) · {count} states · showing a path of {depth} moves","anaOpen":"Analyzer","anaTitle":"Puzzle analysis","anaSearch":"🔍 Search","anaSwap":"⇄ Swap","anaAuto":"↻ Auto","anaEmpty":"Press Search to find a distant position.","anaSwapped":"Boards swapped. Press Search or Auto.","anaProgress":"Search {round} · {count} states found · depth {depth}","anaDone":"Search complete · {depth} moves · {count} states · {time} s","anaAutoDone":"Auto complete · {round} searches · best distance {depth} moves · {time} s","anaStopped":"Search stopped · showing a path of {depth} moves","anaStoppedEarly":"Search stopped.","anaError":"Could not complete the search.","moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","tileBlockEditor":"TILE AND BLOCK EDITOR","frameBlockEditor":"FRAME AND BLOCK EDITOR","hintGoalCaption":"Reach the specified arrangement","scramble":"🎲 Scramble","scrambleRandom":"Random scramble","scrambleBfs":"Super scramble","scrambleBfsGoal":"Super scramble… Looking for a solved layout","scrambleBfsProgress":"Super scramble… Moves from solved layout: {depth}","scrambleBfsDone":"Super scramble complete. Moves from solved layout: {depth}","scrambleBfsStopped":"Super scramble stopped. Showing the last discovered layout.","scrambleBfsStoppedEarly":"Super scramble stopped.","scrambleBfsNoGoal":"Super scramble: no solved layout is reachable from the current position.","scrambleBfsError":"Could not finish the super scramble.","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Block","palette":"Palette","upperShape":"Block shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","circleDiameter":"Diameter (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","centerShift":"Offset from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 3.48","shapeArrow":"Arrow","arrowHead":"Arrowhead size","arrowSharpness":"Sharpness","shapeOffset":"Shift from center","offsetDistance":"Offset distance","scrambleSteps":"Scramble moves","startBoardTitle":"Start board","targetBoardTitle":"Target board","hasTargetBoard":"Has target board","hasFixedFrame":"Has frame","fixedFrameTile":"Fixed frame tile","fixedFrameShape":"Tower on frame","fixedTowerColor":"Tower color","fixedFrameDirection":"Direction / sides","fixedFrameSize":"Size / length","frameShapeNone":"No tower","clearTowersWord1":"Remove","clearTowersWord2":"towers","targetCopyTitle":"Copy start board","targetClearTitle":"Clear target board","targetSwapTitle":"Swap start and target boards","clearAllMarkers":"Remove markers","numberAllMarkers":"Number markers","clearAllTowers":"Remove towers","markerColorLabel":"Color","markerColorBlack":"Black","markerColorWhite":"White","targetSwapNeedsFull":"Fill the target board with all tiles before swapping boards.","targetHelp":"Drag tiles from the start board. Drag within the target board to rearrange; right-click removes a tile.","targetEmpty":"Place at least one tile on the target board.","clearMarker":"Clear marker","addModifier":"Add another modifier","removeModifier":"Remove modifier","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveDone":"Solution moves: {moves} · Search time: {time} s","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Search time: {time} s. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","phaseStagedRemainder4":"remaining 4×4 area","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeScrew":"Screw","screw":"Screw","screwDiameter":"Diameter (cell width = 100%)","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group.","editorBondBlocked":"Cannot move the bonded group: board edge, cut-out, or another bonded group.","phase3x3Bfs":"bidirectional BFS","phaseSpecialBfs":"bond-aware BFS","phaseSpecialCut":"staged search","phaseSpecialAstar":"full-board A*","phaseSpecialCheck":"validating route","phaseSpecialPattern":"ring-pattern search","phaseSpecialMeeting":"meet-in-the-middle search","printTitle":"3D print the puzzle","printDownload":"STL in ZIP","printPlanView":"Top view","print3DView":"3D view","printAssembled":"Assembled","printOnBed":"Parts on bed","printSettings":"Dimensions and clearances, mm","printReset":"Reset settings","printHelp":"Drag with the left button to rotate or the right button to pan. Scroll to zoom. Double-click to reset the view.","printInvalid":"Check the allowed settings ranges.","printBuilding":"Building parts: {current} / {total}","printReady":"Ready · {count} parts · unique tiles: {tiles} · unique blocks: {blocks}","printFailed":"Could not build or save the parts.","printNoWebGL":"The 3D view is unavailable. The top view and STL download are available.","print_pitch":"Cell pitch","print_gap":"Frame clearance","print_radius":"Corner radius","print_chamfer":"Chamfer","print_pinGap":"Pin tolerance","printTrimPins":"Allow trimming pins","print_frameHeight":"Frame height","print_blockHeight":"Block height","printSingle":"Single STL","printStepFile":"STEP","printBuild3D":"Build 3D preview","print_resolution":"Detail step","printTooFine":"This model is too large at this detail step. Choose a coarser step.","printStepLimited":"This geometry currently requires STL.","print_pinHeight":"Pin height","print_blockGap":"Clearance under blocks","printBlockGapInvalid":"The clearance under the block must be less than the pin height.","print_frameThickness":"Frame wall thickness","print_frameRadius":"Outer frame corner radius","printFrameRadiusInvalid":"Reduce the outer corner radius or increase the frame wall thickness.","printFrameGroup":"Frame","printTilesGroup":"Tiles","printBlocksGroup":"Blocks","printTextGroup":"Lettering","printOtherGroup":"Other","printRing":"Print ring","printFrameText":"Frame inscription","printTextMode":"Inscription style","printTextNone":"None","printTextRaised":"Raised","printTextEngraved":"Engraved","printTextInlay":"Color inlay","printTextFont":"Font","printTextSize":"Size","printTextSpacing":"Letter spacing","printTextThickness":"Inscription thickness","printTextDepthInvalid":"Reduce the inscription thickness so that the recess stays above the frame seam.","printFramePinGap":"The clearance under a frame block must be less than its pin height.","solveStoppedManual":"Search stopped by the user.","solveStoppedExhausted":"The reachable states were explored without matching the goal.","solveStoppedMemory":"The estimated memory limit was reached ({budget} GiB).","solveStoppedStagedGoal":"The staged search could not construct a complete target arrangement.","solveStoppedWorker":"The IDA* worker failed.","solveStoppedUnsolvable":"The classical board failed the parity check for reachability.","solveStoppedInvalidRoute":"The route failed move or goal validation.","solveStoppedNoRoute":"The selected search exhausted its attempts without a verified solution.","solveStoppedError":"An internal error interrupted the search. {error}","solveStopMethod":"Algorithm — {method}","solveStopStage":"Stage — {stage}","solveStopDepth":"Search depth — {depth} moves","solveStopTime":"Search time — {time} s","solveStopPriorLimit":"One attempt reached the memory limit ({budget} GiB)","solveStopPlayback":"Solution playback, move {index} of {total}"}};
+var rus_eng = {"ru":{"printPuzzle":"Печать","anaUseMarkers":"Маркеры учитываем","anaUseColors":"Цвета учитываем","anaCompareBoards":"Сравнивать доски","anaNoSymmetricPositions":"В этой выборке нет симметричных позиций.","anaPathView":"Путь решения","anaTreeView":"Ближние / дальние","anaFilterView":"Фильтр","anaSymmetry":"Симметрия","anaSymAny":"Любая","anaSymVertical":"Вертикальное отражение","anaSymHorizontal":"Горизонтальное отражение","anaSymDiagonal":"Диагональное отражение","anaSymRotation":"Поворот","anaNear":"Ближние состояния","anaFar":"Дальние состояния","anaTreeStep":"{index} / {count} · ходов от корня: {depth}","anaPair":"Симметричная пара","anaDistance":"Между позициями: {moves}","anaDistanceChecking":"Считаю расстояние между позициями…","anaDistanceLimit":"Для поиска расстояния достигнут порог памяти.","anaDistanceUnreachable":"Из левой позиции правая недостижима.","anaDistanceError":"Не удалось вычислить расстояние между позициями.","anaFilterFound":"Пара {index} / {count}","anaFilterEmpty":"В выборке из ближних и дальних состояний нет пар с этой симметрией.","anaSavePair":"Создать головоломку","anaPairSame":"Старт и цель уже совпадают.","anaPairChecking":"Проверяю путь от старта к цели…","anaPairProgress":"Проверяю путь от старта к цели · состояний {count}","anaPairLimit":"Путь до цели не подтверждён до достижения порога памяти.","anaPairUnreachable":"Из этой стартовой позиции цель недостижима.","anaPairName":"{name} — симметрия {index}","anaPositionName":"{name} — вариант {index}","anaPairSaved":"В каталог добавлена «{name}» · решение: {depth} ходов.","anaPairSaveError":"Не удалось сохранить головоломку.","adjustmentStep":"Шаг настройки","anaMemory":"Бюджет памяти — {budget} ГиБ · расчётный порог — {count} состояний","anaMemoryReached":"Достигнут расчётный порог памяти ({budget} ГиБ) · состояний {count} · показан путь из {depth} ходов","anaOpen":"Анализатор","anaTitle":"Анализ головоломки","anaSearch":"🔍 Поиск","anaSwap":"⇄ Поменять","anaAuto":"↻ Авто","anaEmpty":"Нажмите «Поиск», чтобы найти дальнюю позицию.","anaSwapped":"Доски поменялись местами. Нажмите «Поиск» или «Авто».","anaProgress":"Поиск {round} · найдено состояний {count} · глубина {depth}","anaDone":"Обход завершён · ходов {depth} · состояний {count} · {time} с","anaAutoDone":"Авто завершено · поисков {round} · лучшее расстояние {depth} ходов · {time} с","anaStopped":"Поиск остановлен · показан найденный путь из {depth} ходов","anaStoppedEarly":"Поиск остановлен.","anaError":"Не удалось завершить поиск.","moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","tileBlockEditor":"РЕДАКТОР ПЛИТОК И БЛОКОВ","frameBlockEditor":"РЕДАКТОР РАМКИ И БЛОКОВ","hintGoalCaption":"Достигните заданного расположения","scramble":"🎲 Перемешать","scrambleRandom":"Перемешивание случайное","scrambleBfs":"Перемешивание BFS","scrambleBfsGoal":"BFS-перемешивание… Поиск собранной раскладки","scrambleBfsProgress":"BFS-перемешивание… Ходов от собранной раскладки: {depth}","scrambleBfsDone":"BFS-перемешивание завершено. Ходов от собранной раскладки: {depth}","scrambleBfsStopped":"BFS-перемешивание остановлено. Показана последняя найденная раскладка.","scrambleBfsStoppedEarly":"BFS-перемешивание остановлено.","scrambleBfsFromCurrent":"BFS-перемешивание завершено. Ходов от исходной позиции: {depth}","scrambleBfsMemory":"Достигнут предел памяти BFS. Ходов от собранной раскладки: {depth}","scrambleBfsCurrentMemory":"Достигнут предел памяти BFS. Ходов от исходной позиции: {depth}","scrambleBfsError":"Не удалось завершить BFS-перемешивание.","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Блок","palette":"Палитра","upperShape":"Форма блока","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","circleDiameter":"Диаметр (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","centerShift":"Сдвиг от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 3.59","shapeArrow":"Стрелка","arrowHead":"Размер стрелки","arrowSharpness":"Острота","shapeOffset":"Сдвиг от центра","offsetDistance":"Расстояние сдвига","scrambleSteps":"Количество ходов скрамбла","startBoardTitle":"Стартовая доска","targetBoardTitle":"Целевая доска","hasTargetBoard":"Есть целевая доска","hasFixedFrame":"Есть рамка","fixedFrameTile":"Неподвижная плитка рамки","fixedFrameShape":"Башня на рамке","fixedTowerColor":"Цвет башни","fixedFrameDirection":"Направление / стороны","fixedFrameSize":"Размер / длина","frameShapeNone":"Нет башни","clearTowersWord1":"Удалить","clearTowersWord2":"башни","targetCopyTitle":"Копировать стартовую доску","targetClearTitle":"Очистить целевую доску","targetSwapTitle":"Поменять местами доски","clearAllMarkers":"Удалить маркеры","numberAllMarkers":"Расставить маркеры","clearAllTowers":"Удалить башни","markerColorLabel":"Цвет","markerColorBlack":"Черный","markerColorWhite":"Белый","targetSwapNeedsFull":"Чтобы поменять доски местами, заполните целевую доску всеми плитками.","targetHelp":"Перетащите плитки со стартовой доски. Для перестановки перетащите плитку на целевой; правый щелчок удаляет плитку.","targetEmpty":"На целевой доске нужно разместить хотя бы одну плитку.","clearMarker":"Очистить маркер","addModifier":"Добавить модификатор","removeModifier":"Удалить модификатор","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveProgressBfs":"Поиск решения… {phase}Глубина поиска: {depth} ходов · время: {time}","solveProgressStaged":"Поиск решения… {phase}Позиций: {count} · Глубина поиска: {depth} ходов · время: {time}","solveDone":"Ходов в решении: {moves} · Время поиска: {time} с","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Поиск отменён. Время поиска: {time} с. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","phaseStagedRemainder4":"оставшаяся область 4×4","solveStageNumber":"Этап {index}/{total}","solveStageOrder":"Порядок сборки {index}/{total}","solveStageCandidate":"Вариант {index}/{total}","phaseStagedTopPair":"первые две плитки верхнего ряда","phaseStagedLeftPair":"первые две плитки левого столбца","phaseStagedFinishBfs":"сборка оставшегося блока (BFS)","phaseStagedFinishAstar":"резервный поиск (A*)","phaseStagedPrepareGoal":"подготовка цели","solveStageRegion":"Целевых ячеек в области: {count}","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeScrew":"Шуруп","screw":"Шуруп","screwDiameter":"Диаметр (ширина плитки = 100%)","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы.","editorBondBlocked":"Невозможно перенести связку: край доски, вырез или другая связка.","phase3x3Bfs":"двунаправленный BFS","phaseSpecialBfs":"BFS с бандажами","phaseSpecialCut":"поэтапный поиск","phaseSpecialAstar":"общий поиск A*","phaseSpecialCheck":"проверка маршрута","phaseSpecialPattern":"поиск по кольцам","phaseSpecialMeeting":"встречный поиск","printTitle":"3D-печать головоломки","printDownload":"STL в ZIP","printPlanView":"Плоский вид","print3DView":"3D-вид","printAssembled":"В сборе","printOnBed":"Детали на столе","printSettings":"Размеры и допуски, мм","printReset":"Сбросить настройки","printHelp":"Левая кнопка — поворот, правая — сдвиг по горизонтали и вертикали, колесо — масштаб. Двойной щелчок — сброс вида.","printInvalid":"Проверьте диапазоны размеров.","printBuilding":"Построение деталей: {current} / {total}","printReady":"Готово · деталей: {count} · уникальных плиток: {tiles} · уникальных блоков: {blocks}","printFailed":"Не удалось построить или сохранить детали.","printNoWebGL":"3D-вид недоступен. Можно открыть плоский вид или скачать STL.","print_pitch":"Размер клетки","print_gap":"Допуски на рамке","print_radius":"Скругление углов","print_chamfer":"Фаска","print_pinGap":"Допуски на штырьках","printTrimPins":"Разрешить обрезать штырьки","print_frameHeight":"Высота рамки","print_blockHeight":"Высота блоков","printSingle":"Один STL","printStepFile":"STEP","printBuild3D":"Построить 3D","print_resolution":"Шаг детализации","printTooFine":"Модель слишком велика для этого шага детализации. Увеличьте шаг.","printStepLimited":"Для этой геометрии пока доступен STL.","print_pinHeight":"Высота штырька","print_blockGap":"Зазор под блоком","printBlockGapInvalid":"Зазор под блоком должен быть меньше высоты штырька.","print_frameThickness":"Толщина рамки","print_frameRadius":"Скругление рамки","printFrameRadiusInvalid":"Уменьшите внешнее скругление или увеличьте толщину рамки.","printFrameGroup":"Рамка","printTilesGroup":"Плитки","printBlocksGroup":"Блоки","printTextGroup":"Надписи","printOtherGroup":"Прочее","printRing":"Печатать кольцо","printFrameText":"Надпись на рамке","printTextMode":"Вид надписи","printTextNone":"Нет","printTextRaised":"Выпуклый","printTextEngraved":"Вогнутый","printTextInlay":"Цветной","printTextFont":"Шрифт","printTextSize":"Размер","printTextSpacing":"Межбуквенный интервал","printTextThickness":"Толщина надписи","printTextDepthInvalid":"Уменьшите толщину надписи, чтобы углубление не дошло до разъёма рамки.","printFramePinGap":"Зазор под блоком рамки должен быть меньше высоты его штырька.","solveStoppedManual":"Поиск остановлен пользователем.","solveStoppedExhausted":"Доступные состояния перебраны, подходящая цель не найдена.","solveStoppedMemory":"Достигнут расчётный лимит памяти ({budget} ГиБ).","solveStoppedStagedGoal":"Не удалось составить полную целевую раскладку для поэтапного поиска.","solveStoppedWorker":"Вычислительный поток IDA* завершился с ошибкой.","solveStoppedUnsolvable":"Для классической доски проверка чётности показала, что цель недостижима.","solveStoppedInvalidRoute":"Найденный маршрут не прошёл проверку ходов или цели.","solveStoppedNoRoute":"Выбранный алгоритм завершил попытки без проверенного решения.","solveStoppedError":"Поиск прерван внутренней ошибкой. {error}","solveStopMethod":"Алгоритм — {method}","solveStopStage":"Этап — {stage}","solveStopPositions":"Позиций: {count}","solveStopDepth":"Глубина поиска: {depth} ходов","solveStopTime":"Время поиска — {time} с","solveStopPriorLimit":"На одной из попыток достигнут лимит памяти ({budget} ГиБ)","solveStopPlayback":"Воспроизведение решения, ход {index} из {total}"},"en":{"printPuzzle":"Print","anaUseMarkers":"Match markers","anaUseColors":"Match colors","anaCompareBoards":"Compare boards","anaNoSymmetricPositions":"No symmetric positions in this sample.","anaPathView":"Solution path","anaTreeView":"Near / far states","anaFilterView":"Filter","anaSymmetry":"Symmetry","anaSymAny":"Any","anaSymVertical":"Vertical reflection","anaSymHorizontal":"Horizontal reflection","anaSymDiagonal":"Diagonal reflection","anaSymRotation":"Rotation","anaNear":"Near states","anaFar":"Far states","anaTreeStep":"{index} / {count} · moves from root: {depth}","anaPair":"Symmetric pair","anaDistance":"Distance between positions: {moves}","anaDistanceChecking":"Calculating the distance between positions…","anaDistanceLimit":"The distance search reached the memory limit.","anaDistanceUnreachable":"The right position is unreachable from the left.","anaDistanceError":"Could not calculate the distance between positions.","anaFilterFound":"Pair {index} / {count}","anaFilterEmpty":"The near and far samples contain no pairs with this symmetry.","anaSavePair":"Create puzzle","anaPairSame":"The start already matches the target.","anaPairChecking":"Checking the path from start to target…","anaPairProgress":"Checking the path from start to target · {count} states","anaPairLimit":"The search reached the memory limit before confirming a path.","anaPairUnreachable":"The target is unreachable from this start.","anaPairName":"{name} — symmetry {index}","anaPositionName":"{name} — variant {index}","anaPairSaved":"Added “{name}” to the catalog · solution: {depth} moves.","anaPairSaveError":"Could not save the puzzle.","adjustmentStep":"Adjustment step","anaMemory":"Memory budget — {budget} GiB · estimated limit — {count} states","anaMemoryReached":"Estimated memory limit reached ({budget} GiB) · {count} states · showing a path of {depth} moves","anaOpen":"Analyzer","anaTitle":"Puzzle analysis","anaSearch":"🔍 Search","anaSwap":"⇄ Swap","anaAuto":"↻ Auto","anaEmpty":"Press Search to find a distant position.","anaSwapped":"Boards swapped. Press Search or Auto.","anaProgress":"Search {round} · {count} states found · depth {depth}","anaDone":"Search complete · {depth} moves · {count} states · {time} s","anaAutoDone":"Auto complete · {round} searches · best distance {depth} moves · {time} s","anaStopped":"Search stopped · showing a path of {depth} moves","anaStoppedEarly":"Search stopped.","anaError":"Could not complete the search.","moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","tileBlockEditor":"TILE AND BLOCK EDITOR","frameBlockEditor":"FRAME AND BLOCK EDITOR","hintGoalCaption":"Reach the specified arrangement","scramble":"🎲 Scramble","scrambleRandom":"Random scramble","scrambleBfs":"Super scramble","scrambleBfsGoal":"Super scramble… Looking for a solved layout","scrambleBfsProgress":"Super scramble… Moves from solved layout: {depth}","scrambleBfsDone":"Super scramble complete. Moves from solved layout: {depth}","scrambleBfsStopped":"Super scramble stopped. Showing the last discovered layout.","scrambleBfsStoppedEarly":"Super scramble stopped.","scrambleBfsFromCurrent":"Super scramble complete. Moves from starting position: {depth}","scrambleBfsMemory":"Super scramble reached its memory limit. Moves from solved layout: {depth}","scrambleBfsCurrentMemory":"Super scramble reached its memory limit. Moves from starting position: {depth}","scrambleBfsError":"Could not finish the super scramble.","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Block","palette":"Palette","upperShape":"Block shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","circleDiameter":"Diameter (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","centerShift":"Offset from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 3.59","shapeArrow":"Arrow","arrowHead":"Arrowhead size","arrowSharpness":"Sharpness","shapeOffset":"Shift from center","offsetDistance":"Offset distance","scrambleSteps":"Scramble moves","startBoardTitle":"Start board","targetBoardTitle":"Target board","hasTargetBoard":"Has target board","hasFixedFrame":"Has frame","fixedFrameTile":"Fixed frame tile","fixedFrameShape":"Tower on frame","fixedTowerColor":"Tower color","fixedFrameDirection":"Direction / sides","fixedFrameSize":"Size / length","frameShapeNone":"No tower","clearTowersWord1":"Remove","clearTowersWord2":"towers","targetCopyTitle":"Copy start board","targetClearTitle":"Clear target board","targetSwapTitle":"Swap start and target boards","clearAllMarkers":"Remove markers","numberAllMarkers":"Number markers","clearAllTowers":"Remove towers","markerColorLabel":"Color","markerColorBlack":"Black","markerColorWhite":"White","targetSwapNeedsFull":"Fill the target board with all tiles before swapping boards.","targetHelp":"Drag tiles from the start board. Drag within the target board to rearrange; right-click removes a tile.","targetEmpty":"Place at least one tile on the target board.","clearMarker":"Clear marker","addModifier":"Add another modifier","removeModifier":"Remove modifier","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveProgressBfs":"Solving… {phase}Search depth: {depth} moves · time: {time}","solveProgressStaged":"Solving… {phase}Positions: {count} · Search depth: {depth} moves · time: {time}","solveDone":"Solution moves: {moves} · Search time: {time} s","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Search time: {time} s. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","phaseStagedRemainder4":"remaining 4×4 area","solveStageNumber":"Stage {index}/{total}","solveStageOrder":"Assembly order {index}/{total}","solveStageCandidate":"Candidate {index}/{total}","phaseStagedTopPair":"first two tiles of the top row","phaseStagedLeftPair":"first two tiles of the left column","phaseStagedFinishBfs":"solving the remaining block (BFS)","phaseStagedFinishAstar":"fallback search (A*)","phaseStagedPrepareGoal":"preparing the goal","solveStageRegion":"Goal cells in the region: {count}","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeScrew":"Screw","screw":"Screw","screwDiameter":"Diameter (cell width = 100%)","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group.","editorBondBlocked":"Cannot move the bonded group: board edge, cut-out, or another bonded group.","phase3x3Bfs":"bidirectional BFS","phaseSpecialBfs":"bond-aware BFS","phaseSpecialCut":"staged search","phaseSpecialAstar":"full-board A*","phaseSpecialCheck":"validating route","phaseSpecialPattern":"ring-pattern search","phaseSpecialMeeting":"meet-in-the-middle search","printTitle":"3D print the puzzle","printDownload":"STL in ZIP","printPlanView":"Top view","print3DView":"3D view","printAssembled":"Assembled","printOnBed":"Parts on bed","printSettings":"Dimensions and clearances, mm","printReset":"Reset settings","printHelp":"Drag with the left button to rotate or the right button to pan. Scroll to zoom. Double-click to reset the view.","printInvalid":"Check the allowed settings ranges.","printBuilding":"Building parts: {current} / {total}","printReady":"Ready · {count} parts · unique tiles: {tiles} · unique blocks: {blocks}","printFailed":"Could not build or save the parts.","printNoWebGL":"The 3D view is unavailable. The top view and STL download are available.","print_pitch":"Cell pitch","print_gap":"Frame clearance","print_radius":"Corner radius","print_chamfer":"Chamfer","print_pinGap":"Pin tolerance","printTrimPins":"Allow trimming pins","print_frameHeight":"Frame height","print_blockHeight":"Block height","printSingle":"Single STL","printStepFile":"STEP","printBuild3D":"Build 3D preview","print_resolution":"Detail step","printTooFine":"This model is too large at this detail step. Choose a coarser step.","printStepLimited":"This geometry currently requires STL.","print_pinHeight":"Pin height","print_blockGap":"Clearance under blocks","printBlockGapInvalid":"The clearance under the block must be less than the pin height.","print_frameThickness":"Frame wall thickness","print_frameRadius":"Outer frame corner radius","printFrameRadiusInvalid":"Reduce the outer corner radius or increase the frame wall thickness.","printFrameGroup":"Frame","printTilesGroup":"Tiles","printBlocksGroup":"Blocks","printTextGroup":"Lettering","printOtherGroup":"Other","printRing":"Print ring","printFrameText":"Frame inscription","printTextMode":"Inscription style","printTextNone":"None","printTextRaised":"Raised","printTextEngraved":"Engraved","printTextInlay":"Color inlay","printTextFont":"Font","printTextSize":"Size","printTextSpacing":"Letter spacing","printTextThickness":"Inscription thickness","printTextDepthInvalid":"Reduce the inscription thickness so that the recess stays above the frame seam.","printFramePinGap":"The clearance under a frame block must be less than its pin height.","solveStoppedManual":"Search stopped by the user.","solveStoppedExhausted":"The reachable states were explored without matching the goal.","solveStoppedMemory":"The estimated memory limit was reached ({budget} GiB).","solveStoppedStagedGoal":"The staged search could not construct a complete target arrangement.","solveStoppedWorker":"The IDA* worker failed.","solveStoppedUnsolvable":"The classical board failed the parity check for reachability.","solveStoppedInvalidRoute":"The route failed move or goal validation.","solveStoppedNoRoute":"The selected search exhausted its attempts without a verified solution.","solveStoppedError":"An internal error interrupted the search. {error}","solveStopMethod":"Algorithm — {method}","solveStopStage":"Stage — {stage}","solveStopPositions":"Positions: {count}","solveStopDepth":"Search depth: {depth} moves","solveStopTime":"Search time — {time} s","solveStopPriorLimit":"One attempt reached the memory limit ({budget} GiB)","solveStopPlayback":"Solution playback, move {index} of {total}"}};
 
 var LAST_STATUS = null, LAST_DIALOG = null;
 var pulseOn = true;
@@ -3271,6 +3278,7 @@ function updateModCollapse() {
 }
 
 var board = document.getElementById('board');
+board.classList.toggle('gecko-pulse', /Firefox\//i.test(navigator.userAgent));
 var slotLayer = document.getElementById('slotLayer');
 var baseLayer = document.getElementById('baseLayer');
 var upLayer = document.getElementById('upLayer');
@@ -5369,13 +5377,6 @@ function redoMove() {
   }else finish();
 }
 
-function canScrambleBfs() {
-  if (mode !== 'play' || !cfg || layout.indexOf(-1) < 0) return false;
-  if (hasTargetLayout(cfg) && !targetTileCount(cfg)) return false;
-  return canUseBidirectionalBFS() || canUseBondedBidirectionalBFS() ||
-    (hasTargetLayout(cfg) && cfg.tiles.length <= 12);
-}
-
 function closeScrambleMenu() {
   $('scrambleMenu').classList.add('hidden');
   if ($('scrambleBtn').hasAttribute('aria-expanded'))
@@ -5384,7 +5385,7 @@ function closeScrambleMenu() {
 
 function updateScrambleButton() {
   var btn = $('scrambleBtn');
-  var menuAvailable = !solveRunning && !pb && !scrambleRunning && canScrambleBfs();
+  var menuAvailable = mode === 'play' && !!cfg && !solveRunning && !pb && !scrambleRunning;
   if (!menuAvailable) closeScrambleMenu();
   if (menuAvailable) {
     btn.setAttribute('aria-controls', 'scrambleMenu');
@@ -5403,7 +5404,6 @@ function updateScrambleButton() {
 function chooseScramble() {
   if (scrambleBfsRunning) { scrambleBfsStop = true; return; }
   if (mode !== 'play' || busy || solveRunning || pb || drag) return;
-  if (!canScrambleBfs()) { scramble(); return; }
   if (!$('scrambleMenu').classList.contains('hidden')) { closeScrambleMenu(); return; }
   closeSolverSelectMenu();
   $('scrambleMenu').classList.remove('hidden');
@@ -5415,7 +5415,10 @@ function scrambleBfsNeighbors(start, key) {
   if (holeCount === 1 && !hasSpecialBoard()) {
     var frozen = {};
     return function(state) {
-      return solverNeighbors(state, frozen).map(function(edge) {
+      var hole=state.indexOf(-1);
+      return solverNeighbors(state, frozen).filter(function(edge) {
+        return travelInState(hole,edge.move,edge.lay)>=1-MOTION_EPS;
+      }).map(function(edge) {
         return {state: edge.lay, key: key(edge.lay)};
       });
     };
@@ -5444,8 +5447,16 @@ function scrambleBfsNeighbors(start, key) {
   };
 }
 
-async function walkScrambleBfs(start, key, neighbors, onDiscover) {
-  var seen = new Set([key(start)]), layer = [start], depth = 0;
+async function walkScrambleBfs(start, key, neighbors, onDiscover, stateLimit) {
+  // Keep large visited sets below the engine's per-collection limit.
+  var visited=Array.from({length:32},function(){return new Set();});
+  function bucket(value) {
+    var hash=0x811c9dc5;
+    for(var i=0;i<value.length;i++)hash=Math.imul(hash^value.charCodeAt(i),0x01000193);
+    return visited[hash&31];
+  }
+  var first=key(start),count=1,layer=[start],depth=0;
+  bucket(first).add(first);
   var nextYield = performance.now() + 12;
   while (layer.length && !scrambleBfsStop) {
     var nextLayer = [];
@@ -5455,9 +5466,12 @@ async function walkScrambleBfs(start, key, neighbors, onDiscover) {
       layer[i] = null;
       for (var j = 0; j < edges.length; j++) {
         var edge = edges[j];
+        var seen=bucket(edge.key);
         if (seen.has(edge.key)) continue;
+        if(count>=stateLimit)return true;
         seen.add(edge.key);
-        if (onDiscover(edge.state, depth)) return;
+        count++;
+        if (onDiscover(edge.state, depth)) return false;
         nextLayer.push(edge.state);
       }
       if (performance.now() >= nextYield) {
@@ -5468,10 +5482,16 @@ async function walkScrambleBfs(start, key, neighbors, onDiscover) {
     }
     layer = nextLayer;
   }
+  return false;
 }
 
 async function scrambleByBfs() {
-  if (busy || solveRunning || pb || drag || !canScrambleBfs()) return;
+  if (mode !== 'play' || busy || solveRunning || pb || drag || !cfg) return;
+  closeScrambleMenu();
+  if (layout.indexOf(-1) < 0) {
+    setStatus(msg('scrambleNone'), 'err');
+    return;
+  }
   closeWin();
   closeHint();
   busy = scrambleRunning = scrambleBfsRunning = true;
@@ -5482,7 +5502,8 @@ async function scrambleByBfs() {
   var chosen = null;
   var releaseCollisions=beginSearchCollisions();
   try {
-    var start = layout.slice(), types = solverEquivalentTypes(), hasTarget = hasTargetLayout(cfg);
+    var start=layout.slice(),types=solverEquivalentTypes(),hasTarget=targetTileCount(cfg)>0;
+    var stateLimit=solverMemoryCapacity(start.length);
     // A compact key keeps the visited set smaller than serialized arrays.
     function key(state) {
       var result = '';
@@ -5505,49 +5526,48 @@ async function scrambleByBfs() {
       });
     }
 
-    var goal = hasTarget ? null : cfg.layout;
-    var last = null, recent = [], discovered = 0, lastReport = 0;
-    setStatus(msg(goal ? 'scrambleBfsProgress' : 'scrambleBfsGoal', {depth: 0}), '');
-    await new Promise(function(resolve){ setTimeout(resolve, 0); });
+    var goal=hasTarget ? (matchesGoal(start)?start:null) : cfg.layout;
+    var last=null,recent=[],discovered=0,lastReport=0,memoryReached=false;
+    function collect(state,depth) {
+      last={state:state,depth:depth};
+      if(!matchesGoal(state))recent[discovered++%50]=last;
+    }
+    setStatus(msg(goal?'scrambleBfsProgress':'scrambleBfsGoal',{depth:0}), '');
+    await new Promise(function(resolve){setTimeout(resolve,0);});
 
-    if (!goal && !scrambleBfsStop) {
-      // For a partial target, find a real solved layout in this component.
-      // Search from the current position also respects parity on complete targets.
-      if (matchesGoal(start)) goal = start;
-      else await walkScrambleBfs(start, key, neighbors, function(state) {
-        last = {state: state};
-        if (matchesGoal(state)) { goal = state; return true; }
+    if(!goal&&!scrambleBfsStop) {
+      // Keep positions from this search as a fallback if the target is
+      // unreachable or cannot be located within the memory budget.
+      memoryReached=await walkScrambleBfs(start,key,neighbors,function(state,depth) {
+        collect(state,depth);
+        if(matchesGoal(state)){goal=state;return true;}
         return false;
-      });
+      },stateLimit);
     }
 
-    if (goal && !scrambleBfsStop) {
-      setStatus(msg('scrambleBfsProgress', {depth: 0}), '');
-      last = null;
-      await walkScrambleBfs(goal, key, neighbors, function(state, depth) {
-        last = {state: state, depth: depth};
-        recent[discovered++ % 50] = last;
-        var now = performance.now();
-        if (now - lastReport >= 160) {
-          setStatus(msg('scrambleBfsProgress', {depth: depth}), '');
-          lastReport = now;
+    if(goal&&!scrambleBfsStop) {
+      last=null;recent=[];discovered=0;
+      setStatus(msg('scrambleBfsProgress',{depth:0}), '');
+      memoryReached=await walkScrambleBfs(goal,key,neighbors,function(state,depth) {
+        collect(state,depth);
+        var now=performance.now();
+        if(now-lastReport>=160) {
+          setStatus(msg('scrambleBfsProgress',{depth:depth}), '');
+          lastReport=now;
         }
         return false;
-      });
+      },stateLimit);
     }
 
-    if (scrambleBfsStop) {
-      chosen = last;
-      setStatus(msg(chosen ? 'scrambleBfsStopped' : 'scrambleBfsStoppedEarly'), '');
-    } else if (!goal) {
-      setStatus(msg('scrambleBfsNoGoal'), 'err');
-    } else {
-      var candidates = recent.filter(function(entry){ return !matchesGoal(entry.state); });
-      if (candidates.length) {
-        chosen = candidates[Math.floor(Math.random() * candidates.length)];
-        setStatus(msg('scrambleBfsDone', {depth: chosen.depth}), '');
-      } else setStatus(msg('scrambleNone'), 'err');
-    }
+    if(scrambleBfsStop) {
+      chosen=last;
+      setStatus(msg(chosen?'scrambleBfsStopped':'scrambleBfsStoppedEarly'), '');
+    } else if(recent.length) {
+      chosen=recent[Math.floor(Math.random()*recent.length)];
+      var result=goal?'scrambleBfsDone':'scrambleBfsFromCurrent';
+      if(memoryReached)result=goal?'scrambleBfsMemory':'scrambleBfsCurrentMemory';
+      setStatus(msg(result,{depth:chosen.depth}), '');
+    } else setStatus(msg('scrambleNone'), 'err');
   } catch (error) {
     console.error(error);
     setStatus(msg('scrambleBfsError'), 'err');
@@ -5723,20 +5743,41 @@ function shuffleArray(a) {
 
 var solverProgress = null;
 var solverAttemptDescription = '';
-var solverStartedAt = 0;
+var solverStartedAt = 0, solverFoundAt = null;
 function solverProgressBegin(labelKey) {
   if (solverProgress) solverProgressEnd();
   solverAttemptDescription = '';
-  solverProgress = { t0: Date.now(), total: 0, lastReport: 0, labelKey: labelKey || 'phaseInit', tileLabel: '', bfsDepth: null };
+  solverFoundAt = null;
+  solverProgress = { t0: Date.now(), total: 0, lastReport: 0, labelKey: labelKey || 'phaseInit', tileLabel: '', bfsDepth: null, staged: false, stagedSearchDepth: 0, stagedRootMoves: 0 };
   solverProgressFlush();
 }
 function solverProgressSetLabel(labelKey, tileId) {
   if (!solverProgress) return;
-  if(solverProgress.labelKey!==labelKey)solverProgress.bfsDepth=null;
+  if(solverProgress.labelKey!==labelKey || solverProgress.staged)solverProgress.bfsDepth=null;
+  solverProgress.staged=false;
+  solverProgress.stagedRootMoves=0;
   solverProgress.labelKey = labelKey;
   if (tileId === undefined || tileId === null) { solverProgress.tileLabel = ''; return; }
   var t = cfg && cfg.tiles[tileId];
   solverProgress.tileLabel = t && t.marker ? t.marker : String(tileId + 1);
+}
+function solverStagedPhase(labelKey,index,total,details,tileId,rootMoves=0) {
+  solverProgressSetLabel(labelKey,tileId);
+  if(!solverProgress) return;
+  solverAttemptDescription=tr('solveStageNumber',{index:index,total:total})+(details?' · '+details:'');
+  solverProgress.staged=true;
+  solverStagedRoot(rootMoves);
+  solverProgressFlush();
+}
+function solverStagedRoot(moves) {
+  if(!solverProgress || !solverProgress.staged)return;
+  solverProgress.stagedRootMoves=moves;
+  solverStageDepth(0);
+}
+function solverStageDepth(moves) {
+  if(!solverProgress || !solverProgress.staged)return;
+  const depth=solverProgress.stagedRootMoves+moves;
+  if(depth>solverProgress.stagedSearchDepth)solverProgress.stagedSearchDepth=depth;
 }
 function solverProgressAdd(n) {
   if (!solverProgress) return;
@@ -5753,22 +5794,17 @@ function solverProgressFlush(now) {
   var tileText = solverProgress.tileLabel ? ' «' + solverProgress.tileLabel + '»' : '';
   var attemptText = solverAttemptDescription ? solverAttemptDescription + ' · ' : '';
   var phaseText = attemptText + (labelText ? labelText + tileText + ' · ' : '');
-  if (solverProgress.labelKey === 'phase3x3Bfs') {
-    // For BFS, depth in legal moves is more useful than visited-state count.
-    var depth = Number.isFinite(solverProgress.bfsDepth) ? solverProgress.bfsDepth : 0;
-    var duration = ((now - solverProgress.t0) / 1000).toFixed(1) + 's';
-    setStatus((UI_LANG === 'ru' ? 'Поиск решения… ' : 'Solving… ') +
-      phaseText +
-      (UI_LANG === 'ru' ? 'Глубина поиска: ' : 'Search depth: ') +
-      depth + (UI_LANG === 'ru' ? ' ходов · время: ' : ' moves · time: ') +
-      duration, '');
+  var time=((now-solverProgress.t0)/1000).toFixed(1)+'s';
+  if(!solverProgress.staged && (solverProgress.labelKey==='phase3x3Bfs' || solverProgress.bfsDepth!==null)) {
+    setStatus(msg('solveProgressBfs',{phase:phaseText,depth:solverProgress.bfsDepth??0,time:time}), '');
     return;
   }
-  setStatus(msg('solveProgress', {
-    count: solverProgress.total,
-    time: ((now - solverProgress.t0) / 1000).toFixed(1) + 's',
-    phase: phaseText
-  }), '');
+  var count=solverProgress.total;
+  if(solverProgress.staged) {
+    setStatus(msg('solveProgressStaged',{phase:phaseText,count:count,depth:solverProgress.stagedSearchDepth,time:time}), '');
+    return;
+  }
+  setStatus(msg('solveProgress',{phase:phaseText,count:count,time:time}), '');
 }
 function solverProgressEnd() {
   if(solverProgress)solverLastStage=solverStageSnapshot();
@@ -6007,7 +6043,7 @@ function solverValidatePath(startLay, cells, goalLay, frozen, equivalentTypes) {
 async function bidirectionalBFS(startLay, goalLay, frozen, equivalentTypes) {
   function key(state) { return equivalentTypes ? solverCanonicalKey(state,equivalentTypes) : state.join(','); }
   var sk=key(startLay),gk=key(goalLay);
-  if(sk===gk)return [];
+  if(sk===gk){solverStageDepth(0);return [];}
   var fw=new Map(),bw=new Map();
   fw.set(sk,{lay:startLay,prev:null,move:-1});
   bw.set(gk,{lay:goalLay,prev:null,move:-1});
@@ -6038,6 +6074,8 @@ async function bidirectionalBFS(startLay, goalLay, frozen, equivalentTypes) {
   while(fq.length && bq.length && !solveAbort) {
     var forward=fq.length<=bq.length, queue=forward?fq:bq;
     var own=forward?fw:bw,other=forward?bw:fw,next=[];
+    // Include both frontiers and the connecting move in the staged depth.
+    solverStageDepth(fwDepth+bwDepth+1);
     if (solverProgress && solverProgress.labelKey === 'phase3x3Bfs') {
       // Maximum path length being checked by the meeting of the two fronts.
       solverProgress.bfsDepth=fwDepth+bwDepth+1;
@@ -6046,8 +6084,9 @@ async function bidirectionalBFS(startLay, goalLay, frozen, equivalentTypes) {
     for(var qi=0;qi<queue.length;qi++) {
       if(solveAbort)return null;
       expanded++;
+      if(solverProgress)solverProgress.total++;
       if((expanded&255)===0){
-        solverProgressAdd(256);
+        solverProgressAdd(0);
         if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
       }
       var id=queue[qi],current=own.get(id);
@@ -6060,6 +6099,7 @@ async function bidirectionalBFS(startLay, goalLay, frozen, equivalentTypes) {
         if(other.has(nk)){
           var path=reconstruction(nk);
           if(solverValidatePath(startLay,path,goalLay,frozen,equivalentTypes)){
+            solverStageDepth(path.length);
             if(solverProgress && solverProgress.labelKey==='phase3x3Bfs'){
               solverProgress.bfsDepth=path.length;
               solverProgressFlush();
@@ -6504,6 +6544,7 @@ function solverCheckpoint(records) {
 function solverRestoreCheckpoint(point, records) {
   layout=point.lay.slice(); hist=point.history.slice(); redo=point.redo.slice();
   records.length=point.length;
+  solverFoundAt=null;
   if (pb) {
     pb.tileStartLen=null;
     pb.knownTotal=null;
@@ -6524,9 +6565,7 @@ async function solve4x4Remainder(records, frozen, order, animateStep) {
     subMoves=await bidirectionalBFS(layout,cfg.layout,softened);
   }
   if (!subMoves || solveAbort) return false;
-  if (pb && pb.live && !pb.precompute) {
-    pb.knownTotal=records.length+subMoves.length;updatePlaybackUI();
-  }
+  showVerifiedSolverRoute(records.length+subMoves.length);
   for (var si=0;si<subMoves.length;si++)
     if (!await animateApply(subMoves[si],records,animateStep)) return false;
   return isSolved();
@@ -6688,6 +6727,8 @@ async function stagedFindCandidates(source,targets,goalPositions,count,variant,c
   var capacity=solverMemoryCapacity(source.lay.length);
   search: while(heap.length&&!solveAbort){
     var curr=stagedHeapPop(heap).node;
+    if(solverProgress)solverProgress.total++;
+    solverStageDepth(curr.depth);
     var h=stagedHeuristic(curr.lay,targets,goalPositions,goalLayout);
     if(h.primary===0){
       var ck=curr.lay.join(',');
@@ -6704,7 +6745,7 @@ async function stagedFindCandidates(source,targets,goalPositions,count,variant,c
     }
     ++expanded;
     if((expanded&127)===0){
-      solverProgressAdd(128);
+      solverProgressAdd(0);
       if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
     }
     var nbrs=stagedLegalNeighbors(curr.lay,cache,frozen);
@@ -6729,7 +6770,7 @@ async function stagedFinishAStar(source,goalPositions,cache,weight,goalLayout,fr
   var heap=[],visited=new Map(),lastYield=Date.now(),expanded=0;
   var root={lay:source.lay,parent:null,move:-1,depth:0};
   var goalKey=goalLayout.join(','),rootKey=root.lay.join(',');
-  if(rootKey===goalKey)return [];
+  if(rootKey===goalKey){solverStageDepth(0);return [];}
   var initial=stagedHeuristic(root.lay,[],goalPositions,goalLayout);
   stagedHeapPush(heap,{node:root,priority:initial.secondary*weight});
   visited.set(rootKey,0);
@@ -6737,6 +6778,8 @@ async function stagedFinishAStar(source,goalPositions,cache,weight,goalLayout,fr
   search: while(heap.length&&!solveAbort){
     var node=stagedHeapPop(heap).node,key=node.lay.join(',');
     if(visited.get(key)<node.depth)continue;
+    if(solverProgress)solverProgress.total++;
+    solverStageDepth(node.depth);
     if(key===goalKey){
       var result=[];
       while(node.parent){result.push(node.move);node=node.parent;}
@@ -6744,7 +6787,7 @@ async function stagedFinishAStar(source,goalPositions,cache,weight,goalLayout,fr
     }
     ++expanded;
     if((expanded&255)===0){
-      solverProgressAdd(256);
+      solverProgressAdd(0);
       if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
     }
     var nbrs=stagedLegalNeighbors(node.lay,cache,frozen);
@@ -6759,13 +6802,13 @@ async function stagedFinishAStar(source,goalPositions,cache,weight,goalLayout,fr
   }
   return null;
 }
-async function stagedSearch4x4(start,goalLayout,region,outer){
+async function stagedSearch4x4(start,goalLayout,region,outer,prefix,baseMoves=0){
   goalLayout=goalLayout||cfg.layout;
   outer=outer||{};
   if(region&&!cfg.tiles.some(function(tile){return tile.upper;})){
-    var border=await stagedPlainBorder(start,goalLayout,region,4,outer);
+    var border=await stagedPlainBorder(start,goalLayout,region,4,outer,1,3,prefix,baseMoves);
     if(!border||solveAbort)return null;
-    solverProgressSetLabel('phaseBlock');
+    solverStagedPhase('phaseStagedFinishBfs',3,3,prefix,null,baseMoves+border.moves.length);
     var finish=await bidirectionalBFS(border.lay,goalLayout,border.frozen);
     return finish?border.moves.concat(finish):null;
   }
@@ -6781,21 +6824,25 @@ async function stagedSearch4x4(start,goalLayout,region,outer){
   var neighborCache=new Map(),fallback=[];
   for(var orderIndex=0;orderIndex<orders.length&&!solveAbort;orderIndex++){
     var paths=[{lay:start.slice(),moves:[],score:0}],stages=orders[orderIndex];
+    var order=tr('solveStageOrder',{index:orderIndex+1,total:orders.length});
     for(var stage=0;stage<stages.length&&paths.length&&!solveAbort;stage++){
-      solverAttemptDescription=(orderIndex+1)+'/2 · '+(orderIndex===0?tr('phaseTopRow'):tr('phaseLeftCol'))+' · '+(stage+1)+'/3';
-      solverProgressSetLabel(stage===0?(orderIndex===0?'phaseTopRow':'phaseLeftCol'):'phaseBlock');
-      solverProgressFlush();
+      var stageLabels=orderIndex===0?['phaseStagedTopPair','phaseTopRow','phaseLeftCol']:
+        ['phaseStagedLeftPair','phaseLeftCol','phaseTopRow'];
+      solverStagedPhase(stageLabels[stage],stage+1,4,[prefix,order].filter(Boolean).join(' · '));
       var found=[];
       for(var k=0;k<paths.length&&!solveAbort;k++){
         var candidate=paths[k];
+        solverStagedRoot(baseMoves+candidate.moves.length);
         var additions=await stagedFindCandidates(candidate,stages[stage],goals,stage===2?8:10,(k+stage)%4,neighborCache,goalLayout,outer);
         for(var j=0;j<additions.length;j++)found.push(additions[j]);
       }
       paths=stagedDedupe(found,stage===2?18:12);
     }
-    solverAttemptDescription=(orderIndex+1)+'/2 · '+tr('phaseBlock');
     for(var ci=0;ci<paths.length&&!solveAbort;ci++){
+      var tryLabel=tr('solveStageCandidate',{index:ci+1,total:paths.length});
       var candidate=paths[ci],fixed=Object.assign({},outer),cells=stages[2];
+      solverStagedPhase('phaseStagedFinishBfs',4,4,[prefix,order,tryLabel].filter(Boolean).join(' · '),
+        null,baseMoves+candidate.moves.length);
       for(var fi=0;fi<cells.length;fi++)fixed[cells[fi]]=true;
       var ending=await bidirectionalBFS(candidate.lay,goalLayout,fixed);
       if(ending){
@@ -6810,9 +6857,10 @@ async function stagedSearch4x4(start,goalLayout,region,outer){
   // This can leave an apparently finished top row to unlock another tile.
   var finals=stagedDedupe(fallback,10);
   for(var f=0;f<finals.length&&!solveAbort;f++){
-    solverAttemptDescription=tr('phaseBlock')+' · A* '+(f+1)+'/'+finals.length;
-    solverProgressFlush();
+    var tryLabel=tr('solveStageCandidate',{index:f+1,total:finals.length});
     var from=finals[f];
+    solverStagedPhase('phaseStagedFinishAstar',4,4,[prefix,tryLabel].filter(Boolean).join(' · '),
+      null,baseMoves+from.moves.length);
     var suffix=await stagedFinishAStar(from,goals,neighborCache,f%2?2.5:3.5,goalLayout,outer);
     if(suffix){
       var complete=from.moves.concat(suffix);
@@ -6829,7 +6877,7 @@ function canUseStagedSearch(state) {
 
 // With ordinary tiles only the empty cell and the one or two pieces being
 // placed affect a border step. Search that small projected state exactly.
-async function stagedPlainBorder(start,goal,region,width,outer) {
+async function stagedPlainBorder(start,goal,region,width,outer,firstStage,stageCount,prefix,baseMoves=0) {
   var state=start.slice(),moves=[],frozen=Object.assign({},outer);
   var lines=[region.slice(0,width),region.filter(function(_,i){return i>0&&i%width===0;})];
   for(var line=0;line<lines.length;line++){
@@ -6838,23 +6886,26 @@ async function stagedPlainBorder(start,goal,region,width,outer) {
       var destinations=cells.slice(i,i+(cells.length-i===2?2:1));
       var first=goal[destinations[0]],second=destinations.length===2?goal[destinations[1]]:null;
       if(first<0||second===-1)return null;
-      solverProgressSetLabel(line===0?'phaseTopRow':'phaseLeftCol',first);
-      solverProgressFlush();
-      var root={hole:state.indexOf(-1),a:state.indexOf(first),b:second===null?-1:state.indexOf(second),parent:null};
+      solverStagedPhase(line===0?'phaseTopRow':'phaseLeftCol',firstStage+line,stageCount,prefix,first,baseMoves+moves.length);
+      var root={hole:state.indexOf(-1),a:state.indexOf(first),b:second===null?-1:state.indexOf(second),parent:null,depth:0};
       var initialKey=(root.hole*state.length+root.a)*(state.length+1)+root.b+1;
       var queue=[root],seen=new Set([initialKey]),found=null,lastYield=Date.now();
       for(var head=0;head<queue.length&&!solveAbort;head++){
         var node=queue[head];
-        if(node.a===destinations[0]&&(second===null||node.b===destinations[1])){found=node;break;}
+        if(solverProgress)solverProgress.total++;
+        solverStageDepth(node.depth);
+        if(node.a===destinations[0]&&(second===null||node.b===destinations[1])){
+          found=node;break;
+        }
         for(var cell of neighborsOf(node.hole)){
           if(frozen[cell])continue;
           var a=cell===node.a?node.hole:node.a,b=cell===node.b?node.hole:node.b;
           var key=(cell*state.length+a)*(state.length+1)+b+1;
           if(seen.has(key))continue;
-          seen.add(key);queue.push({hole:cell,a:a,b:b,parent:node});
+          seen.add(key);queue.push({hole:cell,a:a,b:b,parent:node,depth:node.depth+1});
         }
         if((head&127)===127){
-          solverProgressAdd(128);
+          solverProgressAdd(0);
           if(Date.now()-lastYield>30){await solverSleep(0);lastYield=Date.now();}
         }
       }
@@ -6878,6 +6929,7 @@ async function stagedInnerGoal(goal) {
   var capacity=solverMemoryCapacity(goal.length),lastYield=Date.now();
   for(var head=0;head<queue.length&&!solveAbort;head++){
     var node=queue[head],hole=node.lay.indexOf(-1);
+    if(solverProgress)solverProgress.total++;
     if(hole%n>=2&&Math.floor(hole/n)>=2){
       var tail=[],within=node.lay;
       while(node.previous){node=node.previous;tail.push(node.lay.indexOf(-1));}
@@ -6891,14 +6943,14 @@ async function stagedInnerGoal(goal) {
       seen.add(key);queue.push({lay:edge.lay,previous:node});
     }
     if((head&127)===127){
-      solverProgressAdd(128);
+      solverProgressAdd(0);
       if(Date.now()-lastYield>30){await solverSleep(0);lastYield=Date.now();}
     }
   }
   return null;
 }
 async function stagedSearch5x5(start,goalLayout){
-  solverProgressSetLabel('phaseInit');
+  solverStagedPhase('phaseStagedPrepareGoal',1,4);
   var normalized=await stagedInnerGoal(goalLayout);
   if(!normalized){
     if(!solverStopped)noteSolverStop('solveStoppedStagedGoal');
@@ -6911,27 +6963,30 @@ async function stagedSearch5x5(start,goalLayout){
   for(var cell of column)frozen[cell]=true;
   var candidates=[];
   if(!cfg.tiles.some(function(tile){return tile.upper;})){
-    var plain=await stagedPlainBorder(start,goal,all,5,{});
+    var plain=await stagedPlainBorder(start,goal,all,5,{},2,4);
     if(plain)candidates.push(plain);
   }else{
     var goals=new Array(cfg.tiles.length);
     goal.forEach(function(id,cell){if(id>=0)goals[id]=cell;});
-    solverProgressSetLabel('phaseTopRow');
+    solverStagedPhase('phaseTopRow',2,4);
     var top=await stagedFindCandidates({lay:start,moves:[]},row,goals,8,0,new Map(),goal,{});
     var cache=new Map();
     for(var i=0;i<top.length&&!solveAbort;i++){
-      solverProgressSetLabel('phaseLeftCol');
-      solverAttemptDescription=(i+1)+'/'+top.length;
+      solverStagedPhase('phaseLeftCol',3,4,tr('solveStageCandidate',{index:i+1,total:top.length}),
+        null,top[i].moves.length);
       candidates.push(...await stagedFindCandidates(top[i],column,goals,5,i%4,cache,goal,frozenRow));
     }
     candidates=stagedDedupe(candidates,12);
   }
   for(var i=0;i<candidates.length&&!solveAbort;i++){
-    solverProgressSetLabel('phaseStagedRemainder4');
-    solverAttemptDescription=(i+1)+'/'+candidates.length;
-    solverProgressFlush();
-    var suffix=await stagedSearch4x4(candidates[i].lay,goal,region,frozen);
-    if(suffix&&!solveAbort)return candidates[i].moves.concat(suffix,normalized.tail);
+    var context=[tr('solveStageNumber',{index:4,total:4}),tr('phaseStagedRemainder4'),
+      tr('solveStageCandidate',{index:i+1,total:candidates.length})].join(' · ');
+    var suffix=await stagedSearch4x4(candidates[i].lay,goal,region,frozen,context,candidates[i].moves.length);
+    if(suffix&&!solveAbort){
+      const route=candidates[i].moves.concat(suffix,normalized.tail);
+      solverStagedRoot(route.length);
+      return route;
+    }
   }
   return null;
 }
@@ -7216,22 +7271,31 @@ function specialSimplifyRoute(start,route,ctx) {
 // Exact breadth-first search with a memory budget. It only returns a
 // complete independently found route, never a guessed partial solution.
 async function specialBFS(start,ctx,fixed){
-  var first={state:start,parent:null,move:null},queue=[first],head=0;
+  var first={state:start,parent:null,move:null,depth:0},queue=[first],head=0;
   var visited=new Set([ctx.key(start)]),capacity=solverMemoryCapacity(start.length);
   while(head<queue.length && !solveAbort){
     if((head&63)===0){
-      solverProgressAdd(64);
+      solverProgressAdd(0);
       await solverSleep(0);
     }
     var node=queue[head++];
-    if(ctx.key(node.state)===ctx.goalKey)return specialBacktrace(node);
+    if(solverProgress)solverProgress.total++;
+    solverStageDepth(node.depth);
+    if(solverProgress && !solverProgress.staged)solverProgress.bfsDepth=node.depth;
+    if(ctx.key(node.state)===ctx.goalKey){
+      return specialBacktrace(node);
+    }
     var next=specialSolverNeighbors(node.state,ctx,fixed);
     for(var i=0;i<next.length;i++){
       var nb=next[i];if(visited.has(nb.key))continue;
       if(solverMemoryFull(visited.size,capacity))return null;
       visited.add(nb.key);
-      var candidate={state:nb.state,move:nb.move,parent:node};
-      if(nb.key===ctx.goalKey)return specialBacktrace(candidate);
+      var candidate={state:nb.state,move:nb.move,parent:node,depth:node.depth+1};
+      if(nb.key===ctx.goalKey){
+        solverStageDepth(candidate.depth);
+        if(solverProgress && !solverProgress.staged)solverProgress.bfsDepth=candidate.depth;
+        return specialBacktrace(candidate);
+      }
       queue.push(candidate);
     }
   }
@@ -7258,7 +7322,7 @@ async function specialAStar(start,ctx,targets,fixed,variant,maxEnds){
   var steps=0, expanded=0, capacity=solverMemoryCapacity(start.length);
   search: while(open.length && !solveAbort){
     if((steps&63)===0){
-      solverProgressAdd(64);
+      solverProgressAdd(0);
       await solverSleep(0);
     }
     steps++;
@@ -7266,6 +7330,8 @@ async function specialAStar(start,ctx,targets,fixed,variant,maxEnds){
     var key=ctx.key(node.state);
     if(visited.get(key)<node.depth)continue;
     expanded++;
+    if(solverProgress)solverProgress.total++;
+    solverStageDepth(node.depth);
     var h=ctx.heuristic(node.state,targets);
     if(h.errors===0){
       if(!candidateKeys.has(key)){
@@ -7357,9 +7423,11 @@ async function specialStagedSearch(start,ctx){
     var candidates=[{state:start,route:[],key:ctx.key(start)}],frozen={};
     for(var st=0;st<stages.length && candidates.length && !solveAbort;st++){
       var target=stages[st],found=[];
-      solverAttemptDescription=(oi+1)+'/'+orders.length+' · '+(st+1)+'/'+stages.length;
-      solverProgressSetLabel('phaseSpecialCut');solverProgressFlush();
+      var orderLabel=tr('solveStageOrder',{index:oi+1,total:orders.length});
+      var regionLabel=tr('solveStageRegion',{count:target.length});
+      solverStagedPhase('phaseSpecialCut',st+1,stages.length+1,orderLabel+' · '+regionLabel);
       for(var c=0;c<candidates.length && !solveAbort;c++){
+        solverStagedRoot(candidates[c].route.length);
         var options=await specialAStar(candidates[c].state,ctx,target,frozen,
           (c+st+oi)%3,
           ctx.largeBondBoard?(st===0?8:6):(st===0?4:3));
@@ -7380,9 +7448,10 @@ async function specialStagedSearch(start,ctx){
       frozen={};target.forEach(function(pos){frozen[pos]=true;});
     }
     for(var fi=0;fi<candidates.length && !solveAbort;fi++){
-      solverAttemptDescription=(oi+1)+'/'+orders.length+' · '+tr('phaseSpecialBfs');
-      solverProgressSetLabel('phaseSpecialBfs');solverProgressFlush();
+      var tryLabel=tr('solveStageCandidate',{index:fi+1,total:candidates.length});
       var from=candidates[fi];
+      solverStagedPhase('phaseStagedFinishBfs',stages.length+1,stages.length+1,orderLabel+' · '+tryLabel,
+        null,from.route.length);
       var suffix=await specialBFS(from.state,ctx,frozen);
       if(suffix){var full=from.route.concat(suffix);if(specialValidateRoute(start,full,ctx))return full;}
     }
@@ -7871,7 +7940,7 @@ async function findStagedTargetRoute(initial,goalLayout){
     distance+=Math.abs(i%n-t%n)+Math.abs(Math.floor(i/n)-Math.floor(t/n));
   }
   if(n===4&&distance<=16){
-    solverProgressSetLabel('phaseBlock');
+    solverStagedPhase('phaseStagedFinishBfs',1,1);
     planned=await bidirectionalBFS(initial,goalLayout,{});
   }
   if(!planned && !solveAbort)planned=await (n===5?stagedSearch5x5(initial,goalLayout):stagedSearch4x4(initial,goalLayout));
@@ -7907,7 +7976,7 @@ async function solveTargetBoard(records,animateStep) {
   }
   if(!route && !solveAbort && selectedSolverMethod!=='targetStaged'){
     solverProgressSetLabel(useBFS ? 'phase3x3Bfs' : 'phaseSpecialAstar');
-    if (useBFS && solverProgress) {solverProgress.bfsDepth=0;solverProgressFlush();}
+    if (useBFS && solverProgress) solverProgressFlush();
     route=useBFS ? await targetForwardBFS(initial) : await targetSearchRoute(initial);
   }
   if(!route||solveAbort)return false;
@@ -7918,7 +7987,7 @@ async function solveTargetBoard(records,animateStep) {
     applyMotionRecord(check,motionRecord(plan),false);
   }
   if(!targetMatches(check,cfg)){noteSolverStop('solveStoppedInvalidRoute');return false;}
-  if(pb&&pb.live&&!pb.precompute){pb.knownTotal=route.length;updatePlaybackUI();}
+  showVerifiedSolverRoute(records.length+route.length);
   for(var j=0;j<route.length;j++){
     if(solveAbort||!await specialApplyMove(route[j],records,animateStep))return false;
   }
@@ -7949,7 +8018,7 @@ async function solveSpecialBoard(records,animateStep){
   var start=layout.slice();
   var route=await specialFindRoute(start,selectedSolverMethod);
   if(!route || solveAbort)return false;
-  if(pb && pb.live && !pb.precompute){pb.knownTotal=route.length;updatePlaybackUI();}
+  showVerifiedSolverRoute(records.length+route.length);
   for(var i=0;i<route.length;i++){
     if(solveAbort || !await specialApplyMove(route[i],records,animateStep))return false;
     if((i&15)===0 && pb && (pb.precompute || pb.jumpToEnd))await solverSleep(0);
@@ -7972,8 +8041,7 @@ async function solve4x4(records, animateStep, goalLayout) {
     if(id>=0){var to=goalPositions[id];distance+=Math.abs(si%4-to%4)+Math.abs(((si/4)|0)-((to/4)|0));}
   }
   if(distance<=16){
-    solverAttemptDescription='BFS';
-    solverProgressSetLabel('phaseBlock');
+    solverStagedPhase('phaseStagedFinishBfs',1,1);
     planned=await bidirectionalBFS(initial,goalLayout,{});
   }
   if(!planned && !solveAbort)planned=await stagedSearch4x4(initial,goalLayout);
@@ -7982,7 +8050,7 @@ async function solve4x4(records, animateStep, goalLayout) {
   if(!planned || !solverValidatePath(initial,planned,goalLayout,{}))return false;
   planned = simplifySolverMoves(initial, planned);
   if(!solverValidatePath(initial,planned,goalLayout,{}))return false;
-  if(pb && pb.live && !pb.precompute){pb.knownTotal=planned.length;updatePlaybackUI();}
+  showVerifiedSolverRoute(records.length+planned.length);
   if(!await animatePlannedSlides(planned,records,animateStep))return false;
   return isSolved();
 }
@@ -8074,7 +8142,7 @@ async function findSmallTargetRoute(start) {
 
 async function solveSmallTargetBFS(records,animateStep) {
   solverProgressSetLabel('phase3x3Bfs');
-  if (solverProgress) {solverProgress.bfsDepth=0;solverProgressFlush();}
+  if (solverProgress) solverProgressFlush();
   var start=layout.slice(),moves=await findSmallTargetRoute(start);
   if(!moves || solveAbort)return false;
   moves=simplifySolverMoves(start,moves);
@@ -8086,24 +8154,21 @@ async function solveSmallTargetBFS(records,animateStep) {
     }
     return check;
   })(), {}))return false;
-  if(pb && pb.live && !pb.precompute){pb.knownTotal=records.length+moves.length;updatePlaybackUI();}
+  showVerifiedSolverRoute(records.length+moves.length);
   if(!await animatePlannedSlides(moves,records,animateStep))return false;
   return isSolved();
 }
 
 async function solveSmallBidirectionalBFS(records, animateStep) {
   solverProgressSetLabel('phase3x3Bfs');
-  if (solverProgress) {solverProgress.bfsDepth=0;solverProgressFlush();}
+  if (solverProgress) solverProgressFlush();
   var moves = await bidirectionalBFS(layout, cfg.layout, {}, solverEquivalentTypes());
   if (!moves) {
     if(!solverStopped)noteSolverStop('solveStoppedExhausted');
     return false;
   }
   moves = simplifySolverMoves(layout, moves);
-  if (pb && pb.live && !pb.precompute) {
-    pb.knownTotal = records.length + moves.length;
-    updatePlaybackUI();
-  }
+  showVerifiedSolverRoute(records.length+moves.length);
   if(!await animatePlannedSlides(moves,records,animateStep))return false;
   return true;
 }
@@ -8268,10 +8333,10 @@ async function solveBondedBidirectional(records,animateStep){
   var goal=bondedBidiGoal();
   if(!goal&&!hasTargetLayout(cfg))return false;
   solverProgressSetLabel(goal?'phase3x3Bfs':'phaseSpecialBfs');
-  if(solverProgress){solverProgress.bfsDepth=0;solverProgressFlush();}
+  if(solverProgress)solverProgressFlush();
   var start=layout.slice(),moves=goal?await bondedBidirectionalBFS(start,goal):await targetForwardBFS(start);
   if(!moves||solveAbort)return false;
-  if(pb&&pb.live&&!pb.precompute){pb.knownTotal=moves.length;updatePlaybackUI();}
+  showVerifiedSolverRoute(records.length+moves.length);
   for(var i=0;i<moves.length;i++)if(!await specialApplyMove(moves[i],records,animateStep))return false;
   return isSolved();
 }
@@ -8293,7 +8358,9 @@ function solverStageSnapshot() {
   var labels=[tr(solverProgress.labelKey)];
   if(solverProgress.tileLabel)labels.push('«'+solverProgress.tileLabel+'»');
   if(solverAttemptDescription)labels.push(solverAttemptDescription);
-  return {stage:labels.join(' · '),depth:solverProgress.bfsDepth};
+  return {stage:labels.join(' · '),count:solverProgress.total,
+    depth:solverProgress.staged?solverProgress.stagedSearchDepth:solverProgress.bfsDepth,
+    staged:solverProgress.staged};
 }
 function noteSolverStop(reason,params){
   if(solveRunning&&!solveAbort)solverStopped={reason:reason,params:params,stage:solverStageSnapshot()};
@@ -8318,6 +8385,8 @@ function solverFailureStatus(){
   var detail=[tr('solveStopMethod',{method:method?method[1]:selectedSolverMethod})];
   if(stop.stage){
     detail.push(tr('solveStopStage',stop.stage));
+    if((stop.stage.staged || !Number.isFinite(stop.stage.depth)) && Number.isFinite(stop.stage.count))
+      detail.push(tr('solveStopPositions',stop.stage));
     if(Number.isFinite(stop.stage.depth))detail.push(tr('solveStopDepth',stop.stage));
   }
   if(solverMemoryStop&&stop.reason!=='solveStoppedMemory')
@@ -8326,7 +8395,16 @@ function solverFailureStatus(){
   return tr(stop.reason,stop.params||{})+' '+detail.join(' · ')+'.';
 }
 function solverSolvedStatus(moves){
-  return msg('solveDone', {moves: moves, time: solverElapsedSeconds()});
+  var time=(Math.max(0,(solverFoundAt??Date.now())-solverStartedAt)/1000).toFixed(1);
+  return msg('solveDone',{moves:moves,time:time});
+}
+function showVerifiedSolverRoute(moves) {
+  solverFoundAt=Date.now();
+  setStatus(solverSolvedStatus(moves),'ok');
+  if(pb && pb.live && !pb.precompute) {
+    pb.knownTotal=moves;
+    updatePlaybackUI();
+  }
 }
 function availableSolverMethods(){
   var opts=[['auto',UI_LANG==='ru'?'Автоматический подбор':'Automatic selection'],
@@ -8375,7 +8453,7 @@ function solveDirectStaged(records,animateStep,goalLayout){
     if(!solverValidatePath(initial,route,goalLayout,{})){noteSolverStop('solveStoppedInvalidRoute');return false;}
     route=simplifySolverMoves(initial,route);
     if(!solverValidatePath(initial,route,goalLayout,{})){noteSolverStop('solveStoppedInvalidRoute');return false;}
-    if(pb&&pb.live&&!pb.precompute){pb.knownTotal=route.length;updatePlaybackUI();}
+    showVerifiedSolverRoute(records.length+route.length);
     if(!await animatePlannedSlides(route,records,animateStep))return false;
     return isSolved();
   })();
@@ -8447,10 +8525,7 @@ async function runSolver() {
         solverProgressEnd();
         if (res && res.moves && !solveAbort) {
           res.moves = simplifySolverMoves(layout, res.moves);
-          if (pb && pb.live && !pb.precompute) {
-            pb.knownTotal = records.length + res.moves.length;
-            updatePlaybackUI();
-          }
+          showVerifiedSolverRoute(records.length+res.moves.length);
           await animatePlannedSlides(res.moves,records,true);
           if (!solveAbort && isSolved()) solved = true;
         }
@@ -8576,6 +8651,7 @@ function startSolve() {
   solveAbort = false;
   solverStopped=solverLastStage=solverMemoryStop=null;
   solverStartedAt = Date.now();
+  solverFoundAt = null;
   setSolveUI(true);
   setStatus(msg('solveRunning'), '');
   runSolver().then(function () { setSolveUI(false); });
@@ -8584,7 +8660,7 @@ function startSolve() {
 function abortSolve() {
   if(solveAbort)return;
   var stage=solverStageSnapshot();
-  if(pb?.knownTotal>0)stage={stage:tr('solveStopPlayback',{index:pb.index,total:pb.knownTotal}),depth:null};
+  if(pb?.knownTotal>0)stage={stage:tr('solveStopPlayback',{index:pb.index,total:pb.knownTotal}),count:null};
   solverStopped={reason:'solveStoppedManual',stage:stage};
   solveAbort = true;
   interruptSleep();
@@ -9945,9 +10021,12 @@ function showEditorBondTargets(d,cell) {
 }
 
 // Target board: copying is non-destructive; a tile stays on the start board.
-function targetCellAtPointer(e) {
-  var rect=$('targetCanvas').getBoundingClientRect();
-  if(e.clientX<rect.left || e.clientX>=rect.right || e.clientY<rect.top || e.clientY>=rect.bottom)return -1;
+function targetPointerOutside(e,rect) {
+  return e.clientX<rect.left || e.clientX>=rect.right || e.clientY<rect.top || e.clientY>=rect.bottom;
+}
+function targetCellAtPointer(e,rect) {
+  rect=rect||$('targetCanvas').getBoundingClientRect();
+  if(targetPointerOutside(e,rect))return -1;
   // The target visual is a scaled copy of the same board geometry.
   // Use the exact starting-board padding, cell step and border offsets.
   var scale=board.getBoundingClientRect().width/rect.width;
@@ -10067,9 +10146,13 @@ $('targetCanvas').addEventListener('pointerup',function(e){
   if(!targetDrag)return;
   var d=targetDrag;targetDrag=null;
   try{this.releasePointerCapture(e.pointerId);}catch(_){}
-  var target=targetCellAtPointer(e);
+  var rect=this.getBoundingClientRect(), target=targetCellAtPointer(e,rect);
   endEditorFloat();
-  if(d.moved && target>=0 && target!==d.cell){
+  var moved=d.moved||Math.hypot(e.clientX-d.x,e.clientY-d.y)>3;
+  if(moved && mode==='edit' && hasTargetLayout(cfg) && targetPointerOutside(e,rect)){
+    targetDragMembers(d.cell).forEach(function(cell){cfg.targetLayout[cell]=-1;});
+    updateTargetBoard();
+  }else if(moved && target>=0 && target!==d.cell){
     if(!targetMove(d.cell,target))targetDragReset(d);
   }else targetDragReset(d);
   e.preventDefault();
