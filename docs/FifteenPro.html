@@ -746,6 +746,8 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
  .print-settings input,.print-settings select{width:100%;min-width:0}
  .print-settings fieldset{display:grid;gap:6px;margin:0;padding:6px 8px 8px;min-width:0;border:1px solid var(--line);border-radius:7px}
  .print-settings legend{padding:0 4px;font-size:13px;font-weight:700}
+ .print-settings .print-checkbox{grid-template-columns:minmax(0,1fr) auto}
+ .print-settings .print-checkbox input{width:auto;margin:0}
  .print-settings .print-text-field{grid-template-columns:minmax(0,1fr)}
  .print-settings .print-text-choice{grid-template-columns:minmax(0,1fr) minmax(95px,1fr)}
  #printStatus{min-height:1.5em}
@@ -1272,7 +1274,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
   <section class="about-block" id="aboutBlock" aria-labelledby="aboutTitle">
     <div class="about-head">
       <h2 id="aboutTitle" data-i18n="aboutTitle">О Программе</h2>
-      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 3.31</div>
+      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 3.42</div>
       <div class="language-control lang-top">
         <span data-i18n="chooseLanguage">выберите язык</span>
         <div class="seg" id="languageSeg" aria-label="Язык / Language">
@@ -1435,6 +1437,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
         <label><span data-i18n="print_pinHeight">Высота штырька</span><input type="number" name="pinHeight" min="0.1" max="10" step="0.01" value="6" required></label>
         <label><span data-i18n="print_blockGap">Зазор под блоком</span><input type="number" name="blockGap" min="0" step="0.1" value="0" required></label>
         <label><span data-i18n="print_pinGap">Допуски на штырьках</span><input type="number" name="pinGap" min="0" max="0.8" step="0.05" value="0" required></label>
+        <label class="print-checkbox"><span data-i18n="printTrimPins">Разрешить обрезать штырьки</span><input type="checkbox" name="trimPins"></label>
       </fieldset>
       <fieldset>
         <legend data-i18n="printTextGroup">Надписи</legend>
@@ -1462,6 +1465,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
             <option value="0.5">0.50</option><option value="0.6">0.60</option>
           </select>
         </label>
+        <label class="print-checkbox"><span data-i18n="printRing">Печатать кольцо</span><input name="printRing" type="checkbox"></label>
       </fieldset>
       <button class="btn" type="button" id="printReset" data-i18n="printReset">Сбросить настройки</button>
     </form>
@@ -1538,7 +1542,7 @@ var BUILTIN_TEXTS = [
   "PYATNASHKI\nname: Fifteen Lattice v1\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=ff4d4d bars2=40:00010100\ncell: 2 |\ncell: 3 |\ncell: 4 | u=ff4d4d bars2=40:00001001\ncell: 5 |\ncell: 6 | u=ffd93d screw=25:7:30 bars2=95:10000010\ncell: 7 | u=ffd93d screw=25:1:30 bars2=95:01100000\ncell: 8 |\ncell: 9 |\ncell: 10 | u=ffd93d screw=25:5:30 bars2=95:00001001\ncell: 11 | u=ffd93d screw=25:3:30 bars2=95:00010100\ncell: 12 |\ncell: 13 | u=ff4d4d bars2=40:01100000\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Lattice v2\nauthor: Evgeniy Grigoriev\nsize: 4\ncell:  | u=ff4d4d bars2=40:00010100\ncell:  |\ncell:  |\ncell:  | u=ff4d4d bars2=40:00001001\ncell:  |\ncell:  | u=ffd93d screw=25:7:30 bars2=95:10000010\ncell:  | u=ffd93d screw=25:1:30 bars2=95:01100000\ncell:  |\ncell:  |\ncell:  | u=ffd93d screw=25:5:30 bars2=95:00001001\ncell:  | u=ffd93d screw=25:3:30 bars2=95:00010100\ncell:  |\ncell:  | u=ff4d4d bars2=40:01100000\ncell:  |\ncell:  |\ncell: EMPTY\ntarget:\ngoal: TILE 11\ngoal: TILE 5\ngoal: TILE 2\ngoal: TILE 10\ngoal: TILE 3\ngoal: EMPTY\ngoal: TILE 13\ngoal: TILE 12\ngoal: TILE 9\ngoal: TILE 4\ngoal: TILE 1\ngoal: TILE 14\ngoal: TILE 7\ngoal: TILE 8\ngoal: TILE 15\ngoal: TILE 6",
   "PYATNASHKI\nname: Fifteen Parquet\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=ffd93d square=70 bars=60:RL\ncell: 2 | u=4cd964 square=70 bars=60:TB\ncell: 3 | u=ffd93d square=70 bars=60:RL\ncell: 4 | u=4cd964 square=70 bars=60:TB\ncell: 5 | u=4cd964 square=70 bars=60:TB\ncell: 6 | u=ffd93d square=70 bars=60:RL\ncell: 7 | u=4cd964 square=70 bars=60:TB\ncell: 8 | u=ffd93d square=70 bars=60:RL\ncell: 9 | u=ffd93d square=70 bars=60:RL\ncell: 10 | u=4cd964 square=70 bars=60:TB\ncell: 11 | u=ffd93d square=70 bars=60:RL\ncell: 12 | u=4cd964 square=70 bars=60:TB\ncell: 13 | u=4cd964 square=70 bars=60:TB\ncell: 14 | u=ffd93d square=70 bars=60:RL\ncell: 15 |\ncell: EMPTY",
-  "PYATNASHKI\nname: Fifteen Star\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=ff5fb0 bars=40:T barwidth=80 bars2=95:00001000 bar2shift=-10\ncell: 2 | f=ff9a3c frame=circle u=ff9a3c bars2=40:10000000\ncell: 3 | u=ff5fb0 bars=40:R barwidth=80 bars2=95:00000010 bar2shift=-5\ncell: 4 |\ncell: 5 | f=ff9a3c frame=circle u=ff9a3c bars2=40:00001000\ncell: 6 | u=ff4d4d star=145\ncell: 7 | f=ff9a3c frame=circle u=ff9a3c bars2=40:01000000\ncell: 8 |\ncell: 9 | u=ff5fb0 bars=40:L barwidth=80 bars2=95:00010000 bar2shift=-5\ncell: 10 | f=ff9a3c frame=circle u=ff9a3c bars2=40:00000100\ncell: 11 | u=ff5fb0 bars=40:B barwidth=80 bars2=95:01000000 bar2shift=-5\ncell: 12 |\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
+  "PYATNASHKI\nname: Fifteen Star\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 | u=ff5fb0 bars=40:T barwidth=80 bars2=95:00001000 bar2shift=-5\ncell: 2 | f=ff9a3c frame=circle u=ff9a3c bars2=40:10000000\ncell: 3 | u=ff5fb0 bars=40:R barwidth=80 bars2=95:00000010 bar2shift=-5\ncell: 4 |\ncell: 5 | f=ff9a3c frame=circle u=ff9a3c bars2=40:00001000\ncell: 6 | u=ff4d4d star=145\ncell: 7 | f=ff9a3c frame=circle u=ff9a3c bars2=40:01000000\ncell: 8 |\ncell: 9 | u=ff5fb0 bars=40:L barwidth=80 bars2=95:00010000 bar2shift=-5\ncell: 10 | f=ff9a3c frame=circle u=ff9a3c bars2=40:00000100\ncell: 11 | u=ff5fb0 bars=40:B barwidth=80 bars2=95:01000000 bar2shift=-5\ncell: 12 |\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Steps\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 |\ncell: 2 |\ncell: 3 |\ncell: 4 |\ncell: 5 | u=ff4d4d square=45 bars=70:BL barwidth=45\ncell: 6 | u=ff4d4d square=45 bars=70:BL barwidth=45\ncell: 7 | u=ff4d4d square=45 bars=70:BL barwidth=45\ncell: 8 | u=ff4d4d square=45 bars=70:BL barwidth=45\ncell: 9 | u=1f9d3a square=45 bars=70:RB barwidth=45\ncell: 10 | u=1f9d3a square=45 bars=70:RB barwidth=45\ncell: 11 | u=1f9d3a square=45 bars=70:RB barwidth=45\ncell: 12 | u=1f9d3a square=45 bars=70:RB barwidth=45\ncell: 13 |\ncell: 14 |\ncell: 15 |\ncell: EMPTY",
   "PYATNASHKI\nname: Fifteen Tetris\nauthor: Evgeniy Grigoriev\nsize: 4\ncell: 1 |\ncell: 2 | u=2fb4ff square=80 cut=25:TB bars2=75:01001000 thick=95\ncell: 3 | u=2fb4ff square=80 cut=25:TB bars2=75:10000100\ncell: 4 |\ncell: 5 |\ncell: 6 | f=4cd964 frame=circle u=4cd964 bars=100:L barwidth=35\ncell: 7 | f=4cd964 frame=circle u=4cd964 bars=100:R barwidth=35\ncell: 8 |\ncell: 9 | f=ffd93d frame=square u=ffd93d bodyoffset=1:50 square=70\ncell: 10 |\ncell: 11 |\ncell: 12 | f=ffd93d frame=square u=ffd93d bodyoffset=7:50 square=70\ncell: 13 |\ncell: 14 | u=ff4d4d square=80 cut=25:TB bars2=90:10000000\ncell: 15 | u=ff4d4d square=80 cut=25:TB bars2=90:01000000 thick=95\ncell: EMPTY",
   "PYATNASHKI\nname: Frame 3x3 v1\nauthor: Evgeniy Grigoriev\nsize: 3\ncell:  | u=3b6fd8 screw=25:3:30 bars2=95:00010100\ncell:  |\ncell:  | u=3b6fd8 screw=25:5:30 bars2=95:00001001\ncell:  |\ncell:  |\ncell:  | u=2fb4ff bars2=40:00000001\ncell:  | u=3b6fd8 screw=25:1:30 bars2=95:01100000\ncell:  | u=2fb4ff bars2=40:01000000\ncell: EMPTY",
@@ -1581,7 +1585,7 @@ var BUILTIN_TEXTS = [
 ];
 
 var UI_LANG = detectLanguage();
-var rus_eng = {"ru":{"printPuzzle":"Печать","anaUseMarkers":"Маркеры учитываем","anaUseColors":"Цвета учитываем","anaCompareBoards":"Сравнивать доски","anaNoSymmetricPositions":"В этой выборке нет симметричных позиций.","anaPathView":"Путь решения","anaTreeView":"Ближние / дальние","anaFilterView":"Фильтр","anaSymmetry":"Симметрия","anaSymAny":"Любая","anaSymVertical":"Вертикальное отражение","anaSymHorizontal":"Горизонтальное отражение","anaSymDiagonal":"Диагональное отражение","anaSymRotation":"Поворот","anaNear":"Ближние состояния","anaFar":"Дальние состояния","anaTreeStep":"{index} / {count} · ходов от корня: {depth}","anaPair":"Симметричная пара","anaDistance":"Между позициями: {moves}","anaDistanceChecking":"Считаю расстояние между позициями…","anaDistanceLimit":"Для поиска расстояния достигнут порог памяти.","anaDistanceUnreachable":"Из левой позиции правая недостижима.","anaDistanceError":"Не удалось вычислить расстояние между позициями.","anaFilterFound":"Пара {index} / {count}","anaFilterEmpty":"В выборке из ближних и дальних состояний нет пар с этой симметрией.","anaSavePair":"Создать головоломку","anaPairSame":"Старт и цель уже совпадают.","anaPairChecking":"Проверяю путь от старта к цели…","anaPairProgress":"Проверяю путь от старта к цели · состояний {count}","anaPairLimit":"Путь до цели не подтверждён до достижения порога памяти.","anaPairUnreachable":"Из этой стартовой позиции цель недостижима.","anaPairName":"{name} — симметрия {index}","anaPositionName":"{name} — вариант {index}","anaPairSaved":"В каталог добавлена «{name}» · решение: {depth} ходов.","anaPairSaveError":"Не удалось сохранить головоломку.","adjustmentStep":"Шаг настройки","anaMemory":"Бюджет памяти — {budget} ГиБ · расчётный порог — {count} состояний","anaMemoryReached":"Достигнут расчётный порог памяти ({budget} ГиБ) · состояний {count} · показан путь из {depth} ходов","anaOpen":"Анализатор","anaTitle":"Анализ головоломки","anaSearch":"🔍 Поиск","anaSwap":"⇄ Поменять","anaAuto":"↻ Авто","anaEmpty":"Нажмите «Поиск», чтобы найти дальнюю позицию.","anaSwapped":"Доски поменялись местами. Нажмите «Поиск» или «Авто».","anaProgress":"Поиск {round} · найдено состояний {count} · глубина {depth}","anaDone":"Обход завершён · ходов {depth} · состояний {count} · {time} с","anaAutoDone":"Авто завершено · поисков {round} · лучшее расстояние {depth} ходов · {time} с","anaStopped":"Поиск остановлен · показан найденный путь из {depth} ходов","anaStoppedEarly":"Поиск остановлен.","anaError":"Не удалось завершить поиск.","moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","tileBlockEditor":"РЕДАКТОР ПЛИТОК И БЛОКОВ","frameBlockEditor":"РЕДАКТОР РАМКИ И БЛОКОВ","hintGoalCaption":"Достигните заданного расположения","scramble":"🎲 Перемешать","scrambleRandom":"Перемешивание случайное","scrambleBfs":"Перемешивание BFS","scrambleBfsGoal":"BFS-перемешивание… Поиск собранной раскладки","scrambleBfsProgress":"BFS-перемешивание… Ходов от собранной раскладки: {depth}","scrambleBfsDone":"BFS-перемешивание завершено. Ходов от собранной раскладки: {depth}","scrambleBfsStopped":"BFS-перемешивание остановлено. Показана последняя найденная раскладка.","scrambleBfsStoppedEarly":"BFS-перемешивание остановлено.","scrambleBfsNoGoal":"BFS-перемешивание: собранная раскладка недостижима из текущей позиции.","scrambleBfsError":"Не удалось завершить BFS-перемешивание.","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Блок","palette":"Палитра","upperShape":"Форма блока","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","circleDiameter":"Диаметр (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","centerShift":"Сдвиг от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 3.31","shapeArrow":"Стрелка","arrowHead":"Размер стрелки","arrowSharpness":"Острота","shapeOffset":"Сдвиг от центра","offsetDistance":"Расстояние сдвига","scrambleSteps":"Количество ходов скрамбла","startBoardTitle":"Стартовая доска","targetBoardTitle":"Целевая доска","hasTargetBoard":"Есть целевая доска","hasFixedFrame":"Есть рамка","fixedFrameTile":"Неподвижная плитка рамки","fixedFrameShape":"Башня на рамке","fixedTowerColor":"Цвет башни","fixedFrameDirection":"Направление / стороны","fixedFrameSize":"Размер / длина","frameShapeNone":"Нет башни","clearTowersWord1":"Удалить","clearTowersWord2":"башни","targetCopyTitle":"Копировать стартовую доску","targetClearTitle":"Очистить целевую доску","targetSwapTitle":"Поменять местами доски","clearAllMarkers":"Удалить маркеры","numberAllMarkers":"Расставить маркеры","clearAllTowers":"Удалить башни","markerColorLabel":"Цвет","markerColorBlack":"Черный","markerColorWhite":"Белый","targetSwapNeedsFull":"Чтобы поменять доски местами, заполните целевую доску всеми плитками.","targetHelp":"Перетащите плитки со стартовой доски. Для перестановки перетащите плитку на целевой; правый щелчок удаляет плитку.","targetEmpty":"На целевой доске нужно разместить хотя бы одну плитку.","clearMarker":"Очистить маркер","addModifier":"Добавить модификатор","removeModifier":"Удалить модификатор","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveDone":"Ходов в решении: {moves} · Время поиска: {time} с","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Поиск отменён. Время поиска: {time} с. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","phaseStagedRemainder4":"оставшаяся область 4×4","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeScrew":"Шуруп","screw":"Шуруп","screwDiameter":"Диаметр (ширина плитки = 100%)","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы.","editorBondBlocked":"Невозможно перенести связку: край доски, вырез или другая связка.","phase3x3Bfs":"двунаправленный BFS","phaseSpecialBfs":"BFS с бандажами","phaseSpecialCut":"поэтапный поиск","phaseSpecialAstar":"общий поиск A*","phaseSpecialCheck":"проверка маршрута","phaseSpecialPattern":"поиск по кольцам","phaseSpecialMeeting":"встречный поиск","printTitle":"3D-печать головоломки","printDownload":"STL в ZIP","printPlanView":"Плоский вид","print3DView":"3D-вид","printAssembled":"В сборе","printOnBed":"Детали на столе","printSettings":"Размеры и допуски, мм","printReset":"Сбросить настройки","printHelp":"Левая кнопка — поворот, правая — сдвиг по горизонтали и вертикали, колесо — масштаб. Двойной щелчок — сброс вида.","printInvalid":"Проверьте диапазоны размеров.","printBuilding":"Построение деталей: {current} / {total}","printReady":"Готово · деталей: {count} · уникальных плиток: {tiles} · уникальных блоков: {blocks}","printFailed":"Не удалось построить или сохранить детали.","printNoWebGL":"3D-вид недоступен. Можно открыть плоский вид или скачать STL.","print_pitch":"Размер клетки","print_gap":"Допуски на рамке","print_radius":"Скругление углов","print_chamfer":"Фаска","print_pinGap":"Допуски на штырьках","print_frameHeight":"Высота рамки","print_blockHeight":"Высота блоков","printSingle":"Один STL","printStepFile":"STEP","printBuild3D":"Построить 3D","print_resolution":"Шаг детализации","printTooFine":"Модель слишком велика для этого шага детализации. Увеличьте шаг.","printStepLimited":"Для этой геометрии пока доступен STL.","printStepGlyph":"STEP сохранён. Гравировка обычных маркеров плиток доступна в STL.","print_pinHeight":"Высота штырька","print_blockGap":"Зазор под блоком","printBlockGapInvalid":"Зазор под блоком должен быть меньше высоты штырька.","print_frameThickness":"Толщина рамки","print_frameRadius":"Скругление рамки","printFrameRadiusInvalid":"Уменьшите внешнее скругление или увеличьте толщину рамки.","printFrameGroup":"Рамка","printTilesGroup":"Плитки","printBlocksGroup":"Блоки","printTextGroup":"Надписи","printOtherGroup":"Прочие","printFrameText":"Надпись на рамке","printTextMode":"Вид надписи","printTextNone":"Нет","printTextRaised":"Выпуклый","printTextEngraved":"Вогнутый","printTextInlay":"Цветной","printTextFont":"Шрифт","printTextSize":"Размер","printTextSpacing":"Межбуквенный интервал","printTextThickness":"Толщина надписи","printTextDepthInvalid":"Уменьшите толщину надписи, чтобы углубление не дошло до разъёма рамки.","printFramePinGap":"Зазор под блоком рамки должен быть меньше высоты его штырька.","solveStoppedManual":"Поиск остановлен пользователем.","solveStoppedExhausted":"Доступные состояния перебраны, подходящая цель не найдена.","solveStoppedMemory":"Достигнут расчётный лимит памяти ({budget} ГиБ).","solveStoppedStagedGoal":"Не удалось составить полную целевую раскладку для поэтапного поиска.","solveStoppedWorker":"Вычислительный поток IDA* завершился с ошибкой.","solveStoppedUnsolvable":"Для классической доски проверка чётности показала, что цель недостижима.","solveStoppedInvalidRoute":"Найденный маршрут не прошёл проверку ходов или цели.","solveStoppedNoRoute":"Выбранный алгоритм завершил попытки без проверенного решения.","solveStoppedError":"Поиск прерван внутренней ошибкой. {error}","solveStopMethod":"Алгоритм — {method}","solveStopStage":"Этап — {stage}","solveStopDepth":"Глубина поиска — {depth} ходов","solveStopTime":"Время поиска — {time} с","solveStopPriorLimit":"На одной из попыток достигнут лимит памяти ({budget} ГиБ)","solveStopPlayback":"Воспроизведение решения, ход {index} из {total}"},"en":{"printPuzzle":"Print","anaUseMarkers":"Match markers","anaUseColors":"Match colors","anaCompareBoards":"Compare boards","anaNoSymmetricPositions":"No symmetric positions in this sample.","anaPathView":"Solution path","anaTreeView":"Near / far states","anaFilterView":"Filter","anaSymmetry":"Symmetry","anaSymAny":"Any","anaSymVertical":"Vertical reflection","anaSymHorizontal":"Horizontal reflection","anaSymDiagonal":"Diagonal reflection","anaSymRotation":"Rotation","anaNear":"Near states","anaFar":"Far states","anaTreeStep":"{index} / {count} · moves from root: {depth}","anaPair":"Symmetric pair","anaDistance":"Distance between positions: {moves}","anaDistanceChecking":"Calculating the distance between positions…","anaDistanceLimit":"The distance search reached the memory limit.","anaDistanceUnreachable":"The right position is unreachable from the left.","anaDistanceError":"Could not calculate the distance between positions.","anaFilterFound":"Pair {index} / {count}","anaFilterEmpty":"The near and far samples contain no pairs with this symmetry.","anaSavePair":"Create puzzle","anaPairSame":"The start already matches the target.","anaPairChecking":"Checking the path from start to target…","anaPairProgress":"Checking the path from start to target · {count} states","anaPairLimit":"The search reached the memory limit before confirming a path.","anaPairUnreachable":"The target is unreachable from this start.","anaPairName":"{name} — symmetry {index}","anaPositionName":"{name} — variant {index}","anaPairSaved":"Added “{name}” to the catalog · solution: {depth} moves.","anaPairSaveError":"Could not save the puzzle.","adjustmentStep":"Adjustment step","anaMemory":"Memory budget — {budget} GiB · estimated limit — {count} states","anaMemoryReached":"Estimated memory limit reached ({budget} GiB) · {count} states · showing a path of {depth} moves","anaOpen":"Analyzer","anaTitle":"Puzzle analysis","anaSearch":"🔍 Search","anaSwap":"⇄ Swap","anaAuto":"↻ Auto","anaEmpty":"Press Search to find a distant position.","anaSwapped":"Boards swapped. Press Search or Auto.","anaProgress":"Search {round} · {count} states found · depth {depth}","anaDone":"Search complete · {depth} moves · {count} states · {time} s","anaAutoDone":"Auto complete · {round} searches · best distance {depth} moves · {time} s","anaStopped":"Search stopped · showing a path of {depth} moves","anaStoppedEarly":"Search stopped.","anaError":"Could not complete the search.","moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","tileBlockEditor":"TILE AND BLOCK EDITOR","frameBlockEditor":"FRAME AND BLOCK EDITOR","hintGoalCaption":"Reach the specified arrangement","scramble":"🎲 Scramble","scrambleRandom":"Random scramble","scrambleBfs":"Super scramble","scrambleBfsGoal":"Super scramble… Looking for a solved layout","scrambleBfsProgress":"Super scramble… Moves from solved layout: {depth}","scrambleBfsDone":"Super scramble complete. Moves from solved layout: {depth}","scrambleBfsStopped":"Super scramble stopped. Showing the last discovered layout.","scrambleBfsStoppedEarly":"Super scramble stopped.","scrambleBfsNoGoal":"Super scramble: no solved layout is reachable from the current position.","scrambleBfsError":"Could not finish the super scramble.","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Block","palette":"Palette","upperShape":"Block shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","circleDiameter":"Diameter (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","centerShift":"Offset from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 3.31","shapeArrow":"Arrow","arrowHead":"Arrowhead size","arrowSharpness":"Sharpness","shapeOffset":"Shift from center","offsetDistance":"Offset distance","scrambleSteps":"Scramble moves","startBoardTitle":"Start board","targetBoardTitle":"Target board","hasTargetBoard":"Has target board","hasFixedFrame":"Has frame","fixedFrameTile":"Fixed frame tile","fixedFrameShape":"Tower on frame","fixedTowerColor":"Tower color","fixedFrameDirection":"Direction / sides","fixedFrameSize":"Size / length","frameShapeNone":"No tower","clearTowersWord1":"Remove","clearTowersWord2":"towers","targetCopyTitle":"Copy start board","targetClearTitle":"Clear target board","targetSwapTitle":"Swap start and target boards","clearAllMarkers":"Remove markers","numberAllMarkers":"Number markers","clearAllTowers":"Remove towers","markerColorLabel":"Color","markerColorBlack":"Black","markerColorWhite":"White","targetSwapNeedsFull":"Fill the target board with all tiles before swapping boards.","targetHelp":"Drag tiles from the start board. Drag within the target board to rearrange; right-click removes a tile.","targetEmpty":"Place at least one tile on the target board.","clearMarker":"Clear marker","addModifier":"Add another modifier","removeModifier":"Remove modifier","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveDone":"Solution moves: {moves} · Search time: {time} s","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Search time: {time} s. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","phaseStagedRemainder4":"remaining 4×4 area","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeScrew":"Screw","screw":"Screw","screwDiameter":"Diameter (cell width = 100%)","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group.","editorBondBlocked":"Cannot move the bonded group: board edge, cut-out, or another bonded group.","phase3x3Bfs":"bidirectional BFS","phaseSpecialBfs":"bond-aware BFS","phaseSpecialCut":"staged search","phaseSpecialAstar":"full-board A*","phaseSpecialCheck":"validating route","phaseSpecialPattern":"ring-pattern search","phaseSpecialMeeting":"meet-in-the-middle search","printTitle":"3D print the puzzle","printDownload":"STL in ZIP","printPlanView":"Top view","print3DView":"3D view","printAssembled":"Assembled","printOnBed":"Parts on bed","printSettings":"Dimensions and clearances, mm","printReset":"Reset settings","printHelp":"Drag with the left button to rotate or the right button to pan. Scroll to zoom. Double-click to reset the view.","printInvalid":"Check the allowed settings ranges.","printBuilding":"Building parts: {current} / {total}","printReady":"Ready · {count} parts · unique tiles: {tiles} · unique blocks: {blocks}","printFailed":"Could not build or save the parts.","printNoWebGL":"The 3D view is unavailable. The top view and STL download are available.","print_pitch":"Cell pitch","print_gap":"Frame clearance","print_radius":"Corner radius","print_chamfer":"Chamfer","print_pinGap":"Pin tolerance","print_frameHeight":"Frame height","print_blockHeight":"Block height","printSingle":"Single STL","printStepFile":"STEP","printBuild3D":"Build 3D preview","print_resolution":"Detail step","printTooFine":"This model is too large at this detail step. Choose a coarser step.","printStepLimited":"This geometry currently requires STL.","printStepGlyph":"STEP saved. Engraved tile markers are available in STL.","print_pinHeight":"Pin height","print_blockGap":"Clearance under blocks","printBlockGapInvalid":"The clearance under the block must be less than the pin height.","print_frameThickness":"Frame wall thickness","print_frameRadius":"Outer frame corner radius","printFrameRadiusInvalid":"Reduce the outer corner radius or increase the frame wall thickness.","printFrameGroup":"Frame","printTilesGroup":"Tiles","printBlocksGroup":"Blocks","printTextGroup":"Lettering","printOtherGroup":"Other","printFrameText":"Frame inscription","printTextMode":"Inscription style","printTextNone":"None","printTextRaised":"Raised","printTextEngraved":"Engraved","printTextInlay":"Color inlay","printTextFont":"Font","printTextSize":"Size","printTextSpacing":"Letter spacing","printTextThickness":"Inscription thickness","printTextDepthInvalid":"Reduce the inscription thickness so that the recess stays above the frame seam.","printFramePinGap":"The clearance under a frame block must be less than its pin height.","solveStoppedManual":"Search stopped by the user.","solveStoppedExhausted":"The reachable states were explored without matching the goal.","solveStoppedMemory":"The estimated memory limit was reached ({budget} GiB).","solveStoppedStagedGoal":"The staged search could not construct a complete target arrangement.","solveStoppedWorker":"The IDA* worker failed.","solveStoppedUnsolvable":"The classical board failed the parity check for reachability.","solveStoppedInvalidRoute":"The route failed move or goal validation.","solveStoppedNoRoute":"The selected search exhausted its attempts without a verified solution.","solveStoppedError":"An internal error interrupted the search. {error}","solveStopMethod":"Algorithm — {method}","solveStopStage":"Stage — {stage}","solveStopDepth":"Search depth — {depth} moves","solveStopTime":"Search time — {time} s","solveStopPriorLimit":"One attempt reached the memory limit ({budget} GiB)","solveStopPlayback":"Solution playback, move {index} of {total}"}};
+var rus_eng = {"ru":{"printPuzzle":"Печать","anaUseMarkers":"Маркеры учитываем","anaUseColors":"Цвета учитываем","anaCompareBoards":"Сравнивать доски","anaNoSymmetricPositions":"В этой выборке нет симметричных позиций.","anaPathView":"Путь решения","anaTreeView":"Ближние / дальние","anaFilterView":"Фильтр","anaSymmetry":"Симметрия","anaSymAny":"Любая","anaSymVertical":"Вертикальное отражение","anaSymHorizontal":"Горизонтальное отражение","anaSymDiagonal":"Диагональное отражение","anaSymRotation":"Поворот","anaNear":"Ближние состояния","anaFar":"Дальние состояния","anaTreeStep":"{index} / {count} · ходов от корня: {depth}","anaPair":"Симметричная пара","anaDistance":"Между позициями: {moves}","anaDistanceChecking":"Считаю расстояние между позициями…","anaDistanceLimit":"Для поиска расстояния достигнут порог памяти.","anaDistanceUnreachable":"Из левой позиции правая недостижима.","anaDistanceError":"Не удалось вычислить расстояние между позициями.","anaFilterFound":"Пара {index} / {count}","anaFilterEmpty":"В выборке из ближних и дальних состояний нет пар с этой симметрией.","anaSavePair":"Создать головоломку","anaPairSame":"Старт и цель уже совпадают.","anaPairChecking":"Проверяю путь от старта к цели…","anaPairProgress":"Проверяю путь от старта к цели · состояний {count}","anaPairLimit":"Путь до цели не подтверждён до достижения порога памяти.","anaPairUnreachable":"Из этой стартовой позиции цель недостижима.","anaPairName":"{name} — симметрия {index}","anaPositionName":"{name} — вариант {index}","anaPairSaved":"В каталог добавлена «{name}» · решение: {depth} ходов.","anaPairSaveError":"Не удалось сохранить головоломку.","adjustmentStep":"Шаг настройки","anaMemory":"Бюджет памяти — {budget} ГиБ · расчётный порог — {count} состояний","anaMemoryReached":"Достигнут расчётный порог памяти ({budget} ГиБ) · состояний {count} · показан путь из {depth} ходов","anaOpen":"Анализатор","anaTitle":"Анализ головоломки","anaSearch":"🔍 Поиск","anaSwap":"⇄ Поменять","anaAuto":"↻ Авто","anaEmpty":"Нажмите «Поиск», чтобы найти дальнюю позицию.","anaSwapped":"Доски поменялись местами. Нажмите «Поиск» или «Авто».","anaProgress":"Поиск {round} · найдено состояний {count} · глубина {depth}","anaDone":"Обход завершён · ходов {depth} · состояний {count} · {time} с","anaAutoDone":"Авто завершено · поисков {round} · лучшее расстояние {depth} ходов · {time} с","anaStopped":"Поиск остановлен · показан найденный путь из {depth} ходов","anaStoppedEarly":"Поиск остановлен.","anaError":"Не удалось завершить поиск.","moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","tileBlockEditor":"РЕДАКТОР ПЛИТОК И БЛОКОВ","frameBlockEditor":"РЕДАКТОР РАМКИ И БЛОКОВ","hintGoalCaption":"Достигните заданного расположения","scramble":"🎲 Перемешать","scrambleRandom":"Перемешивание случайное","scrambleBfs":"Перемешивание BFS","scrambleBfsGoal":"BFS-перемешивание… Поиск собранной раскладки","scrambleBfsProgress":"BFS-перемешивание… Ходов от собранной раскладки: {depth}","scrambleBfsDone":"BFS-перемешивание завершено. Ходов от собранной раскладки: {depth}","scrambleBfsStopped":"BFS-перемешивание остановлено. Показана последняя найденная раскладка.","scrambleBfsStoppedEarly":"BFS-перемешивание остановлено.","scrambleBfsNoGoal":"BFS-перемешивание: собранная раскладка недостижима из текущей позиции.","scrambleBfsError":"Не удалось завершить BFS-перемешивание.","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Блок","palette":"Палитра","upperShape":"Форма блока","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","circleDiameter":"Диаметр (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","centerShift":"Сдвиг от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 3.42","shapeArrow":"Стрелка","arrowHead":"Размер стрелки","arrowSharpness":"Острота","shapeOffset":"Сдвиг от центра","offsetDistance":"Расстояние сдвига","scrambleSteps":"Количество ходов скрамбла","startBoardTitle":"Стартовая доска","targetBoardTitle":"Целевая доска","hasTargetBoard":"Есть целевая доска","hasFixedFrame":"Есть рамка","fixedFrameTile":"Неподвижная плитка рамки","fixedFrameShape":"Башня на рамке","fixedTowerColor":"Цвет башни","fixedFrameDirection":"Направление / стороны","fixedFrameSize":"Размер / длина","frameShapeNone":"Нет башни","clearTowersWord1":"Удалить","clearTowersWord2":"башни","targetCopyTitle":"Копировать стартовую доску","targetClearTitle":"Очистить целевую доску","targetSwapTitle":"Поменять местами доски","clearAllMarkers":"Удалить маркеры","numberAllMarkers":"Расставить маркеры","clearAllTowers":"Удалить башни","markerColorLabel":"Цвет","markerColorBlack":"Черный","markerColorWhite":"Белый","targetSwapNeedsFull":"Чтобы поменять доски местами, заполните целевую доску всеми плитками.","targetHelp":"Перетащите плитки со стартовой доски. Для перестановки перетащите плитку на целевой; правый щелчок удаляет плитку.","targetEmpty":"На целевой доске нужно разместить хотя бы одну плитку.","clearMarker":"Очистить маркер","addModifier":"Добавить модификатор","removeModifier":"Удалить модификатор","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveDone":"Ходов в решении: {moves} · Время поиска: {time} с","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Поиск отменён. Время поиска: {time} с. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","phaseStagedRemainder4":"оставшаяся область 4×4","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeScrew":"Шуруп","screw":"Шуруп","screwDiameter":"Диаметр (ширина плитки = 100%)","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы.","editorBondBlocked":"Невозможно перенести связку: край доски, вырез или другая связка.","phase3x3Bfs":"двунаправленный BFS","phaseSpecialBfs":"BFS с бандажами","phaseSpecialCut":"поэтапный поиск","phaseSpecialAstar":"общий поиск A*","phaseSpecialCheck":"проверка маршрута","phaseSpecialPattern":"поиск по кольцам","phaseSpecialMeeting":"встречный поиск","printTitle":"3D-печать головоломки","printDownload":"STL в ZIP","printPlanView":"Плоский вид","print3DView":"3D-вид","printAssembled":"В сборе","printOnBed":"Детали на столе","printSettings":"Размеры и допуски, мм","printReset":"Сбросить настройки","printHelp":"Левая кнопка — поворот, правая — сдвиг по горизонтали и вертикали, колесо — масштаб. Двойной щелчок — сброс вида.","printInvalid":"Проверьте диапазоны размеров.","printBuilding":"Построение деталей: {current} / {total}","printReady":"Готово · деталей: {count} · уникальных плиток: {tiles} · уникальных блоков: {blocks}","printFailed":"Не удалось построить или сохранить детали.","printNoWebGL":"3D-вид недоступен. Можно открыть плоский вид или скачать STL.","print_pitch":"Размер клетки","print_gap":"Допуски на рамке","print_radius":"Скругление углов","print_chamfer":"Фаска","print_pinGap":"Допуски на штырьках","printTrimPins":"Разрешить обрезать штырьки","print_frameHeight":"Высота рамки","print_blockHeight":"Высота блоков","printSingle":"Один STL","printStepFile":"STEP","printBuild3D":"Построить 3D","print_resolution":"Шаг детализации","printTooFine":"Модель слишком велика для этого шага детализации. Увеличьте шаг.","printStepLimited":"Для этой геометрии пока доступен STL.","print_pinHeight":"Высота штырька","print_blockGap":"Зазор под блоком","printBlockGapInvalid":"Зазор под блоком должен быть меньше высоты штырька.","print_frameThickness":"Толщина рамки","print_frameRadius":"Скругление рамки","printFrameRadiusInvalid":"Уменьшите внешнее скругление или увеличьте толщину рамки.","printFrameGroup":"Рамка","printTilesGroup":"Плитки","printBlocksGroup":"Блоки","printTextGroup":"Надписи","printOtherGroup":"Прочее","printRing":"Печатать кольцо","printFrameText":"Надпись на рамке","printTextMode":"Вид надписи","printTextNone":"Нет","printTextRaised":"Выпуклый","printTextEngraved":"Вогнутый","printTextInlay":"Цветной","printTextFont":"Шрифт","printTextSize":"Размер","printTextSpacing":"Межбуквенный интервал","printTextThickness":"Толщина надписи","printTextDepthInvalid":"Уменьшите толщину надписи, чтобы углубление не дошло до разъёма рамки.","printFramePinGap":"Зазор под блоком рамки должен быть меньше высоты его штырька.","solveStoppedManual":"Поиск остановлен пользователем.","solveStoppedExhausted":"Доступные состояния перебраны, подходящая цель не найдена.","solveStoppedMemory":"Достигнут расчётный лимит памяти ({budget} ГиБ).","solveStoppedStagedGoal":"Не удалось составить полную целевую раскладку для поэтапного поиска.","solveStoppedWorker":"Вычислительный поток IDA* завершился с ошибкой.","solveStoppedUnsolvable":"Для классической доски проверка чётности показала, что цель недостижима.","solveStoppedInvalidRoute":"Найденный маршрут не прошёл проверку ходов или цели.","solveStoppedNoRoute":"Выбранный алгоритм завершил попытки без проверенного решения.","solveStoppedError":"Поиск прерван внутренней ошибкой. {error}","solveStopMethod":"Алгоритм — {method}","solveStopStage":"Этап — {stage}","solveStopDepth":"Глубина поиска — {depth} ходов","solveStopTime":"Время поиска — {time} с","solveStopPriorLimit":"На одной из попыток достигнут лимит памяти ({budget} ГиБ)","solveStopPlayback":"Воспроизведение решения, ход {index} из {total}"},"en":{"printPuzzle":"Print","anaUseMarkers":"Match markers","anaUseColors":"Match colors","anaCompareBoards":"Compare boards","anaNoSymmetricPositions":"No symmetric positions in this sample.","anaPathView":"Solution path","anaTreeView":"Near / far states","anaFilterView":"Filter","anaSymmetry":"Symmetry","anaSymAny":"Any","anaSymVertical":"Vertical reflection","anaSymHorizontal":"Horizontal reflection","anaSymDiagonal":"Diagonal reflection","anaSymRotation":"Rotation","anaNear":"Near states","anaFar":"Far states","anaTreeStep":"{index} / {count} · moves from root: {depth}","anaPair":"Symmetric pair","anaDistance":"Distance between positions: {moves}","anaDistanceChecking":"Calculating the distance between positions…","anaDistanceLimit":"The distance search reached the memory limit.","anaDistanceUnreachable":"The right position is unreachable from the left.","anaDistanceError":"Could not calculate the distance between positions.","anaFilterFound":"Pair {index} / {count}","anaFilterEmpty":"The near and far samples contain no pairs with this symmetry.","anaSavePair":"Create puzzle","anaPairSame":"The start already matches the target.","anaPairChecking":"Checking the path from start to target…","anaPairProgress":"Checking the path from start to target · {count} states","anaPairLimit":"The search reached the memory limit before confirming a path.","anaPairUnreachable":"The target is unreachable from this start.","anaPairName":"{name} — symmetry {index}","anaPositionName":"{name} — variant {index}","anaPairSaved":"Added “{name}” to the catalog · solution: {depth} moves.","anaPairSaveError":"Could not save the puzzle.","adjustmentStep":"Adjustment step","anaMemory":"Memory budget — {budget} GiB · estimated limit — {count} states","anaMemoryReached":"Estimated memory limit reached ({budget} GiB) · {count} states · showing a path of {depth} moves","anaOpen":"Analyzer","anaTitle":"Puzzle analysis","anaSearch":"🔍 Search","anaSwap":"⇄ Swap","anaAuto":"↻ Auto","anaEmpty":"Press Search to find a distant position.","anaSwapped":"Boards swapped. Press Search or Auto.","anaProgress":"Search {round} · {count} states found · depth {depth}","anaDone":"Search complete · {depth} moves · {count} states · {time} s","anaAutoDone":"Auto complete · {round} searches · best distance {depth} moves · {time} s","anaStopped":"Search stopped · showing a path of {depth} moves","anaStoppedEarly":"Search stopped.","anaError":"Could not complete the search.","moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","tileBlockEditor":"TILE AND BLOCK EDITOR","frameBlockEditor":"FRAME AND BLOCK EDITOR","hintGoalCaption":"Reach the specified arrangement","scramble":"🎲 Scramble","scrambleRandom":"Random scramble","scrambleBfs":"Super scramble","scrambleBfsGoal":"Super scramble… Looking for a solved layout","scrambleBfsProgress":"Super scramble… Moves from solved layout: {depth}","scrambleBfsDone":"Super scramble complete. Moves from solved layout: {depth}","scrambleBfsStopped":"Super scramble stopped. Showing the last discovered layout.","scrambleBfsStoppedEarly":"Super scramble stopped.","scrambleBfsNoGoal":"Super scramble: no solved layout is reachable from the current position.","scrambleBfsError":"Could not finish the super scramble.","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Block","palette":"Palette","upperShape":"Block shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","circleDiameter":"Diameter (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","centerShift":"Offset from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 3.42","shapeArrow":"Arrow","arrowHead":"Arrowhead size","arrowSharpness":"Sharpness","shapeOffset":"Shift from center","offsetDistance":"Offset distance","scrambleSteps":"Scramble moves","startBoardTitle":"Start board","targetBoardTitle":"Target board","hasTargetBoard":"Has target board","hasFixedFrame":"Has frame","fixedFrameTile":"Fixed frame tile","fixedFrameShape":"Tower on frame","fixedTowerColor":"Tower color","fixedFrameDirection":"Direction / sides","fixedFrameSize":"Size / length","frameShapeNone":"No tower","clearTowersWord1":"Remove","clearTowersWord2":"towers","targetCopyTitle":"Copy start board","targetClearTitle":"Clear target board","targetSwapTitle":"Swap start and target boards","clearAllMarkers":"Remove markers","numberAllMarkers":"Number markers","clearAllTowers":"Remove towers","markerColorLabel":"Color","markerColorBlack":"Black","markerColorWhite":"White","targetSwapNeedsFull":"Fill the target board with all tiles before swapping boards.","targetHelp":"Drag tiles from the start board. Drag within the target board to rearrange; right-click removes a tile.","targetEmpty":"Place at least one tile on the target board.","clearMarker":"Clear marker","addModifier":"Add another modifier","removeModifier":"Remove modifier","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveDone":"Solution moves: {moves} · Search time: {time} s","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Search time: {time} s. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","phaseStagedRemainder4":"remaining 4×4 area","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeScrew":"Screw","screw":"Screw","screwDiameter":"Diameter (cell width = 100%)","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group.","editorBondBlocked":"Cannot move the bonded group: board edge, cut-out, or another bonded group.","phase3x3Bfs":"bidirectional BFS","phaseSpecialBfs":"bond-aware BFS","phaseSpecialCut":"staged search","phaseSpecialAstar":"full-board A*","phaseSpecialCheck":"validating route","phaseSpecialPattern":"ring-pattern search","phaseSpecialMeeting":"meet-in-the-middle search","printTitle":"3D print the puzzle","printDownload":"STL in ZIP","printPlanView":"Top view","print3DView":"3D view","printAssembled":"Assembled","printOnBed":"Parts on bed","printSettings":"Dimensions and clearances, mm","printReset":"Reset settings","printHelp":"Drag with the left button to rotate or the right button to pan. Scroll to zoom. Double-click to reset the view.","printInvalid":"Check the allowed settings ranges.","printBuilding":"Building parts: {current} / {total}","printReady":"Ready · {count} parts · unique tiles: {tiles} · unique blocks: {blocks}","printFailed":"Could not build or save the parts.","printNoWebGL":"The 3D view is unavailable. The top view and STL download are available.","print_pitch":"Cell pitch","print_gap":"Frame clearance","print_radius":"Corner radius","print_chamfer":"Chamfer","print_pinGap":"Pin tolerance","printTrimPins":"Allow trimming pins","print_frameHeight":"Frame height","print_blockHeight":"Block height","printSingle":"Single STL","printStepFile":"STEP","printBuild3D":"Build 3D preview","print_resolution":"Detail step","printTooFine":"This model is too large at this detail step. Choose a coarser step.","printStepLimited":"This geometry currently requires STL.","print_pinHeight":"Pin height","print_blockGap":"Clearance under blocks","printBlockGapInvalid":"The clearance under the block must be less than the pin height.","print_frameThickness":"Frame wall thickness","print_frameRadius":"Outer frame corner radius","printFrameRadiusInvalid":"Reduce the outer corner radius or increase the frame wall thickness.","printFrameGroup":"Frame","printTilesGroup":"Tiles","printBlocksGroup":"Blocks","printTextGroup":"Lettering","printOtherGroup":"Other","printRing":"Print ring","printFrameText":"Frame inscription","printTextMode":"Inscription style","printTextNone":"None","printTextRaised":"Raised","printTextEngraved":"Engraved","printTextInlay":"Color inlay","printTextFont":"Font","printTextSize":"Size","printTextSpacing":"Letter spacing","printTextThickness":"Inscription thickness","printTextDepthInvalid":"Reduce the inscription thickness so that the recess stays above the frame seam.","printFramePinGap":"The clearance under a frame block must be less than its pin height.","solveStoppedManual":"Search stopped by the user.","solveStoppedExhausted":"The reachable states were explored without matching the goal.","solveStoppedMemory":"The estimated memory limit was reached ({budget} GiB).","solveStoppedStagedGoal":"The staged search could not construct a complete target arrangement.","solveStoppedWorker":"The IDA* worker failed.","solveStoppedUnsolvable":"The classical board failed the parity check for reachability.","solveStoppedInvalidRoute":"The route failed move or goal validation.","solveStoppedNoRoute":"The selected search exhausted its attempts without a verified solution.","solveStoppedError":"An internal error interrupted the search. {error}","solveStopMethod":"Algorithm — {method}","solveStopStage":"Stage — {stage}","solveStopDepth":"Search depth — {depth} moves","solveStopTime":"Search time — {time} s","solveStopPriorLimit":"One attempt reached the memory limit ({budget} GiB)","solveStopPlayback":"Solution playback, move {index} of {total}"}};
 
 var LAST_STATUS = null, LAST_DIALOG = null;
 var pulseOn = true;
@@ -8850,7 +8854,11 @@ function enterAnalyzer() {
 
 function leaveAnalyzer() {
   if (!analyzer) return;
-  if (analyzer.job) { analyzer.stop = true; return; }
+  if (analyzer.job) {
+    analyzer.stop = true;
+    analyzer.closeAfterStop = true;
+    return;
+  }
   $('analyzerDialog').close();
 }
 
@@ -9413,7 +9421,8 @@ async function runAnalyzer(command) {
   } finally {
     releaseCollisions();
     analyzer.job = null;
-    renderAnalyzer();
+    if (analyzer.closeAfterStop) leaveAnalyzer();
+    else renderAnalyzer();
   }
 }
 
@@ -9653,7 +9662,8 @@ async function saveAnalyzerPair() {
     setAnalyzerStatus('anaPairSaveError');
   } finally {
     current.job=null;
-    renderAnalyzer();
+    if (current.closeAfterStop) leaveAnalyzer();
+    else renderAnalyzer();
   }
 }
 
@@ -10470,7 +10480,7 @@ document.addEventListener('pointerdown',function(event){
   if (!$('scrambleWrap').contains(event.target)) closeScrambleMenu();
 });
 document.addEventListener('keydown',function(event){
-  if (event.key !== 'Escape') return;
+  if (event.key !== 'Escape' || printDialog.open || $('analyzerDialog').open) return;
   closeSolverSelectMenu();
   if (scrambleBfsRunning) scrambleBfsStop = true;
   if (!$('scrambleMenu').classList.contains('hidden')) {
@@ -10545,6 +10555,9 @@ function buildPrintMesh(part) {
   const nx=Math.ceil((bounds[3]-(part.gridBounds?x0:bounds[0]))/step)+(part.gridBounds?2:4);
   const ny=Math.ceil((bounds[4]-(part.gridBounds?y0:bounds[1]))/step)+(part.gridBounds?2:4);
   const nz=Math.ceil((bounds[5]-(part.gridBounds?z0:bounds[2]))/step)+(part.gridBounds?2:4);
+  // The ring has one footprint at every Z; only its edge bevel tapers.
+  const ringDistance=part.ringScale ? Float64Array.from({length:nx*ny},(_,i)=>
+    distance(layers[0].shapes[0],x0+(i%nx)*step,y0+Math.floor(i/nx)*step)) : null;
   function slice(k,out) {
     const z=z0+k*step, active=[];
     for (const layer of layers) {
@@ -10570,7 +10583,8 @@ function buildPrintMesh(part) {
       const x=x0+i*step,y=y0+j*step;
       let d=step*3;
       for (const {shapes,holes,slab,bevel} of active) {
-        const outer=union(shapes,x,y), hole=holes ? -union(holes,x,y) : -Infinity;
+        const outer=ringDistance ? ringDistance[j*nx+i] : union(shapes,x,y);
+        const hole=holes ? -union(holes,x,y) : -Infinity;
         d=Math.min(d,Math.max(slab,outer+bevel,hole));
       }
       if(part.relief && z>=part.relief.bottom-step && z<=part.relief.top+step) {
@@ -10844,9 +10858,48 @@ function printSquareRoom(shape,x,y) {
   return room;
 }
 
+function printArmJunctions(shapes) {
+  const junctions=[];
+  for(const horizontal of shapes) {
+    if(horizontal.kind!=='rect'||horizontal.w<=horizontal.h) continue;
+    for(const vertical of shapes) {
+      if(vertical.kind!=='rect'||vertical.h<=vertical.w) continue;
+      const left=Math.max(horizontal.x-horizontal.w,vertical.x-vertical.w);
+      const right=Math.min(horizontal.x+horizontal.w,vertical.x+vertical.w);
+      const bottom=Math.max(horizontal.y-horizontal.h,vertical.y-vertical.h);
+      const top=Math.min(horizontal.y+horizontal.h,vertical.y+vertical.h);
+      if(left>=right || bottom>=top) continue;
+      const [l,b,r,t]=[vertical.x-vertical.w,horizontal.y-horizontal.h,
+        vertical.x+vertical.w,horizontal.y+horizontal.h];
+      const covered=horizontal.x-horizontal.w<=l && horizontal.x+horizontal.w>=r ||
+        vertical.y-vertical.h<=b && vertical.y+vertical.h>=t;
+      junctions.push(covered?[l,b,r,t]:[left,bottom,right,top]);
+    }
+  }
+  return junctions;
+}
+
 function fitPrintPin(shapes, limit) {
   let best={x:0,y:0,half:0};
   const edgeClearance=.04;
+
+  // Prefer the junction of perpendicular arms so both arms support the pin.
+  // Keep the true junction center when it fits within the tile's guide limit.
+  for(const [left,bottom,right,top] of printArmJunctions(shapes)) {
+    const x=(left+right)/2,y=(bottom+top)/2;
+    const half=Math.min((right-left)/2,(top-bottom)/2,limit-Math.abs(x),limit-Math.abs(y))-edgeClearance;
+    if(half>=2 && half>best.half) {
+      best={x,y,half};
+    } else if(half<2) {
+      // A corner near the guide may still accommodate a slightly inset pin.
+      const l=Math.max(left,-limit),r=Math.min(right,limit);
+      const b=Math.max(bottom,-limit),t=Math.min(top,limit);
+      const insetHalf=Math.min(r-l,t-b)/2-edgeClearance;
+      if(insetHalf>=2 && insetHalf>best.half)best={x:(l+r)/2,y:(b+t)/2,half:insetHalf};
+    }
+  }
+  if(best.half>=2) return best;
+
   for(const shape of shapes) {
     const [left,bottom,right,top]=printShapeBounds(shape);
     const l=Math.max(-limit,left), b=Math.max(-limit,bottom);
@@ -10928,6 +10981,59 @@ function fitPrintFootprintMount(shapes,limit,gap) {
   return {pin,socket};
 }
 
+// Use the part of the block that overlaps the tile's safe socket area.
+// Clip convex outlines directly so a circular block gets a curved pin edge.
+function fitPrintTrimmedMount(shapes,limit,gap) {
+  const area=points=>points.reduce((sum,[x,y],i)=>{
+    const [u,v]=points[(i+1)%points.length];
+    return sum+x*v-y*u;
+  },0)/2;
+  let best=null,bestArea=0;
+  for(const shape of shapes) {
+    let points;
+    if(shape.kind==='circle') {
+      const radius=Math.max(0,shape.r-.04);
+      points=Array.from({length:64},(_,i)=>{
+        const angle=i*Math.PI/32;
+        return [shape.x+radius*Math.cos(angle),shape.y+radius*Math.sin(angle)];
+      });
+    } else if(shape.kind==='polygon') {
+      points=shape.points;
+      const winding=Math.sign(area(points));
+      const convex=points.every(([x,y],i)=>{
+        const [a,b]=points[(i+1)%points.length],[c,d]=points[(i+2)%points.length];
+        return winding*((a-x)*(d-b)-(b-y)*(c-a))>=-1e-8;
+      });
+      if(!convex) continue;
+    } else {
+      continue; // Rectangular footprints are handled by fitPrintFootprintMount.
+    }
+    for(const axis of [0,1]) for(const side of [-1,1]) {
+      points=points.flatMap((start,i)=>{
+        const end=points[(i+1)%points.length];
+        const a=limit-side*start[axis],b=limit-side*end[axis];
+        const vertices=a>=0?[start]:[];
+        if((a>=0)!==(b>=0)) {
+          const t=a/(a-b);
+          vertices.push(start.map((v,k)=>v+t*(end[k]-v)));
+        }
+        return vertices;
+      });
+    }
+    points=points.filter(([x,y],i)=>{
+      const [a,b]=points[(i+1)%points.length];
+      return Math.hypot(x-a,y-b)>1e-7;
+    });
+    if(points.length<3) continue;
+    const polygon={kind:'polygon',points};
+    const [l,b,r,t]=printShapeBounds(polygon);
+    if(Math.min(r-l,t-b)<.5) continue;
+    const size=Math.abs(area(points));
+    if(size>bestArea) {best=polygon;bestArea=size;}
+  }
+  return best ? {pin:best,socket:printSocketSection(best,gap)} : null;
+}
+
 function offsetPrintMount(shape,x,y) {
   if(shape.kind==='polygon') return {...shape,points:shape.points.map(([px,py])=>[px+x,py+y])};
   return {...shape,x:shape.x+x,y:shape.y+y};
@@ -10941,7 +11047,7 @@ function printShapeTransform(shape,transform) {
   return {...shape,x,y,w,h};
 }
 
-function canonicalPrintShapes(shapes) {
+function canonicalPrintShapes(shapes,rotationsOnly=false) {
   let best;
   const round=value=>Math.round(value*1e6);
   function key(shape) {
@@ -10949,6 +11055,7 @@ function canonicalPrintShapes(shapes) {
     return [shape.kind,...printShapeBounds(shape).map(round)].join(',');
   }
   for(const swap of [false,true]) for(const a of [-1,1]) for(const b of [-1,1]) {
+    if(rotationsOnly && a*b!==(swap?-1:1)) continue;
     const forward=(x,y)=>swap?[a*y,b*x]:[a*x,b*y];
     const backward=(x,y)=>swap?[b*y,a*x]:[a*x,b*y];
     const ordered=shapes.map(shape=>printShapeTransform(shape,forward))
@@ -10982,11 +11089,51 @@ function sharedPrintMounts(shapesById,limit,pitch) {
   });
   if(variants.size<2 || limit<minHalf)return result;
 
-  const groups=[...variants.values()], xs=new Set([0]),ys=new Set([0]);
+  const groups=[...variants.values()];
+
+  // One centered socket for every block beats several off-center groups.
+  // Join overlapping rectangles first so a pin can cross their internal seams.
+  const centeredRoom=Math.min(...groups.map(({shapes})=>{
+    const outline=shapes.length>1&&shapes.every(shape=>shape.kind==='rect'&&!shape.r)
+      ? printMountOutline(shapes.map(printShapeBounds)) : null;
+    return Math.max(...(outline?[outline]:shapes).map(shape=>printSquareRoom(shape,0,0)));
+  }));
+  const centeredHalf=Math.floor(Math.min(limit,centeredRoom)*1e6+1e-7)/1e6;
+  if(centeredHalf>=minHalf) {
+    const flush=centeredRoom-centeredHalf<1e-6;
+    for(const {ids} of groups) for(const id of ids) {
+      result.set(id,{x:0,y:0,half:centeredHalf,flush});
+    }
+    return result;
+  }
+
+  // Centrally symmetric compound blocks keep their mount on the symmetry axis.
+  const assigned=new Set();
+  groups.forEach(({shapes,ids},index)=>{
+    if(shapes.length<2||shapes.some(shape=>shape.kind!=='rect')) return;
+    const original=shapes.map(shape=>signature(shape)).sort();
+    const rotated=shapes.map(shape=>signature({...shape,x:-shape.x,y:-shape.y})).sort();
+    if(original.some((key,i)=>key!==rotated[i])) return;
+    const room=Math.max(...shapes.map(shape=>printSquareRoom(shape,0,0)));
+    const half=Math.floor((Math.min(room,limit)-.04)*100+1e-7)/100;
+    if(half<minHalf) return;
+    assigned.add(index);
+    for(const id of ids) result.set(id,{x:0,y:0,half});
+  });
+
+  const xs=new Set([0]),ys=new Set([0]);
   const step=pitch/80;
   for(let i=1;i*step<=limit-minHalf;i++){xs.add(i*step);xs.add(-i*step);ys.add(i*step);ys.add(-i*step);}
   for(const group of groups) {
-    for(const shape of group.shapes) {
+    // A common socket must also support both arms when the junction can fit it.
+    const junctions=printArmJunctions(group.shapes).flatMap(([l,b,r,t])=>{
+      const left=Math.max(l,-limit),right=Math.min(r,limit);
+      const bottom=Math.max(b,-limit),top=Math.min(t,limit);
+      if(Math.min(right-left,top-bottom)<2*minHalf+.08-1e-8) return [];
+      return [printRect((l+r)/2,(b+t)/2,(r-l)/2,(t-b)/2)];
+    });
+    group.mountShapes=junctions.length?junctions:group.shapes;
+    for(const shape of group.mountShapes) {
       const [l,b,r,t]=printShapeBounds(shape);
       xs.add((l+r)/2);ys.add((b+t)/2);
       if(r-l>=4){xs.add(l+2);xs.add(r-2);}
@@ -10999,15 +11146,15 @@ function sharedPrintMounts(shapesById,limit,pitch) {
     const wall=limit-Math.max(Math.abs(x),Math.abs(y));
     if(wall<minHalf-1e-8)continue;
     const fits=[];
-    groups.forEach(({shapes},index)=>{
+    groups.forEach(({mountShapes},index)=>{
+      if(assigned.has(index)) return;
       let room=0;
-      for(const shape of shapes)room=Math.max(room,printSquareRoom(shape,x,y));
+      for(const shape of mountShapes)room=Math.max(room,printSquareRoom(shape,x,y));
       const half=Math.min(wall,room);
       if(half>=minHalf-1e-8)fits.push({index,half});
     });
     if(fits.length>1)candidates.push({x,y,fits});
   }
-  const assigned=new Set();
   while(true){
     let best=null;
     for(const candidate of candidates) {
@@ -11025,6 +11172,25 @@ function sharedPrintMounts(shapesById,limit,pitch) {
       assigned.add(index);
       for(const id of groups[index].ids)result.set(id,{x:best.x,y:best.y,half:best.half});
     }
+  }
+  if(!result.size) return result;
+
+  // A shared socket can be found for only some orientations of a block.
+  // Extend its mount to all rotated copies, using the highest-ranked shared
+  // socket already selected for that body. The guide limit is rotation-safe.
+  const orientations=new Map(), mountsByBody=new Map();
+  shapesById.forEach((shapes,id)=>{
+    if(shapes.length) orientations.set(id,canonicalPrintShapes(shapes,true));
+  });
+  for(const [id,{x,y,half}] of result) {
+    const {signature,forward}=orientations.get(id);
+    if(!mountsByBody.has(signature)) mountsByBody.set(signature,{point:forward(x,y),half});
+  }
+  for(const [id,{signature,backward}] of orientations) {
+    const mount=mountsByBody.get(signature);
+    if(!mount) continue;
+    const [x,y]=backward(...mount.point);
+    result.set(id,{x,y,half:mount.half});
   }
   return result;
 }
@@ -11077,19 +11243,6 @@ function printSocketSection(shape,amount) {
   if(!amount) return shape;
   if(shape.kind==='rect') return {...shape,w:shape.w+amount,h:shape.h+amount};
   return {...shape,points:printOffsetPolygon(shape.points,amount)};
-}
-
-function printMarkerMask(marker,pitch,dx=0,dy=0) {
-  const canvas=document.createElement('canvas');
-  canvas.width=canvas.height=128;
-  const ctx=canvas.getContext('2d',{willReadFrequently:true});
-  ctx.font='bold 90px Arial, sans-serif';
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';
-  ctx.fillText(marker,64,65,106);
-  const rgba=ctx.getImageData(0,0,128,128).data;
-  const data=new Uint8Array(128*128);
-  for(let i=0;i<data.length;i++) data[i]=rgba[4*i+3];
-  return {w:128,h:128,x:dx-.4*pitch,top:dy+.4*pitch,unit:.8*pitch/128,data};
 }
 
 function printInscription(text,font,size,spacing) {
@@ -11193,6 +11346,38 @@ function printPinHeight(frameHeight) {
   return Math.round(frameHeight*60)/100;
 }
 
+// Mid-height outline from Кольцо.STEP. Each entry stores the start point
+// and, for circular edges, the center and signed sweep in the XY plane.
+const printRingOutline=[
+  [[9.679115822,-2.512910047],[0.0,-0.0],-1.3167824977438354],
+  [[0.0,-10.0],[0.0,-0.0],-3.141592653589793],
+  [[0.0,10.0],[0.0,-0.0],-1.3167824977438354],
+  [[9.679115822,2.512910047],[9.1951600309,2.3872645447],-1.6234522349761829],
+  [[9.2951600309,1.8973665961]],
+  [[7.3988393281,1.5102817536],[7.7039535998,3.0364504809],-2.0613836140096966],
+  [[6.5015395931,4.024623674],[6.1152514766,4.3420846812],1.305341311392242],
+  [[6.5229349083,4.6315569932],[0.0,-0.0],0.953362588867722],
+  [[-0.0,8.0],[0.0,-0.0],3.141592653589793],
+  [[0.0,-8.0],[0.0,-0.0],0.953362588867722],
+  [[6.5229349083,-4.6315569932],[6.1152514766,-4.3420846812],1.305341311392242],
+  [[6.5015395931,-4.024623674],[7.7039535998,-3.0364504809],-2.0613836140096966],
+  [[7.3988393281,-1.5102817536]],
+  [[9.2951600309,-1.8973665961],[9.1951600309,-2.3872645447],-1.6234522349761829]
+];
+
+function printRingFootprint(scale) {
+  return {kind:'polygon',points:printRingOutline.flatMap(([start,center,sweep])=>{
+    const [x,y]=start;
+    if(!center) return [[x*scale,y*scale]];
+    const [cx,cy]=center, radius=Math.hypot(x-cx,y-cy), angle=Math.atan2(y-cy,x-cx);
+    const divisions=Math.ceil(Math.abs(sweep)*Math.sqrt(radius*scale/.024));
+    return Array.from({length:divisions},(_,i)=>{
+      const a=angle+sweep*i/divisions;
+      return [(cx+radius*Math.cos(a))*scale,(cy+radius*Math.sin(a))*scale];
+    });
+  })};
+}
+
 function printPlan(puzzle,state,settings) {
   const {pitch,frameHeight,frameThickness,frameRadius,blockHeight,gap,radius,chamfer,blockGap,pinGap,resolution}=settings;
   const tilePinHeight=settings.pinHeight ?? printPinHeight(frameHeight);
@@ -11244,9 +11429,9 @@ function printPlan(puzzle,state,settings) {
     // Keep material between the socket and the nearest guide or tile edge.
     const minSquareHalf=2;
     const body=shapes[0];
-    const flushSquare=!shared && shapes.length===1 && body.kind==='rect' && body.w>=minSquareHalf &&
+    const flushSquare=shared?.flush || (!shared && shapes.length===1 && body.kind==='rect' && body.w>=minSquareHalf &&
       Math.abs(body.w-body.h)<1e-6 &&
-      Math.max(Math.abs(body.x)+body.w,Math.abs(body.y)+body.h)<=socketEdge-.12;
+      Math.max(Math.abs(body.x)+body.w,Math.abs(body.y)+body.h)<=socketEdge-.12);
     let fitted;
     if(shared) {
       const [x,y]=forward(shared.x,shared.y);
@@ -11254,7 +11439,10 @@ function printPlan(puzzle,state,settings) {
     } else {
       fitted=flushSquare ? {x:body.x,y:body.y,half:body.w} : fitPrintPin(shapes,socketLimit);
     }
-    const footprint=fitted.half<minSquareHalf ? fitPrintFootprintMount(shapes,socketLimit,pinGap) : null;
+    const trimmed=fitted.half<minSquareHalf&&settings.trimPins ?
+      fitPrintTrimmedMount(shapes,socketLimit,pinGap) : null;
+    const footprint=fitted.half<minSquareHalf ?
+      fitPrintFootprintMount(shapes,socketLimit,pinGap)||trimmed : null;
     const needsPad=!footprint&&fitted.half<minSquareHalf;
     let {x:px,y:py,half:pinHalf}=fitted;
     const pads=[];
@@ -11277,14 +11465,15 @@ function printPlan(puzzle,state,settings) {
     }
     const edge=Math.min(chamfer,.45);
     const finish=shape=>printShapeTransform(printChamferCorners(shape,edge),backward);
-    const cuts=tile.marker?[{bottom:blockHeight-.65,top:blockHeight+.3,glyph:printMarkerMask(tile.marker,pitch,...backward(...points[0]))}]:[];
-    cuts.push(...printScrewEngraving(tile,pitch,original,blockHeight));
+    const cuts=printScrewEngraving(tile,pitch,original,blockHeight);
+    const finishMount=trimmed&&footprint===trimmed
+      ? shape=>printShapeTransform(shape,backward) : finish;
     part(name,tile.upColor,[
-      {shapes:[finish(pin)],bottom:-pinHeight,top:.42,bevel:Math.min(edge,pinHeight/3),bevelAt:'bottom'},
+      {shapes:[finishMount(pin)],bottom:-pinHeight,top:.42,bevel:Math.min(edge,pinHeight/3),bevelAt:'bottom'},
       ...(pads.length ? [{shapes:pads.map(finish),bottom:0,top:Math.min(1.4,blockHeight*.6)}] : []),
       {shapes:shapes.map(finish),bottom:0,top:blockHeight,bevel:edge,bevelAt:flushSquare||footprint?'top':null}
     ],cuts,true,[x,y,baseTop+blockGap]);
-    const socket=finish(footprint?.socket ?? printRect(px,py,pinHalf+pinGap,pinHalf+pinGap));
+    const socket=finishMount(footprint?.socket ?? printRect(px,py,pinHalf+pinGap,pinHalf+pinGap));
     const mouth=Math.min(edge,(pinHeight-blockGap)/2);
     const heel=footprint?0:Math.min(mouth,pinHalf/4,pinHeight/3);
     baseCuts.push({shapes:[isFixed ? offsetPrintMount(socket,x,y) : socket],
@@ -11310,11 +11499,10 @@ function printPlan(puzzle,state,settings) {
         if(other.x===x && other.y===y+pitch) shapes.push(printRect(dx,dy+pitch/2,half-radius,.4));
       }
       const topCuts=[], topName='top-'+(id+1);
-      const hasTop=upper(tile,x,y,topName,topCuts,false,id);
+      upper(tile,x,y,topName,topCuts,false,id);
       for(const cut of topCuts) {
         cut.shapes[0]=offsetPrintMount(cut.shapes[0],dx,dy);cuts.push(cut);
       }
-      if (!hasTop && tile.marker) cuts.push({bottom:baseTop-.75,top:baseTop+.45,glyph:printMarkerMask(tile.marker,pitch,dx,dy)});
     }
     part(tag,items[0].tile.color,[{shapes,bottom:0,top:baseTop,section:'tile',bevel:chamfer,
       grid:items.length>1?items.map(item=>({x:item.x-ox,y:item.y-oy})):null,pitch,radius}],
@@ -11386,6 +11574,15 @@ function printPlan(puzzle,state,settings) {
   const pryCut={shapes:[printRect(outside+(overrun-notchLength)/2,outer.y,(notchLength+overrun)/2,2.5)],
     bottom:halfHeight-notchDepth,top:halfHeight+notchDepth};
   upperCuts.push(pryCut);
+  if(settings.printRing) {
+    const scale=pitch/20, shape=printRingFootprint(scale);
+    const rightmost=Math.max(right,...parts.map(part=>part.offset[0]+part.bounds[3]));
+    part('ring','#a2b0c5',[{shapes:[shape],bottom:0,top:baseTop,bevel:.5*scale}],
+      [],false,[rightmost+4+pitch/2,(rows-1)*pitch/2,0]);
+    const ringPart=parts.at(-1);
+    ringPart.ringScale=scale;
+    ringPart.bounds=[-pitch/2,-pitch/2,0,Math.max(...shape.points.map(([x])=>x)),pitch/2,baseTop];
+  }
   const lowerCuts=[{...pryCut,bottom:baseTop-pryCut.top,top:baseTop-pryCut.bottom}];
   const ring={shapes:[outer],holes:openings,section:'frame',bevel:chamfer,pitch,gap};
   part('frame-lower','#a2b0c5',[{...ring,bottom:0,top:halfHeight}],lowerCuts,false);
@@ -11416,25 +11613,24 @@ function printPartCounts(parts) {
 
   for(const part of parts) {
     const name=part.name;
-    const keys=name.startsWith('tile-')||name.startsWith('bond-') ? tileKeys
-      : name.startsWith('top-')||name.startsWith('frame-top-') ? blockKeys : null;
-    if(keys) keys.add(printPartGeometryKey(part));
+    if(name.startsWith('tile-')||name.startsWith('bond-')) {
+      tileKeys.add(printPartGeometryKey(part));
+    } else if(name.startsWith('top-')||name.startsWith('frame-top-')) {
+      blockKeys.add(printPartGeometryKey(part,true));
+    }
   }
   return {count:parts.length,tiles:tileKeys.size,blocks:blockKeys.size};
 }
 
-// Parts with the same printed geometry are interchangeable after a turn
-// on the board. Keep the locations of sockets, pins and engravings relative
-// to the body so asymmetric parts are counted correctly.
-function printPartGeometryKey(part) {
+// Compare tiles in the board's orientation. Rotate the entire block,
+// including its mount, as one piece so the pin stays registered to the body.
+function printPartGeometryKey(part,block=false) {
   const [left,bottom,,right,top]=part.bounds;
   const cx=(left+right)/2,cy=(bottom+top)/2;
-  const cuts=part.cuts.map(({glyph,...cut})=>glyph ? {...cut,
-    shapes:printInscriptionContours(glyph).map(points=>({kind:'polygon',points}))} : cut);
   const round=(_,value)=>typeof value==='number'?Math.round(value*1e6)/1e6:value;
   let best;
 
-  for(let turn=0;turn<4;turn++) {
+  for(let turn=0;turn<(block?4:1);turn++) {
     const rotate=(x,y)=>turn===0?[x,y]:turn===1?[-y,x]:turn===2?[-x,-y]:[y,-x];
     const project=(x,y)=>rotate(x-cx,y-cy);
     function ringKey(points) {
@@ -11444,17 +11640,18 @@ function printPartGeometryKey(part) {
       const forward=cycle.join(','),reverse=[cycle[0],...cycle.slice(1).reverse()].join(',');
       return forward<reverse?forward:reverse;
     }
-    const shapeKeys=shapes=>shapes?.map(shape=>{
+    // Duplicate outlines in a layer add no material to its union.
+    const shapeKeys=shapes=>shapes && [...new Set(shapes.map(shape=>{
       if(shape.kind==='polygon')return 'polygon:'+ringKey(shape.points.map(([x,y])=>project(x,y)));
       const [x,y]=project(shape.x,shape.y);
       const size=shape.kind==='rect'?rotate(shape.w,shape.h).map(Math.abs):[];
       return JSON.stringify([shape.kind,x,y,...size,shape.r],round);
-    }).sort();
+    }))].sort();
     const layerKeys=part.layers.map(({shapes,grid,...layer})=>JSON.stringify({
       ...layer,shapes:shapeKeys(shapes),
       grid:grid?.map(({x,y})=>JSON.stringify(project(x,y),round)).sort()
     },round)).sort();
-    const cutKeys=cuts.map(({shapes,holes,flushSquare,...cut})=>JSON.stringify({
+    const cutKeys=part.cuts.map(({shapes,holes,flushSquare,...cut})=>JSON.stringify({
       ...cut,shapes:shapeKeys(shapes),holes:shapeKeys(holes)
     },round)).sort();
     const key=JSON.stringify([layerKeys,cutKeys]);
@@ -11471,6 +11668,1176 @@ function mirrorPrintMesh(mesh,height) {
   }
   return reflected;
 }
+
+// Analytic boundary of the ring from Кольцо.STEP, with presentation data
+// removed. The two bevels scale with the diameter, and the straight wall
+// between them is stretched to the selected tile height.
+const printRingStepBoundary=`
+CONICAL_SURFACE('',#228,10.00000000000000000,0.7853981633974552734)
+AXIS2_PLACEMENT_3D('',#62,#1136,#510)
+EDGE_CURVE('',#612,#234,#456,.T.)
+PLANE('',#17)
+VERTEX_POINT('',#937)
+DIRECTION('',(0.9797958971132711969,0.0000000000000000000,-0.2000000000000002331))
+VERTEX_POINT('',#48)
+ADVANCED_FACE('',(#192),#30,.F.)
+CARTESIAN_POINT('',(0.0000000000000000000,9.499999999999998224,-10.00000000000000000))
+ORIENTED_EDGE('',*,*,#218,.F.)
+VECTOR('',#1027,1000.000000000000227)
+ADVANCED_FACE('',(#941),#161,.F.)
+ORIENTED_EDGE('',*,*,#914,.T.)
+LINE('',#949,#1099)
+EDGE_LOOP('',(#1140,#52,#520,#645))
+FACE_OUTER_BOUND('',#903,.T.)
+AXIS2_PLACEMENT_3D('',#634,#1163,#6)
+CARTESIAN_POINT('',(9.295160030897799075,0.4999999999999970024,1.897366596101025982))
+ADVANCED_FACE('',(#24),#53,.T.)
+CARTESIAN_POINT('',(9.295160030897799075,0.4999999999999970024,1.897366596101027092))
+CARTESIAN_POINT('',(1.040949779275250140E-15,0.0000000000000000000,8.500000000000000000))
+EDGE_CURVE('',#443,#462,#371,.T.)
+CARTESIAN_POINT('',(9.797174393178821713E-16,0.4999999999999970024,7.999999999999996447))
+FACE_OUTER_BOUND('',#728,.T.)
+EDGE_CURVE('',#1109,#1122,#791,.T.)
+VECTOR('',#76,1000.000000000000000)
+AXIS2_PLACEMENT_3D('',#849,#1025,#1100)
+VERTEX_POINT('',#832)
+EDGE_LOOP('',(#893,#572,#380))
+PLANE('',#365)
+CARTESIAN_POINT('',(7.398495296158898782,9.667038181448722511,-1.680694158377485037))
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+AXIS2_PLACEMENT_3D('',#699,#515,#686)
+ORIENTED_EDGE('',*,*,#1159,.F.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+LINE('',#23,#1022)
+ORIENTED_EDGE('',*,*,#1097,.T.)
+VECTOR('',#884,1000.000000000000227)
+ORIENTED_EDGE('',*,*,#1066,.T.)
+CIRCLE('',#567,0.4999999999999995559)
+AXIS2_PLACEMENT_3D('',#860,#1133,#865)
+CARTESIAN_POINT('',(7.398839328144894090,10.00000000000000000,-1.510281753565974494))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+EDGE_LOOP('',(#1092,#404,#808,#180))
+CARTESIAN_POINT('',(6.501539593065784217,10.00000000000000000,4.024623674035343157))
+CARTESIAN_POINT('',(0.0000000000000000000,9.499999999999998224,0.0000000000000000000))
+CARTESIAN_POINT('',(7.398839328144894090,0.4999999999999970024,1.510281753565974494))
+EDGE_CURVE('',#637,#494,#1070,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+EDGE_CURVE('',#209,#1109,#325,.T.)
+ORIENTED_EDGE('',*,*,#150,.T.)
+CONICAL_SURFACE('',#825,1.556369398015481798,0.7853981633974554954)
+CYLINDRICAL_SURFACE('',#968,0.4999999999999995559)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+VECTOR('',#502,1000.000000000000114)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+VECTOR('',#1048,1000.000000000000000)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+VERTEX_POINT('',#144)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+EDGE_CURVE('',#5,#701,#359,.T.)
+ORIENTED_EDGE('',*,*,#297,.T.)
+DIRECTION('',(-0.9797958971132711969,0.0000000000000000000,0.2000000000000002331))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+CARTESIAN_POINT('',(9.195160030897799430,0.4999999999999970024,2.387264544657662579))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#569,.T.)
+CIRCLE('',#1021,1.000000000000000000)
+FACE_OUTER_BOUND('',#542,.T.)
+ORIENTED_EDGE('',*,*,#819,.F.)
+CARTESIAN_POINT('',(9.295160030897799075,0.4999999999999970024,-1.897366596101025982))
+CIRCLE('',#797,0.4999999999999995559)
+DIRECTION('',(0.9797958971132711969,0.0000000000000000000,-0.2000000000000002331))
+CARTESIAN_POINT('',(7.400762448937727278,0.1662135489951891143,-1.851343678960776673))
+ORIENTED_EDGE('',*,*,#481,.T.)
+AXIS2_PLACEMENT_3D('',#882,#453,#974)
+CARTESIAN_POINT('',(6.930618340103404051,0.0000000000000000000,-4.921029305320416825))
+LINE('',#512,#764)
+LINE('',#759,#997)
+CARTESIAN_POINT('',(7.703953599753392112,10.00000000000000000,-3.036450480915573458))
+CIRCLE('',#2,9.500000000000000000)
+EDGE_CURVE('',#919,#338,#813,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+VECTOR('',#191,1000.000000000000000)
+VECTOR('',#993,1000.000000000000000)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+EDGE_CURVE('',#647,#129,#109,.T.)
+CARTESIAN_POINT('',(7.398495296158897894,0.3329618185512756012,1.680694158377486369))
+ADVANCED_FACE('',(#1019),#533,.T.)
+AXIS2_PLACEMENT_3D('',#333,#601,#767)
+ORIENTED_EDGE('',*,*,#1062,.F.)
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+ADVANCED_FACE('',(#298),#374,.F.)
+ORIENTED_EDGE('',*,*,#85,.T.)
+LINE('',#132,#804)
+LINE('',#1151,#1152)
+ORIENTED_EDGE('',*,*,#1060,.T.)
+AXIS2_PLACEMENT_3D('',#348,#871,#160)
+CARTESIAN_POINT('',(0.0000000000000000000,0.0000000000000000000,-8.500000000000000000))
+EDGE_LOOP('',(#669,#895,#796,#244))
+ADVANCED_FACE('',(#995),#766,.T.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#299,.F.)
+AXIS2_PLACEMENT_3D('',#112,#117,#221)
+CARTESIAN_POINT('',(6.522934908332610249,0.4999999999999970024,4.631556993242746501))
+CIRCLE('',#93,0.4999999999999995559)
+ORIENTED_EDGE('',*,*,#1068,.F.)
+VECTOR('',#775,1000.000000000000000)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+EDGE_CURVE('',#1075,#443,#81,.T.)
+AXIS2_PLACEMENT_3D('',#55,#685,#1125)
+ADVANCED_FACE('',(#589),#562,.T.)
+CYLINDRICAL_SURFACE('',#1114,7.999999999999996447)
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#219,.F.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+VERTEX_POINT('',#402)
+VERTEX_POINT('',#682)
+EDGE_CURVE('',#134,#139,#311,.T.)
+DIRECTION('',(8.659560562354994488E-17,-0.7071067811865425767,0.7071067811865525687))
+EDGE_LOOP('',(#10,#78,#490,#497))
+VECTOR('',#65,1000.000000000000000)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CONICAL_SURFACE('',#268,9.500000000000000000,0.7853981633974466137)
+VERTEX_POINT('',#670)
+FACE_OUTER_BOUND('',#948,.T.)
+EDGE_LOOP('',(#925,#1040,#466))
+CARTESIAN_POINT('',(7.890815800360996946,10.00000000000000000,2.121016393511136133))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+VERTEX_POINT('',#850)
+DIRECTION('',(-0.2000000000000002331,0.0000000000000000000,0.9797958971132711969))
+CARTESIAN_POINT('',(6.930618340103398722,0.0000000000000000000,4.921029305320423042))
+DIRECTION('',(0.0000000000000000000,-0.7071067811865487940,-0.7071067811865463515))
+AXIS2_PLACEMENT_3D('',#440,#962,#1028)
+VERTEX_POINT('',#424)
+EDGE_LOOP('',(#376,#422,#110,#979))
+CARTESIAN_POINT('',(7.703953599753392112,10.00000000000000000,-3.036450480915573458))
+FACE_OUTER_BOUND('',#551,.T.)
+EDGE_LOOP('',(#165,#616,#959,#379))
+CARTESIAN_POINT('',(9.295160030897799075,9.499999999999998224,1.897366596101027092))
+VECTOR('',#892,1000.000000000000227)
+DIRECTION('',(-0.9797958971132711969,0.0000000000000000000,-0.2000000000000002331))
+CARTESIAN_POINT('',(0.0000000000000000000,0.0000000000000000000,0.0000000000000000000))
+VERTEX_POINT('',#328)
+AXIS2_PLACEMENT_3D('',#618,#863,#1039)
+EDGE_CURVE('',#1096,#462,#737,.T.)
+DIRECTION('',(-0.5765514383650559571,0.7071067811865429098,-0.4093756696717475441))
+EDGE_CURVE('',#637,#810,#82,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,9.499999999999998224,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#90,.F.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#332,.F.)
+EDGE_CURVE('',#408,#722,#98,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+AXIS2_PLACEMENT_3D('',#581,#36,#756)
+DIRECTION('',(-3.469446951953606300E-15,0.0000000000000000000,-1.000000000000000000))
+CYLINDRICAL_SURFACE('',#537,7.999999999999996447)
+LINE('',#828,#548)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+CYLINDRICAL_SURFACE('',#610,0.5000000000000011102)
+ORIENTED_EDGE('',*,*,#688,.T.)
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+B_SPLINE_CURVE_WITH_KNOTS('',3,(#915,#91,#478,#814),.UNSPECIFIED.,.F.,.F.,(4,4),(6.133173666733496745E-19,0.0007158054878910848681),.UNSPECIFIED.)
+DIRECTION('',(-1.734723475976800981E-15,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#632,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+AXIS2_PLACEMENT_3D('',#83,#1064,#965)
+ORIENTED_EDGE('',*,*,#337,.T.)
+CARTESIAN_POINT('',(6.930618340103399611,10.00000000000000000,-4.921029305320415048))
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#157,.T.)
+CONICAL_SURFACE('',#996,8.499999999999996447,0.7853981633974466137)
+DIRECTION('',(0.9797958971132711969,0.0000000000000000000,0.2000000000000002331))
+ORIENTED_EDGE('',*,*,#799,.T.)
+CYLINDRICAL_SURFACE('',#1095,7.999999999999996447)
+ORIENTED_EDGE('',*,*,#242,.F.)
+CARTESIAN_POINT('',(7.398839328144894090,0.4999999999999970024,-1.510281753565974494))
+CIRCLE('',#322,10.00000000000000000)
+CARTESIAN_POINT('',(9.295160030897799075,9.499999999999998224,1.897366596101027092))
+EDGE_CURVE('',#405,#833,#260,.T.)
+ORIENTED_EDGE('',*,*,#858,.T.)
+ORIENTED_EDGE('',*,*,#1018,.T.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#653,.T.)
+ADVANCED_FACE('',(#702),#738,.T.)
+DIRECTION('',(0.9797958971132711969,0.0000000000000000000,0.2000000000000002331))
+FACE_OUTER_BOUND('',#1110,.T.)
+EDGE_CURVE('',#650,#1008,#360,.T.)
+CARTESIAN_POINT('',(6.522934908332610249,9.499999999999998224,4.631556993242746501))
+VECTOR('',#504,1000.000000000000000)
+EDGE_LOOP('',(#862,#1034,#527,#868))
+CLOSED_SHELL('',(#461,#980,#809,#96,#896,#731,#104,#801,#115,#563,#989,#644,#92,#202,#12,#984,#994,#904,#290,#190,#1076,#8,#386,#464,#544,#295,#198,#552,#557,#381,#725,#19,#635,#1080,#736,#654,#280,#639,#369,#812,#1088,#909,#210,#889))
+ADVANCED_FACE('',(#1149),#492,.T.)
+ORIENTED_EDGE('',*,*,#193,.T.)
+ORIENTED_EDGE('',*,*,#372,.F.)
+LINE('',#869,#111)
+ADVANCED_FACE('',(#1005),#54,.F.)
+ORIENTED_EDGE('',*,*,#293,.F.)
+CONICAL_SURFACE('',#138,8.499999999999996447,0.7853981633974466137)
+ORIENTED_EDGE('',*,*,#1159,.T.)
+AXIS2_PLACEMENT_3D('',#57,#1043,#953)
+CONICAL_SURFACE('',#712,9.500000000000000000,0.7853981633974466137)
+CARTESIAN_POINT('',(9.797174393178821713E-16,0.4999999999999970024,7.999999999999996447))
+VERTEX_POINT('',#1121)
+ADVANCED_FACE('',(#1042),#829,.T.)
+ORIENTED_EDGE('',*,*,#400,.T.)
+AXIS2_PLACEMENT_3D('',#743,#739,#119)
+EDGE_CURVE('',#7,#1067,#672,.T.)
+EDGE_CURVE('',#487,#121,#71,.T.)
+CARTESIAN_POINT('',(9.295160030897799075,0.4999999999999970024,1.897366596101027092))
+ORIENTED_EDGE('',*,*,#688,.F.)
+CARTESIAN_POINT('',(6.115251476561823551,0.0000000000000000000,-4.342084681165071736))
+EDGE_CURVE('',#846,#261,#534,.T.)
+EDGE_CURVE('',#612,#5,#300,.T.)
+FACE_OUTER_BOUND('',#383,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#63,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#819,.T.)
+CARTESIAN_POINT('',(7.298839328144892669,0.0000000000000000000,-2.000179702122614867))
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+AXIS2_PLACEMENT_3D('',#66,#341,#170)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#630,.F.)
+FACE_OUTER_BOUND('',#391,.T.)
+VERTEX_POINT('',#1141)
+VECTOR('',#600,1000.000000000000000)
+VERTEX_POINT('',#603)
+CIRCLE('',#465,10.00000000000000000)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+CARTESIAN_POINT('',(1.040949779275249943E-15,10.00000000000000000,-8.499999999999996447))
+CARTESIAN_POINT('',(9.295160030897799075,10.00000000000000000,-1.897366596101025982))
+CARTESIAN_POINT('',(1.224646799147353256E-15,0.4999999999999970024,10.00000000000000000))
+EDGE_CURVE('',#1074,#28,#444,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,9.499999999999998224,0.0000000000000000000))
+EDGE_CURVE('',#673,#120,#468,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#157,.F.)
+CARTESIAN_POINT('',(7.703953599753392112,0.4999999999999970024,3.036450480915573458))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#334,.F.)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+CARTESIAN_POINT('',(6.522934908332612025,10.00000000000000000,-4.631556993242743836))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#998,.T.)
+EDGE_CURVE('',#1075,#134,#284,.T.)
+ORIENTED_EDGE('',*,*,#531,.F.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+B_SPLINE_CURVE_WITH_KNOTS('',3,(#1033,#432,#361,#528),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0000000000000000000,0.0007158054878910858438),.UNSPECIFIED.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(0.1414213562373081989,-0.7071067811865482389,-0.6928203230275503666))
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+EDGE_LOOP('',(#446,#395,#757,#500))
+LINE('',#593,#11)
+VERTEX_POINT('',#779)
+CARTESIAN_POINT('',(6.501539593065783329,10.00000000000000000,-4.024623674035344933))
+FACE_OUTER_BOUND('',#1029,.T.)
+EDGE_LOOP('',(#617,#1115,#890))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+FACE_OUTER_BOUND('',#448,.T.)
+DIRECTION('',(-3.552713678800500929E-15,0.0000000000000000000,-1.000000000000000000))
+AXIS2_PLACEMENT_3D('',#588,#1007,#1102)
+CARTESIAN_POINT('',(9.295160030897799075,10.00000000000000000,-1.897366596101027092))
+CARTESIAN_POINT('',(9.195160030897799430,10.00000000000000000,-2.387264544657662135))
+AXIS2_PLACEMENT_3D('',#952,#1138,#256)
+CIRCLE('',#107,9.500000000000000000)
+EDGE_CURVE('',#897,#28,#957,.T.)
+EDGE_CURVE('',#494,#612,#609,.T.)
+CIRCLE('',#387,0.5000000000000013323)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+EDGE_CURVE('',#148,#1008,#201,.T.)
+ORIENTED_EDGE('',*,*,#435,.F.)
+AXIS2_PLACEMENT_3D('',#932,#751,#1011)
+ADVANCED_FACE('',(#231),#509,.F.)
+CARTESIAN_POINT('',(7.407845734540084770,0.0000000000000000000,-2.022430541652838087))
+ORIENTED_EDGE('',*,*,#193,.F.)
+VERTEX_POINT('',#1032)
+CIRCLE('',#415,1.000000000000003553)
+AXIS2_PLACEMENT_3D('',#671,#411,#678)
+ORIENTED_EDGE('',*,*,#883,.T.)
+CONICAL_SURFACE('',#642,1.000000000000000000,0.7853981633974466137)
+ORIENTED_EDGE('',*,*,#798,.T.)
+FACE_OUTER_BOUND('',#29,.T.)
+ADVANCED_FACE('',(#412),#983,.T.)
+AXIS2_PLACEMENT_3D('',#1054,#174,#267)
+ORIENTED_EDGE('',*,*,#213,.F.)
+EDGE_CURVE('',#856,#701,#793,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+ADVANCED_FACE('',(#750),#875,.T.)
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+EDGE_CURVE('',#474,#637,#727,.T.)
+FACE_OUTER_BOUND('',#543,.T.)
+EDGE_CURVE('',#1074,#1096,#646,.T.)
+CIRCLE('',#42,1.556369398015481798)
+CIRCLE('',#873,1.556369398015481798)
+EDGE_LOOP('',(#523,#1010,#313,#1119))
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+VERTEX_POINT('',#20)
+AXIS2_PLACEMENT_3D('',#269,#969,#622)
+EDGE_CURVE('',#1047,#1103,#972,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,0.0000000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#1036,.T.)
+CARTESIAN_POINT('',(7.703953599753392112,0.0000000000000000000,3.036450480915573458))
+DIRECTION('',(0.0000000000000000000,0.7071067811865425767,0.7071067811865525687))
+CIRCLE('',#425,1.056369398015478023)
+CONICAL_SURFACE('',#723,0.4999999999999995559,0.7853981633974549403)
+ORIENTED_EDGE('',*,*,#1000,.T.)
+CARTESIAN_POINT('',(9.195160030897799430,10.00000000000000000,-2.387264544657662135))
+LINE('',#605,#26)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,10.00000000000000000))
+ORIENTED_EDGE('',*,*,#293,.T.)
+ORIENTED_EDGE('',*,*,#1089,.T.)
+CARTESIAN_POINT('',(9.679115821997683611,0.4999999999999970024,2.512910047008066527))
+CARTESIAN_POINT('',(7.703953599753392112,0.4999999999999970024,3.036450480915573458))
+AXIS2_PLACEMENT_3D('',#955,#69,#246)
+DIRECTION('',(8.659560562354918067E-17,0.7071067811865487940,-0.7071067811865463515))
+CARTESIAN_POINT('',(9.195160030897799430,10.00000000000000000,2.387264544657662579))
+CIRCLE('',#27,10.00000000000000000)
+VECTOR('',#420,1000.000000000000000)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+CARTESIAN_POINT('',(1.194030629168669469E-15,10.00000000000000000,9.500000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+AXIS2_PLACEMENT_3D('',#886,#546,#715)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+EDGE_CURVE('',#120,#283,#899,.T.)
+CARTESIAN_POINT('',(6.115251476561823551,9.499999999999998224,4.342084681165071736))
+EDGE_CURVE('',#462,#413,#37,.T.)
+ORIENTED_EDGE('',*,*,#358,.F.)
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,-7.999999999999996447))
+EDGE_CURVE('',#148,#408,#272,.T.)
+VERTEX_POINT('',#747)
+AXIS2_PLACEMENT_3D('',#245,#1016,#503)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#858,.F.)
+VECTOR('',#570,1000.000000000000000)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+CONICAL_SURFACE('',#755,7.999999999999996447,0.7853981633974552734)
+ORIENTED_EDGE('',*,*,#1018,.F.)
+CARTESIAN_POINT('',(9.295160030897799075,9.499999999999998224,-1.897366596101027092))
+CARTESIAN_POINT('',(9.195160030897799430,0.4999999999999970024,2.387264544657662579))
+CARTESIAN_POINT('',(7.398839328144894090,9.499999999999998224,-1.510281753565974494))
+ORIENTED_EDGE('',*,*,#476,.T.)
+AXIS2_PLACEMENT_3D('',#947,#516,#1024)
+ORIENTED_EDGE('',*,*,#297,.F.)
+CARTESIAN_POINT('',(6.887827709569743995,10.00000000000000000,3.707162666905615467))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#240,.F.)
+AXIS2_PLACEMENT_3D('',#698,#163,#1038)
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,-7.999999999999996447))
+EDGE_CURVE('',#430,#413,#1112,.T.)
+LINE('',#921,#971)
+CIRCLE('',#717,10.00000000000000000)
+CARTESIAN_POINT('',(7.400762448937727278,9.833786451004808526,1.851343678960773342))
+VECTOR('',#835,1000.000000000000000)
+EDGE_CURVE('',#416,#7,#576,.T.)
+FACE_OUTER_BOUND('',#45,.T.)
+AXIS2_PLACEMENT_3D('',#579,#135,#1017)
+EDGE_LOOP('',(#367,#818,#282,#1056))
+ORIENTED_EDGE('',*,*,#337,.F.)
+DIRECTION('',(-0.5765514383650603980,0.7071067811865421326,0.4093756696717422705))
+ADVANCED_FACE('',(#1071),#176,.F.)
+AXIS2_PLACEMENT_3D('',#493,#32,#1106)
+CIRCLE('',#1002,7.999999999999996447)
+EDGE_CURVE('',#647,#443,#162,.T.)
+CARTESIAN_POINT('',(6.115251476561823551,0.4999999999999970024,-4.342084681165071736))
+CONICAL_SURFACE('',#114,8.499999999999996447,0.7853981633974466137)
+VECTOR('',#1118,1000.000000000000227)
+ORIENTED_EDGE('',*,*,#3,.T.)
+LINE('',#1144,#1026)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#938,.F.)
+ORIENTED_EDGE('',*,*,#152,.F.)
+ADVANCED_FACE('',(#815),#823,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+EDGE_LOOP('',(#1014,#777,#991,#879))
+ORIENTED_EDGE('',*,*,#844,.F.)
+CIRCLE('',#1013,10.00000000000000000)
+ADVANCED_FACE('',(#495),#489,.F.)
+AXIS2_PLACEMENT_3D('',#625,#378,#719)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+CARTESIAN_POINT('',(6.501539593065782441,0.4999999999999970024,4.024623674035344045))
+LINE('',#238,#577)
+EDGE_LOOP('',(#222,#203,#573,#874))
+CIRCLE('',#857,8.500000000000000000)
+CARTESIAN_POINT('',(7.398839328144894090,10.00000000000000000,1.510281753565974494))
+EDGE_LOOP('',(#451,#38,#200,#1003))
+ORIENTED_EDGE('',*,*,#569,.F.)
+EDGE_CURVE('',#474,#612,#1041,.T.)
+EDGE_CURVE('',#7,#139,#167,.T.)
+ORIENTED_EDGE('',*,*,#768,.T.)
+DIRECTION('',(0.9797958971132711969,0.0000000000000000000,0.2000000000000002331))
+EDGE_CURVE('',#1067,#134,#924,.T.)
+VECTOR('',#223,1000.000000000000000)
+CARTESIAN_POINT('',(6.887827709569749324,0.0000000000000000000,-3.707162666905614579))
+CIRCLE('',#704,7.999999999999996447)
+ORIENTED_EDGE('',*,*,#771,.F.)
+VERTEX_POINT('',#1079)
+DIRECTION('',(-0.9797958971132711969,0.0000000000000000000,0.2000000000000002331))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+VERTEX_POINT('',#640)
+EDGE_LOOP('',(#1087,#1001,#907,#518))
+ORIENTED_EDGE('',*,*,#977,.F.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+FACE_OUTER_BOUND('',#1143,.T.)
+VERTEX_POINT('',#21)
+FACE_OUTER_BOUND('',#131,.T.)
+AXIS2_PLACEMENT_3D('',#613,#691,#168)
+VERTEX_POINT('',#558)
+DIRECTION('',(0.1414213562373084210,-0.7071067811865493491,0.6928203230275491453))
+EDGE_CURVE('',#60,#304,#778,.T.)
+VECTOR('',#250,1000.000000000000000)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#511,.T.)
+EDGE_CURVE('',#1008,#427,#385,.T.)
+CARTESIAN_POINT('',(7.407845734540087435,0.0000000000000000000,2.022430541652837643))
+AXIS2_PLACEMENT_3D('',#309,#770,#50)
+CARTESIAN_POINT('',(0.0000000000000000000,9.499999999999998224,-7.999999999999996447))
+VERTEX_POINT('',#9)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#396,.F.)
+VERTEX_POINT('',#102)
+CARTESIAN_POINT('',(6.115251476561823551,10.00000000000000000,-4.342084681165071736))
+CARTESIAN_POINT('',(7.398495296158901446,9.667038181448722511,1.680694158377484371))
+CIRCLE('',#1035,1.556369398015481798)
+DIRECTION('',(0.0000000000000000000,-0.7071067811865425767,-0.7071067811865525687))
+EDGE_CURVE('',#28,#856,#621,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#122,.F.)
+CARTESIAN_POINT('',(7.703953599753392112,0.4999999999999970024,-3.036450480915573458))
+ORIENTED_EDGE('',*,*,#517,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+CARTESIAN_POINT('',(7.890815800360996946,10.00000000000000000,2.121016393511136133))
+VERTEX_POINT('',#108)
+LINE('',#237,#592)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#454,.T.)
+FACE_OUTER_BOUND('',#1063,.T.)
+EDGE_LOOP('',(#986,#230,#633,#156))
+FACE_OUTER_BOUND('',#753,.T.)
+AXIS2_PLACEMENT_3D('',#147,#229,#575)
+ORIENTED_EDGE('',*,*,#1062,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+EDGE_CURVE('',#304,#1103,#1053,.T.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+LINE('',#43,#401)
+EDGE_CURVE('',#833,#209,#720,.T.)
+FACE_OUTER_BOUND('',#15,.T.)
+ORIENTED_EDGE('',*,*,#713,.T.)
+CARTESIAN_POINT('',(7.407845734540086546,10.00000000000000000,2.022430541652833202))
+ADVANCED_FACE('',(#553),#207,.T.)
+VERTEX_POINT('',#208)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ADVANCED_FACE('',(#754),#703,.T.)
+AXIS2_PLACEMENT_3D('',#153,#61,#1146)
+ORIENTED_EDGE('',*,*,#824,.F.)
+CARTESIAN_POINT('',(1.224646799147353256E-15,10.00000000000000000,10.00000000000000000))
+CIRCLE('',#356,1.056369398015478023)
+ORIENTED_EDGE('',*,*,#63,.F.)
+CIRCLE('',#1145,0.5000000000000011102)
+ORIENTED_EDGE('',*,*,#3,.F.)
+CONICAL_SURFACE('',#79,1.056369398015481353,0.7853981633974466137)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+VERTEX_POINT('',#954)
+AXIS2_PLACEMENT_3D('',#217,#1098,#820)
+EDGE_CURVE('',#1008,#1122,#999,.T.)
+DIRECTION('',(0.9797958971132711969,0.0000000000000000000,-0.2000000000000002331))
+CARTESIAN_POINT('',(7.400762448937729054,0.1662135489951890033,1.851343678960776673))
+CARTESIAN_POINT('',(0.0000000000000000000,0.0000000000000000000,0.0000000000000000000))
+EDGE_LOOP('',(#1037,#547,#94,#927))
+EDGE_CURVE('',#846,#430,#1090,.T.)
+AXIS2_PLACEMENT_3D('',#667,#1104,#406)
+ORIENTED_EDGE('',*,*,#936,.T.)
+DIRECTION('',(0.0000000000000000000,-0.0000000000000000000,-1.000000000000000000))
+VECTOR('',#310,999.9999999999998863)
+CARTESIAN_POINT('',(9.679115821997685387,0.4999999999999970024,2.512910047008066972))
+VERTEX_POINT('',#353)
+AXIS2_PLACEMENT_3D('',#794,#452,#526)
+PLANE('',#652)
+ORIENTED_EDGE('',*,*,#536,.F.)
+DIRECTION('',(-0.9797958971132711969,0.0000000000000000000,-0.2000000000000002331))
+PLANE('',#482)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+VERTEX_POINT('',#990)
+FACE_OUTER_BOUND('',#792,.T.)
+DIRECTION('',(0.5462938933434587918,0.7071067811865487940,0.4489576618074845871))
+ORIENTED_EDGE('',*,*,#657,.T.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+LINE('',#1030,#56)
+ORIENTED_EDGE('',*,*,#1060,.F.)
+CONICAL_SURFACE('',#928,0.5000000000000004441,0.7853981633974465026)
+DIRECTION('',(-0.5462938933434658972,0.7071067811865425767,-0.4489576618074858638))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(-0.9797958971132711969,0.0000000000000000000,0.2000000000000002331))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+AXIS2_PLACEMENT_3D('',#141,#923,#683)
+CARTESIAN_POINT('',(7.398839328144894090,0.4999999999999970024,1.510281753565974494))
+CARTESIAN_POINT('',(6.115251476561823551,0.4999999999999970024,4.342084681165071736))
+CONICAL_SURFACE('',#760,1.000000000000000000,0.7853981633974460586)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+EDGE_CURVE('',#234,#833,#315,.T.)
+CARTESIAN_POINT('',(6.930618340103398722,0.0000000000000000000,4.921029305320423042))
+EDGE_CURVE('',#121,#897,#626,.T.)
+CIRCLE('',#964,7.999999999999996447)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+EDGE_CURVE('',#338,#1109,#1120,.T.)
+ORIENTED_EDGE('',*,*,#22,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,-9.500000000000000000))
+ORIENTED_EDGE('',*,*,#531,.T.)
+VECTOR('',#477,1000.000000000000000)
+FACE_OUTER_BOUND('',#853,.T.)
+ORIENTED_EDGE('',*,*,#517,.F.)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+CYLINDRICAL_SURFACE('',#741,10.00000000000000000)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#597,.T.)
+CARTESIAN_POINT('',(7.407845734540086546,10.00000000000000000,2.022430541652833202))
+AXIS2_PLACEMENT_3D('',#67,#166,#1147)
+CARTESIAN_POINT('',(1.224646799147353256E-15,0.4999999999999970024,-10.00000000000000000))
+EDGE_CURVE('',#462,#846,#514,.T.)
+CARTESIAN_POINT('',(6.522934908332612025,9.499999999999998224,-4.631556993242743836))
+CYLINDRICAL_SURFACE('',#659,1.556369398015481798)
+CIRCLE('',#1160,7.999999999999996447)
+CARTESIAN_POINT('',(6.115251476561823551,0.4999999999999970024,-4.342084681165071736))
+EDGE_CURVE('',#283,#430,#847,.T.)
+AXIS2_PLACEMENT_3D('',#227,#236,#1113)
+VECTOR('',#434,999.9999999999998863)
+CARTESIAN_POINT('',(6.501539593065784217,9.499999999999998224,4.024623674035343157))
+VERTEX_POINT('',#519)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+EDGE_LOOP('',(#922,#346,#931,#744))
+EDGE_LOOP('',(#585,#838,#627,#410))
+ADVANCED_FACE('',(#130),#975,.T.)
+AXIS2_PLACEMENT_3D('',#95,#1069,#1061)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#213,.T.)
+VECTOR('',#224,1000.000000000000000)
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+LINE('',#935,#960)
+EDGE_LOOP('',(#459,#288,#1085,#483))
+ADVANCED_FACE('',(#821),#596,.T.)
+FACE_OUTER_BOUND('',#366,.T.)
+ORIENTED_EDGE('',*,*,#457,.F.)
+CARTESIAN_POINT('',(9.295160030897799075,10.00000000000000000,1.897366596101027092))
+ORIENTED_EDGE('',*,*,#184,.F.)
+ADVANCED_FACE('',(#364),#946,.T.)
+CARTESIAN_POINT('',(7.398839328144894090,9.499999999999998224,1.510281753565974494))
+VECTOR('',#417,1000.000000000000114)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#122,.T.)
+CYLINDRICAL_SURFACE('',#944,10.00000000000000000)
+ADVANCED_FACE('',(#880),#525,.T.)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+CONICAL_SURFACE('',#811,0.4999999999999995559,0.7853981633974554954)
+ORIENTED_EDGE('',*,*,#358,.T.)
+AXIS2_PLACEMENT_3D('',#535,#1077,#631)
+EDGE_CURVE('',#5,#749,#75,.T.)
+EDGE_CURVE('',#139,#1103,#377,.T.)
+DIRECTION('',(-0.6844168433624615577,-0.7071067811865424657,-0.1776895734751224587))
+ORIENTED_EDGE('',*,*,#242,.T.)
+ORIENTED_EDGE('',*,*,#653,.F.)
+ORIENTED_EDGE('',*,*,#914,.F.)
+CARTESIAN_POINT('',(7.703953599753392112,10.00000000000000000,3.036450480915573458))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+LINE('',#393,#1084)
+VECTOR('',#845,1000.000000000000000)
+ORIENTED_EDGE('',*,*,#334,.T.)
+CARTESIAN_POINT('',(9.295160030897799075,10.00000000000000000,1.897366596101027092))
+VECTOR('',#368,1000.000000000000114)
+CARTESIAN_POINT('',(7.703953599753392112,10.00000000000000000,3.036450480915573458))
+ORIENTED_EDGE('',*,*,#977,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#1124,.F.)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,-7.999999999999996447))
+CARTESIAN_POINT('',(6.115251476561823551,10.00000000000000000,4.342084681165071736))
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+FACE_OUTER_BOUND('',#675,.T.)
+AXIS2_PLACEMENT_3D('',#867,#344,#1051)
+CARTESIAN_POINT('',(9.679115821997685387,10.00000000000000000,-2.512910047008067416))
+VECTOR('',#323,1000.000000000000000)
+CARTESIAN_POINT('',(9.195160030897797654,0.0000000000000000000,-2.387264544657667464))
+VECTOR('',#773,1000.000000000000000)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+CONICAL_SURFACE('',#529,0.5000000000000038858,0.7853981633974552734)
+EDGE_CURVE('',#427,#1109,#987,.T.)
+ORIENTED_EDGE('',*,*,#799,.F.)
+AXIS2_PLACEMENT_3D('',#1130,#1031,#772)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#511,.F.)
+CARTESIAN_POINT('',(7.398839328144894090,0.4999999999999970024,-1.510281753565974494))
+CARTESIAN_POINT('',(9.195160030897799430,10.00000000000000000,2.387264544657662579))
+CARTESIAN_POINT('',(9.295160030897799075,0.4999999999999970024,-1.897366596101027092))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,-10.00000000000000000))
+CARTESIAN_POINT('',(9.195160030897799430,10.00000000000000000,-2.387264544657662579))
+ORIENTED_EDGE('',*,*,#883,.F.)
+LINE('',#347,#125)
+AXIS2_PLACEMENT_3D('',#324,#665,#243)
+LINE('',#249,#594)
+VERTEX_POINT('',#349)
+CARTESIAN_POINT('',(6.115251476561823551,0.0000000000000000000,4.342084681165071736))
+LINE('',#183,#87)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#1089,.F.)
+ORIENTED_EDGE('',*,*,#798,.F.)
+CARTESIAN_POINT('',(7.703953599753392112,0.0000000000000000000,3.036450480915573458))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#771,.T.)
+CIRCLE('',#785,8.499999999999996447)
+DIRECTION('',(-0.9797958971132711969,0.0000000000000000000,0.2000000000000002331))
+LINE('',#46,#1073)
+ORIENTED_EDGE('',*,*,#568,.T.)
+CARTESIAN_POINT('',(9.195160030897799430,9.499999999999998224,-2.387264544657662579))
+CIRCLE('',#898,8.499999999999996447)
+ORIENTED_EDGE('',*,*,#513,.F.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#113,.T.)
+EDGE_CURVE('',#261,#232,#41,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+EDGE_CURVE('',#209,#405,#963,.T.)
+ORIENTED_EDGE('',*,*,#657,.F.)
+CARTESIAN_POINT('',(6.700775111165516051,10.00000000000000000,-1.878100355037889413))
+ADVANCED_FACE('',(#709),#1155,.F.)
+FACE_OUTER_BOUND('',#961,.T.)
+VERTEX_POINT('',#270)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ADVANCED_FACE('',(#289),#501,.T.)
+CARTESIAN_POINT('',(9.195160030897801207,10.00000000000000000,2.387264544657663023))
+EDGE_LOOP('',(#355,#1127,#13,#278))
+AXIS2_PLACEMENT_3D('',#848,#680,#1111)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+ADVANCED_FACE('',(#929),#116,.F.)
+ORIENTED_EDGE('',*,*,#1066,.F.)
+CIRCLE('',#212,7.999999999999996447)
+VERTEX_POINT('',#194)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CIRCLE('',#370,9.500000000000000000)
+VERTEX_POINT('',#802)
+FACE_OUTER_BOUND('',#124,.T.)
+AXIS2_PLACEMENT_3D('',#574,#303,#484)
+EDGE_CURVE('',#810,#494,#275,.T.)
+ADVANCED_FACE('',(#16),#4,.F.)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+CARTESIAN_POINT('',(7.407845734540090099,10.00000000000000000,-2.022430541652833202))
+EDGE_CURVE('',#283,#261,#807,.T.)
+EDGE_LOOP('',(#1093,#40,#745,#73))
+AXIS2_PLACEMENT_3D('',#942,#155,#428)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#481,.F.)
+LINE('',#262,#233)
+EDGE_LOOP('',(#1154,#566,#912,#666,#561,#70,#826,#97,#251,#308,#571,#1148))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#252,.T.)
+CARTESIAN_POINT('',(9.295160030897799075,0.4999999999999970024,-1.897366596101027092))
+CARTESIAN_POINT('',(7.703953599753392112,9.499999999999998224,3.036450480915573458))
+ORIENTED_EDGE('',*,*,#824,.T.)
+CARTESIAN_POINT('',(6.501539593065784217,9.499999999999998224,4.024623674035343157))
+CARTESIAN_POINT('',(6.115251476561823551,10.00000000000000000,-4.342084681165071736))
+CIRCLE('',#339,1.556369398015481798)
+VERTEX_POINT('',#281)
+VECTOR('',#257,1000.000000000000114)
+EDGE_LOOP('',(#199,#350,#178,#1162))
+CONICAL_SURFACE('',#776,7.999999999999996447,0.7853981633974552734)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#716,.T.)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+CARTESIAN_POINT('',(6.930618340103397834,10.00000000000000000,4.921029305320417713))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CARTESIAN_POINT('',(9.797174393178821713E-16,9.499999999999998224,7.999999999999996447))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+EDGE_LOOP('',(#247,#697,#1157,#870))
+EDGE_CURVE('',#129,#487,#905,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+EDGE_CURVE('',#749,#1074,#732,.T.)
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(1.776356839400250465E-15,0.0000000000000000000,-1.000000000000000000))
+CYLINDRICAL_SURFACE('',#285,0.4999999999999995559)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,-10.00000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+ORIENTED_EDGE('',*,*,#184,.T.)
+ORIENTED_EDGE('',*,*,#22,.F.)
+CARTESIAN_POINT('',(7.703953599753392112,0.0000000000000000000,-3.036450480915573458))
+CARTESIAN_POINT('',(0.0000000000000000000,0.0000000000000000000,0.0000000000000000000))
+CARTESIAN_POINT('',(9.195160030897799430,0.4999999999999970024,-2.387264544657662579))
+VERTEX_POINT('',#724)
+FACE_OUTER_BOUND('',#707,.T.)
+PLANE('',#149)
+AXIS2_PLACEMENT_3D('',#47,#331,#758)
+ORIENTED_EDGE('',*,*,#252,.F.)
+LINE('',#532,#39)
+EDGE_LOOP('',(#710,#398,#205,#1004))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+FACE_OUTER_BOUND('',#687,.T.)
+ORIENTED_EDGE('',*,*,#597,.F.)
+CARTESIAN_POINT('',(9.195160030897799430,9.499999999999998224,2.387264544657662579))
+AXIS2_PLACEMENT_3D('',#643,#105,#648)
+EDGE_CURVE('',#650,#1047,#795,.T.)
+DIRECTION('',(-0.9797958971132711969,0.0000000000000000000,-0.2000000000000002331))
+DIRECTION('',(1.776356839400250465E-15,0.0000000000000000000,-1.000000000000000000))
+EDGE_CURVE('',#416,#60,#614,.T.)
+AXIS2_PLACEMENT_3D('',#241,#498,#316)
+ORIENTED_EDGE('',*,*,#1097,.F.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CIRCLE('',#1059,0.5000000000000013323)
+ORIENTED_EDGE('',*,*,#274,.F.)
+VERTEX_POINT('',#460)
+AXIS2_PLACEMENT_3D('',#920,#837,#188)
+CARTESIAN_POINT('',(6.887827709569746659,10.00000000000000000,-3.707162666905613690))
+ADVANCED_FACE('',(#266),#565,.F.)
+EDGE_LOOP('',(#696,#602,#730,#787))
+LINE('',#992,#521)
+EDGE_LOOP('',(#1049,#437,#876,#292))
+LINE('',#226,#195)
+ORIENTED_EDGE('',*,*,#887,.F.)
+ADVANCED_FACE('',(#651),#676,.F.)
+CIRCLE('',#330,7.999999999999996447)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#1000,.F.)
+ADVANCED_FACE('',(#449),#472,.T.)
+LINE('',#1108,#326)
+CYLINDRICAL_SURFACE('',#279,10.00000000000000000)
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+CIRCLE('',#34,9.499999999999996447)
+AXIS2_PLACEMENT_3D('',#786,#265,#872)
+EDGE_CURVE('',#1103,#919,#740,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,9.499999999999998224,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#423,.F.)
+ORIENTED_EDGE('',*,*,#218,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+CARTESIAN_POINT('',(1.194030629168669075E-15,0.0000000000000000000,-9.499999999999996447))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+VERTEX_POINT('',#855)
+FACE_OUTER_BOUND('',#831,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+CIRCLE('',#351,1.056369398015482242)
+EDGE_LOOP('',(#469,#118,#429,#608))
+FACE_OUTER_BOUND('',#663,.T.)
+AXIS2_PLACEMENT_3D('',#877,#187,#354)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#397,.F.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CARTESIAN_POINT('',(9.195160030897801207,10.00000000000000000,-2.387264544657663468))
+AXIS2_PLACEMENT_3D('',#431,#59,#695)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+EDGE_CURVE('',#413,#1075,#392,.T.)
+VECTOR('',#151,999.9999999999998863)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+CONICAL_SURFACE('',#599,10.00000000000000000,0.7853981633974552734)
+DIRECTION('',(-1.734723475976808672E-15,0.0000000000000000000,-1.000000000000000000))
+EDGE_CURVE('',#427,#810,#235,.T.)
+FACE_OUTER_BOUND('',#302,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+EDGE_CURVE('',#232,#234,#301,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+EDGE_LOOP('',(#185,#620,#471,#956))
+DIRECTION('',(8.659560562354918067E-17,-0.7071067811865487940,0.7071067811865463515))
+AXIS2_PLACEMENT_3D('',#1072,#89,#638)
+ORIENTED_EDGE('',*,*,#1134,.F.)
+LINE('',#555,#1135)
+CARTESIAN_POINT('',(6.522934908332612025,0.4999999999999970024,-4.631556993242743836))
+CIRCLE('',#894,0.4999999999999995559)
+ORIENTED_EDGE('',*,*,#513,.T.)
+CARTESIAN_POINT('',(9.679115821997683611,0.4999999999999970024,-2.512910047008066972))
+VECTOR('',#950,999.9999999999998863)
+ORIENTED_EDGE('',*,*,#363,.F.)
+AXIS2_PLACEMENT_3D('',#560,#473,#733)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#1036,.F.)
+CARTESIAN_POINT('',(7.398495296158897006,0.3329618185512754347,-1.680694158377486591))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+PLANE('',#913)
+CIRCLE('',#888,10.00000000000000000)
+EDGE_LOOP('',(#800,#186,#172,#175,#319,#917,#781,#951,#827,#318,#286,#64))
+CIRCLE('',#817,1.000000000000000000)
+CARTESIAN_POINT('',(9.195160030897799430,9.499999999999998224,2.387264544657662579))
+LINE('',#978,#1058)
+ORIENTED_EDGE('',*,*,#859,.T.)
+AXIS2_PLACEMENT_3D('',#967,#445,#958)
+EDGE_CURVE('',#1047,#304,#1009,.T.)
+EDGE_CURVE('',#1122,#1047,#182,.T.)
+ORIENTED_EDGE('',*,*,#1134,.T.)
+ADVANCED_FACE('',(#769),#1,.T.)
+CARTESIAN_POINT('',(9.679115821997683611,9.499999999999998224,2.512910047008066527))
+EDGE_LOOP('',(#253,#578,#335,#661))
+VECTOR('',#146,1000.000000000000000)
+CYLINDRICAL_SURFACE('',#506,1.556369398015481798)
+ORIENTED_EDGE('',*,*,#632,.F.)
+LINE('',#80,#580)
+ORIENTED_EDGE('',*,*,#1131,.F.)
+ADVANCED_FACE('',(#263),#204,.F.)
+VERTEX_POINT('',#861)
+AXIS2_PLACEMENT_3D('',#373,#455,#86)
+ADVANCED_FACE('',(#220),#1117,.T.)
+CIRCLE('',#908,9.499999999999996447)
+CARTESIAN_POINT('',(7.407845734540087435,0.0000000000000000000,2.022430541652837643))
+FACE_OUTER_BOUND('',#259,.T.)
+LINE('',#604,#674)
+AXIS2_PLACEMENT_3D('',#910,#1101,#127)
+ORIENTED_EDGE('',*,*,#277,.T.)
+EDGE_CURVE('',#749,#261,#611,.T.)
+DIRECTION('',(-8.673617379883997015E-16,0.0000000000000000000,-1.000000000000000000))
+FACE_OUTER_BOUND('',#264,.T.)
+ORIENTED_EDGE('',*,*,#998,.F.)
+PLANE('',#1153)
+EDGE_CURVE('',#408,#60,#816,.T.)
+AXIS2_PLACEMENT_3D('',#321,#33,#746)
+ORIENTED_EDGE('',*,*,#742,.T.)
+ORIENTED_EDGE('',*,*,#435,.T.)
+CARTESIAN_POINT('',(6.522934908332610249,10.00000000000000000,4.631556993242746501))
+CONICAL_SURFACE('',#159,1.056369398015481798,0.7853981633974460586)
+ORIENTED_EDGE('',*,*,#49,.F.)
+EDGE_LOOP('',(#735,#976,#841,#598))
+CARTESIAN_POINT('',(1.040949779275249943E-15,10.00000000000000000,-8.499999999999996447))
+VERTEX_POINT('',#74)
+AXIS2_PLACEMENT_3D('',#479,#296,#660)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#844,.T.)
+VECTOR('',#1083,999.9999999999998863)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#306,.F.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+LINE('',#507,#1055)
+EDGE_CURVE('',#1096,#897,#14,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+VERTEX_POINT('',#336)
+CIRCLE('',#291,8.500000000000000000)
+CARTESIAN_POINT('',(6.115251476561823551,10.00000000000000000,4.342084681165071736))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+CARTESIAN_POINT('',(6.887827709569747547,0.0000000000000000000,3.707162666905612802))
+ORIENTED_EDGE('',*,*,#240,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+EDGE_LOOP('',(#582,#966,#216,#154))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CARTESIAN_POINT('',(6.522934908332612025,9.499999999999998224,-4.631556993242743836))
+VERTEX_POINT('',#173)
+AXIS2_PLACEMENT_3D('',#1142,#866,#692)
+EDGE_CURVE('',#5,#232,#662,.T.)
+EDGE_CURVE('',#416,#722,#255,.T.)
+CARTESIAN_POINT('',(7.703953599753392112,9.499999999999998224,-3.036450480915573458))
+CARTESIAN_POINT('',(9.679115821997685387,9.499999999999998224,-2.512910047008067416))
+ORIENTED_EDGE('',*,*,#476,.F.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+CIRCLE('',#450,9.499999999999996447)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+CARTESIAN_POINT('',(7.703953599753392112,0.4999999999999970024,-3.036450480915573458))
+ORIENTED_EDGE('',*,*,#25,.T.)
+CARTESIAN_POINT('',(1.163414459189985485E-15,10.00000000000000000,9.500000000000000000))
+ORIENTED_EDGE('',*,*,#763,.F.)
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+AXIS2_PLACEMENT_3D('',#438,#340,#945)
+ORIENTED_EDGE('',*,*,#568,.F.)
+CONICAL_SURFACE('',#881,10.00000000000000000,0.7853981633974552734)
+ORIENTED_EDGE('',*,*,#400,.F.)
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+FACE_OUTER_BOUND('',#774,.T.)
+ORIENTED_EDGE('',*,*,#768,.F.)
+FACE_OUTER_BOUND('',#196,.T.)
+AXIS2_PLACEMENT_3D('',#158,#248,#1094)
+CARTESIAN_POINT('',(7.703953599753392112,10.00000000000000000,-3.036450480915573458))
+EDGE_CURVE('',#701,#474,#891,.T.)
+DIRECTION('',(0.5765514383650538477,0.7071067811865491270,-0.4093756696717396060))
+EDGE_LOOP('',(#822,#439,#1078,#169))
+CARTESIAN_POINT('',(0.0000000000000000000,9.499999999999998224,0.0000000000000000000))
+EDGE_CURVE('',#673,#234,#1132,.T.)
+AXIS2_PLACEMENT_3D('',#762,#126,#1107)
+ADVANCED_FACE('',(#1006),#790,.F.)
+ORIENTED_EDGE('',*,*,#454,.F.)
+CIRCLE('',#171,1.056369398015481353)
+DIRECTION('',(0.5462938933434599020,0.7071067811865485719,-0.4489576618074837544))
+ORIENTED_EDGE('',*,*,#49,.T.)
+AXIS2_PLACEMENT_3D('',#508,#761,#505)
+ORIENTED_EDGE('',*,*,#716,.F.)
+ADVANCED_FACE('',(#926),#345,.F.)
+VERTEX_POINT('',#1156)
+AXIS2_PLACEMENT_3D('',#524,#615,#619)
+CIRCLE('',#475,1.000000000000004441)
+ORIENTED_EDGE('',*,*,#273,.F.)
+CARTESIAN_POINT('',(9.195160030897799430,0.4999999999999970024,-2.387264544657662579))
+LINE('',#930,#375)
+EDGE_LOOP('',(#1082,#721,#830,#352))
+ADVANCED_FACE('',(#1137),#1052,.F.)
+LINE('',#539,#145)
+CARTESIAN_POINT('',(7.400762448937729943,9.833786451004808526,-1.851343678960774009))
+ORIENTED_EDGE('',*,*,#372,.T.)
+AXIS2_PLACEMENT_3D('',#307,#852,#689)
+ADVANCED_FACE('',(#414),#916,.T.)
+CARTESIAN_POINT('',(6.115251476561823551,10.00000000000000000,-4.342084681165071736))
+DIRECTION('',(0.1414213562373086708,-0.7071067811865525687,-0.6928203230275460367))
+ORIENTED_EDGE('',*,*,#763,.T.)
+AXIS2_PLACEMENT_3D('',#442,#1050,#714)
+EDGE_CURVE('',#749,#856,#706,.T.)
+CARTESIAN_POINT('',(7.398839328144894090,0.4999999999999970024,1.510281753565974494))
+CONICAL_SURFACE('',#488,0.5000000000000004441,0.7853981633974465026)
+ORIENTED_EDGE('',*,*,#214,.T.)
+CARTESIAN_POINT('',(7.398839328144894090,9.499999999999998224,-1.510281753565974494))
+VERTEX_POINT('',#973)
+CARTESIAN_POINT('',(6.115251476561823551,0.4999999999999970024,4.342084681165071736))
+CARTESIAN_POINT('',(6.501539593065783329,9.499999999999998224,-4.024623674035344933))
+ORIENTED_EDGE('',*,*,#277,.F.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+LINE('',#389,#839)
+ORIENTED_EDGE('',*,*,#943,.T.)
+FACE_OUTER_BOUND('',#803,.T.)
+ORIENTED_EDGE('',*,*,#938,.T.)
+AXIS2_PLACEMENT_3D('',#1065,#541,#463)
+FACE_OUTER_BOUND('',#658,.T.)
+CARTESIAN_POINT('',(6.522934908332610249,9.499999999999998224,4.631556993242746501))
+ORIENTED_EDGE('',*,*,#1126,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+AXIS2_PLACEMENT_3D('',#607,#68,#854)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,-9.500000000000000000))
+EDGE_CURVE('',#60,#650,#470,.T.)
+CARTESIAN_POINT('',(6.501539593065783329,9.499999999999998224,-4.024623674035344933))
+EDGE_CURVE('',#129,#416,#433,.T.)
+CARTESIAN_POINT('',(1.224646799147353256E-15,9.499999999999998224,10.00000000000000000))
+CARTESIAN_POINT('',(9.195160030897799430,0.0000000000000000000,2.387264544657667020))
+FACE_OUTER_BOUND('',#409,.T.)
+CARTESIAN_POINT('',(7.703953599753392112,10.00000000000000000,3.036450480915573458))
+EDGE_CURVE('',#408,#650,#99,.T.)
+AXIS2_PLACEMENT_3D('',#583,#1015,#708)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CONICAL_SURFACE('',#590,1.556369398015481798,0.7853981633974549403)
+CARTESIAN_POINT('',(7.703953599753392112,10.00000000000000000,3.036450480915573458))
+EDGE_LOOP('',(#556,#806,#554))
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,8.499999999999996447))
+DIRECTION('',(8.659560562354994488E-17,0.7071067811865425767,-0.7071067811865525687))
+ORIENTED_EDGE('',*,*,#273,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CARTESIAN_POINT('',(7.407845734540090099,10.00000000000000000,-2.022430541652833202))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#219,.T.)
+CIRCLE('',#271,8.499999999999996447)
+DIRECTION('',(3.469446951953617344E-15,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#859,.F.)
+VECTOR('',#137,1000.000000000000000)
+EDGE_LOOP('',(#211,#705,#629,#718))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+LINE('',#782,#1046)
+AXIS2_PLACEMENT_3D('',#789,#258,#254)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#214,.F.)
+CARTESIAN_POINT('',(6.115251476561823551,9.499999999999998224,-4.342084681165071736))
+AXIS2_PLACEMENT_3D('',#1128,#1116,#584)
+DIRECTION('',(-0.2000000000000002331,0.0000000000000000000,-0.9797958971132711969))
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,0.0000000000000000000))
+VECTOR('',#496,1000.000000000000114)
+LINE('',#486,#343)
+CARTESIAN_POINT('',(0.0000000000000000000,0.0000000000000000000,9.499999999999996447))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CONICAL_SURFACE('',#1081,0.5000000000000038858,0.7853981633974552734)
+ORIENTED_EDGE('',*,*,#742,.F.)
+EDGE_CURVE('',#647,#121,#902,.T.)
+CARTESIAN_POINT('',(9.679115821997683611,10.00000000000000000,2.512910047008066527))
+ORIENTED_EDGE('',*,*,#274,.T.)
+ADVANCED_FACE('',(#72),#128,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#418,.T.)
+CYLINDRICAL_SURFACE('',#934,0.5000000000000013323)
+ADVANCED_FACE('',(#447),#693,.F.)
+LINE('',#586,#1086)
+ORIENTED_EDGE('',*,*,#1131,.T.)
+LINE('',#694,#419)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+ADVANCED_FACE('',(#458),#179,.F.)
+CARTESIAN_POINT('',(9.295160030897799075,9.499999999999998224,-1.897366596101025982))
+ORIENTED_EDGE('',*,*,#152,.T.)
+CARTESIAN_POINT('',(6.700775111165516051,10.00000000000000000,-1.878100355037888525))
+DIRECTION('',(-0.1414213562373085598,-0.7071067811865427988,0.6928203230275559177))
+ADVANCED_FACE('',(#878),#805,.T.)
+FACE_OUTER_BOUND('',#885,.T.)
+AXIS2_PLACEMENT_3D('',#655,#564,#388)
+VECTOR('',#1020,1000.000000000000114)
+EDGE_CURVE('',#338,#405,#864,.T.)
+LINE('',#467,#58)
+EDGE_CURVE('',#919,#1122,#1044,.T.)
+ORIENTED_EDGE('',*,*,#1124,.T.)
+AXIS2_PLACEMENT_3D('',#681,#327,#840)
+ORIENTED_EDGE('',*,*,#90,.T.)
+ORIENTED_EDGE('',*,*,#51,.T.)
+FACE_OUTER_BOUND('',#394,.T.)
+FACE_OUTER_BOUND('',#103,.T.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+VERTEX_POINT('',#939)
+CIRCLE('',#101,0.5000000000000011102)
+ORIENTED_EDGE('',*,*,#85,.F.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+AXIS2_PLACEMENT_3D('',#1091,#734,#988)
+ORIENTED_EDGE('',*,*,#1126,.F.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+DIRECTION('',(0.9797958971132711969,0.0000000000000000000,0.2000000000000002331))
+EDGE_CURVE('',#540,#148,#649,.T.)
+FACE_OUTER_BOUND('',#480,.T.)
+DIRECTION('',(0.6844168433624542303,-0.7071067811865500152,-0.1776895734751206546))
+AXIS2_PLACEMENT_3D('',#587,#44,#677)
+VECTOR('',#123,999.9999999999998863)
+LINE('',#591,#362)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+VECTOR('',#177,1000.000000000000000)
+DIRECTION('',(0.1414213562373106414,0.7071067811865410224,0.6928203230275572500))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+EDGE_LOOP('',(#106,#851,#900,#384))
+CARTESIAN_POINT('',(6.887827709569749324,0.0000000000000000000,-3.707162666905614579))
+DIRECTION('',(-0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+CARTESIAN_POINT('',(6.930618340103404051,0.0000000000000000000,-4.921029305320416825))
+CARTESIAN_POINT('',(7.398839328144894090,9.499999999999998224,1.510281753565974494))
+ORIENTED_EDGE('',*,*,#423,.T.)
+AXIS2_PLACEMENT_3D('',#668,#595,#1012)
+EDGE_CURVE('',#405,#673,#729,.T.)
+ORIENTED_EDGE('',*,*,#363,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(0.0000000000000000000,-0.0000000000000000000,-1.000000000000000000))
+ORIENTED_EDGE('',*,*,#936,.F.)
+B_SPLINE_CURVE_WITH_KNOTS('',3,(#656,#906,#31,#918),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0000000000000000000,0.0007158054878910857354),.UNSPECIFIED.)
+FACE_OUTER_BOUND('',#143,.T.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+LINE('',#317,#485)
+ORIENTED_EDGE('',*,*,#630,.T.)
+VECTOR('',#1158,1000.000000000000114)
+VERTEX_POINT('',#320)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#397,.T.)
+DIRECTION('',(-0.1414213562373100030,-0.7071067811865459074,0.6928203230275525870))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+PLANE('',#305)
+LINE('',#18,#88)
+CARTESIAN_POINT('',(0.0000000000000000000,0.0000000000000000000,0.0000000000000000000))
+VECTOR('',#491,1000.000000000000000)
+ORIENTED_EDGE('',*,*,#943,.F.)
+CARTESIAN_POINT('',(7.407845734540084770,0.0000000000000000000,-2.022430541652838087))
+VECTOR('',#981,1000.000000000000000)
+AXIS2_PLACEMENT_3D('',#901,#549,#382)
+EDGE_CURVE('',#304,#7,#843,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+EDGE_CURVE('',#129,#1067,#623,.T.)
+EDGE_LOOP('',(#225,#1045,#342,#624))
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+CARTESIAN_POINT('',(9.195160030897799430,9.499999999999998224,-2.387264544657662579))
+EDGE_CURVE('',#1074,#846,#985,.T.)
+VERTEX_POINT('',#1123)
+EDGE_CURVE('',#494,#833,#390,.T.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+LINE('',#314,#559)
+FACE_OUTER_BOUND('',#641,.T.)
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+VECTOR('',#748,1000.000000000000000)
+VERTEX_POINT('',#426)
+VERTEX_POINT('',#136)
+ADVANCED_FACE('',(#142),#164,.T.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#51,.F.)
+CARTESIAN_POINT('',(9.195160030897797654,0.0000000000000000000,-2.387264544657662135))
+ADVANCED_FACE('',(#636),#312,.F.)
+AXIS2_PLACEMENT_3D('',#700,#1139,#441)
+ORIENTED_EDGE('',*,*,#396,.T.)
+DIRECTION('',(0.5462938933434647870,-0.7071067811865426878,-0.4489576618074871406))
+VECTOR('',#664,1000.000000000000000)
+ORIENTED_EDGE('',*,*,#418,.F.)
+VECTOR('',#765,1000.000000000000000)
+ORIENTED_EDGE('',*,*,#150,.F.)
+ADVANCED_FACE('',(#522),#287,.F.)
+EDGE_CURVE('',#722,#487,#752,.T.)
+LINE('',#357,#538)
+CARTESIAN_POINT('',(0.0000000000000000000,9.499999999999998224,0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#887,.T.)
+ORIENTED_EDGE('',*,*,#690,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+AXIS2_PLACEMENT_3D('',#421,#933,#329)
+VERTEX_POINT('',#684)
+EDGE_CURVE('',#1067,#443,#780,.T.)
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+VECTOR('',#1129,1000.000000000000000)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+VERTEX_POINT('',#940)
+DIRECTION('',(0.1414213562373085875,-0.7071067811865530128,0.6928203230275455926))
+ORIENTED_EDGE('',*,*,#1068,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+CARTESIAN_POINT('',(9.797174393178821713E-16,10.00000000000000000,7.999999999999996447))
+VERTEX_POINT('',#606)
+EDGE_LOOP('',(#982,#100,#784,#679))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+CIRCLE('',#834,8.500000000000000000)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+AXIS2_PLACEMENT_3D('',#970,#628,#276)
+ORIENTED_EDGE('',*,*,#306,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,-0.0000000000000000000))
+CONICAL_SURFACE('',#206,9.500000000000000000,0.7853981633974466137)
+DIRECTION('',(0.5765514383650538477,0.7071067811865491270,0.4093756696717396060))
+ORIENTED_EDGE('',*,*,#25,.F.)
+LINE('',#530,#783)
+CARTESIAN_POINT('',(9.679115821997685387,0.4999999999999970024,-2.512910047008067416))
+VERTEX_POINT('',#239)
+CARTESIAN_POINT('',(6.501539593065784217,0.4999999999999970024,4.024623674035343157))
+EDGE_CURVE('',#1096,#647,#403,.T.)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+EDGE_CURVE('',#540,#427,#550,.T.)
+ORIENTED_EDGE('',*,*,#690,.F.)
+CARTESIAN_POINT('',(6.115251476561823551,10.00000000000000000,4.342084681165071736))
+DIRECTION('',(0.0000000000000000000,0.7071067811865487940,0.7071067811865463515))
+CARTESIAN_POINT('',(0.0000000000000000000,0.4999999999999970024,0.0000000000000000000))
+EDGE_CURVE('',#120,#232,#499,.T.)
+B_SPLINE_CURVE_WITH_KNOTS('',3,(#1057,#77,#788,#181),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0000000000000000000,0.0007158054878910853017),.UNSPECIFIED.)
+DIRECTION('',(0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+EDGE_CURVE('',#637,#540,#84,.T.)
+VECTOR('',#294,1000.000000000000000)
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+FACE_OUTER_BOUND('',#140,.T.)
+DIRECTION('',(-0.0000000000000000000,-1.000000000000000000,0.0000000000000000000))
+DIRECTION('',(0.0000000000000000000,1.000000000000000000,-0.0000000000000000000))
+ORIENTED_EDGE('',*,*,#299,.T.)
+CARTESIAN_POINT('',(6.501539593065783329,0.4999999999999970024,-4.024623674035344933))
+CARTESIAN_POINT('',(0.0000000000000000000,0.0000000000000000000,0.0000000000000000000))
+EDGE_LOOP('',(#1105,#1150,#35,#189))
+CARTESIAN_POINT('',(9.195160030897797654,0.0000000000000000000,2.387264544657666576))
+AXIS2_PLACEMENT_3D('',#711,#133,#407)
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,-1.000000000000000000))
+DIRECTION('',(0.0000000000000000000,0.0000000000000000000,1.000000000000000000))
+ORIENTED_EDGE('',*,*,#332,.T.)
+FACE_OUTER_BOUND('',#726,.T.)
+ORIENTED_EDGE('',*,*,#457,.T.)
+CARTESIAN_POINT('',(9.195160030897801207,10.00000000000000000,2.387264544657663023))
+VECTOR('',#1161,1000.000000000000000)
+AXIS2_PLACEMENT_3D('',#215,#911,#399)
+ORIENTED_EDGE('',*,*,#536,.T.)
+CONICAL_SURFACE('',#545,7.999999999999996447,0.7853981633974552734)
+CARTESIAN_POINT('',(0.0000000000000000000,10.00000000000000000,8.499999999999996447))
+ORIENTED_EDGE('',*,*,#113,.F.)
+DIRECTION('',(-0.6844168433624614467,-0.7071067811865423547,0.1776895734751230416))
+EDGE_CURVE('',#810,#209,#1023,.T.)
+AXIS2_PLACEMENT_3D('',#836,#842,#436)
+DIRECTION('',(0.6844168433624555625,-0.7071067811865486830,0.1776895734751209599))
+ORIENTED_EDGE('',*,*,#713,.F.)
+DIRECTION('',(-0.1414213562373100586,-0.7071067811865456854,-0.6928203230275528091))
+MANIFOLD_SOLID_BREP('',#197)
+`.trim().split('\n');
 
 function makeFifteenPrintStep(parts,title,bed) {
   const rows=[];
@@ -11980,6 +13347,24 @@ function makeFifteenPrintStep(parts,title,bed) {
         return w.solid();
       });
     }
+    if(part.ringScale) {
+      const scale=part.ringScale, height=part.bounds[5], first=rows.length;
+      for(const row of printRingStepBoundary) {
+        let entity=row.replace(/#(\d+)/g,(_,id)=>'#'+(first+Number(id)));
+        if(row.startsWith('CARTESIAN_POINT')||row.startsWith('DIRECTION')) {
+          const [u,h,v]=row.slice(row.indexOf(',(')+2,-2).split(',').map(Number);
+          const p=row.startsWith('DIRECTION') ? [u,-v,h]
+            : [x+scale*u,y-scale*v,z+(h<5?scale*h:height+scale*(h-10))];
+          entity=row.slice(0,row.indexOf(',(')+1)+num(p)+')';
+        } else if(/^(CIRCLE|CYLINDRICAL_SURFACE|CONICAL_SURFACE)\(/.test(row)) {
+          entity=entity.replace(/(,#\d+,)([^,)]+)/,(_,head,radius)=>head+real(scale*Number(radius)));
+        } else if(row.startsWith('MANIFOLD_SOLID_BREP')) {
+          entity=entity.replace("''",name(part.name));
+        }
+        add(entity);
+      }
+      return '#'+rows.length;
+    }
     const w=writer(part.name,[sign,sign,x,y,z],!part.profile);
     if(part.profile)railSolid(w,part);
     else upperSolids(w,part);
@@ -12361,6 +13746,8 @@ function rebuildPrint() {
   if(!printPinHeightEdited && fields.frameHeight.validity.valid)
     fields.pinHeight.value=printPinHeight(settings.frameHeight);
   settings.pinHeight=Number(fields.pinHeight.value);
+  settings.printRing=fields.printRing.checked;
+  settings.trimPins=fields.trimPins.checked;
   settings.frameText=fields.frameText.value;
   for(const [key,value] of Object.entries(printTextDefaults))
     settings[key]=typeof value==='number' ? Number(fields[key].value) : fields[key].value;
@@ -12476,6 +13863,10 @@ $('printBtn').addEventListener('click',()=>{
   }
   printDialog.showModal();fitPrintDialog();rebuildPrint();
 });
+printDialog.addEventListener('cancel',event=>{
+  event.preventDefault();
+  printDialog.close();
+});
 printDialog.addEventListener('close',()=>{
   cancelPrintBuild();printModel=null;
   if(printViewer) printViewer.clear();
@@ -12497,6 +13888,8 @@ $('printReset').addEventListener('click',()=>{
   printPinHeightEdited=false;
   for(const [key,value] of Object.entries({...printSettingsDefaults,...printTextDefaults})) printForm.elements[key].value=value;
   printForm.elements.frameText.value=cfg.name||'';
+  printForm.elements.printRing.checked=false;
+  printForm.elements.trimPins.checked=false;
   rebuildPrint();
 });
 $('downloadPrintKit').addEventListener('click',()=>buildPrintMeshes(()=>{
@@ -12518,8 +13911,6 @@ $('downloadPrintStep').addEventListener('click',()=>{
   try {
     const step=makeFifteenPrintStep(printModel.parts,cfg.name,$('printLayout').value==='bed');
     printSave(new Blob([step],{type:'model/step'}),puzzlePrintFileName(cfg.name,'step'));
-    if(printModel.parts.some(part=>part.cuts.some(cut=>cut.glyph&&!cut.engrave)))
-      $('printStatus').textContent=tr('printStepGlyph');
   } catch(error) {
     if(error.message==='step-geometry') $('printStatus').textContent=tr('printStepLimited');
     else {console.error(error);$('printStatus').textContent=tr('printFailed');}
@@ -13087,6 +14478,7 @@ function handleEditorDelete(e) {
 document.addEventListener('keydown', function (e) {
   if ($('analyzerDialog').open || printDialog.open) return;
   if (e.key === 'Escape') {
+    if (e.defaultPrevented || e.repeat || e.isComposing) return;
     if (!$('askPop').classList.contains('hidden')) { closeAskPop(); return; }
     if (!$('confirmPop').classList.contains('hidden')) { closeConfirmPop(); return; }
     if (solveRunning) { abortSolve(); return; }
@@ -13094,6 +14486,7 @@ document.addEventListener('keydown', function (e) {
     if (!$('dlg').classList.contains('hidden')) { closeDlg(); return; }
     if (!$('winPop').classList.contains('hidden')) { closeWin(); return; }
     if (hintOpen) { closeHint(); return; }
+    if (mode === 'edit') { e.preventDefault(); cancelEditor(); return; }
   }
   if (handleEditorDelete(e)) return;
   if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
