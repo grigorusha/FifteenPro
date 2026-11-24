@@ -744,6 +744,10 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
  .print-settings{display:grid;gap:8px;align-self:start;align-content:start;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
  .print-settings label{display:grid;grid-template-columns:minmax(0,1fr) 68px;gap:5px;align-items:center;font-size:13px}
  .print-settings input,.print-settings select{width:100%;min-width:0}
+ .print-settings fieldset{display:grid;gap:6px;margin:0;padding:6px 8px 8px;min-width:0;border:1px solid var(--line);border-radius:7px}
+ .print-settings legend{padding:0 4px;font-size:13px;font-weight:700}
+ .print-settings .print-text-field{grid-template-columns:minmax(0,1fr)}
+ .print-settings .print-text-choice{grid-template-columns:minmax(0,1fr) minmax(95px,1fr)}
  #printStatus{min-height:1.5em}
  @media(max-width:650px){.print-grid{grid-template-columns:minmax(0,1fr)}}
  .editor-output-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
@@ -1246,6 +1250,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
                 <div class="sub"><label for="arrowShiftRange"><span data-i18n="centerShift">Сдвиг от центра</span><b id="arrowShiftVal"></b></label><input type="range" id="arrowShiftRange" min="-50" max="50" step="5"></div>
                 <div class="sub"><label for="arrowThickRange"><span data-i18n="thickness">Толщина</span><b id="arrowThickVal"></b></label><input type="range" id="arrowThickRange" min="10" max="50" step="5"></div>
                 <div class="sub"><label for="arrowHeadRange"><span data-i18n="arrowHead">Размер стрелки</span><b id="arrowHeadVal"></b></label><input type="range" id="arrowHeadRange" min="10" max="100" step="5"></div>
+                <div class="sub"><label for="arrowSharpnessRange"><span data-i18n="arrowSharpness">Острота</span><b id="arrowSharpnessVal"></b></label><input type="range" id="arrowSharpnessRange" min="0" max="100" step="5" value="50"></div>
               </div>
             </div>
           </div>
@@ -1267,7 +1272,7 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
   <section class="about-block" id="aboutBlock" aria-labelledby="aboutTitle">
     <div class="about-head">
       <h2 id="aboutTitle" data-i18n="aboutTitle">О Программе</h2>
-      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 3.18</div>
+      <div class="ver" data-i18n="versionLine">Про Пятнашки · версия 3.31</div>
       <div class="language-control lang-top">
         <span data-i18n="chooseLanguage">выберите язык</span>
         <div class="seg" id="languageSeg" aria-label="Язык / Language">
@@ -1411,22 +1416,53 @@ h1{margin:0 0 18px;text-align:center;font-size:clamp(36px,7vw,60px);line-height:
     </section>
     <form id="printForm" class="print-settings">
       <strong data-i18n="printSettings">Размеры и допуски, мм</strong>
-      <label><span data-i18n="print_pitch">Размер клетки</span><input type="number" name="pitch" min="12" max="40" step="0.5" value="20" required></label>
-      <label><span data-i18n="print_frameHeight">Высота рамки</span><input type="number" name="frameHeight" min="6" max="24" step="0.1" value="10" required></label>
-      <label><span data-i18n="print_blockHeight">Высота блоков</span><input type="number" name="blockHeight" min="2" max="15" step="0.1" value="3.8" required></label>
-      <label><span data-i18n="print_gap">Допуски на рамке</span><input type="number" name="gap" min="0.15" max="0.8" step="0.05" value="0.35" required></label>
-      <label><span data-i18n="print_radius">Скругление углов</span><input type="number" name="radius" min="0" max="2.5" step="0.05" value="0.65" required></label>
-      <label><span data-i18n="print_chamfer">Фаска</span><input type="number" name="chamfer" min="0" max="0.8" step="0.05" value="0.45" required></label>
-      <label><span data-i18n="print_pinHeight">Высота штырька</span><input type="number" name="pinHeight" value="6" readonly></label>
-      <label><span data-i18n="print_blockGap">Зазор под блоком</span><input type="number" name="blockGap" min="0" step="0.1" value="0" required></label>
-      <label><span data-i18n="print_pinGap">Зазор штырьков</span><input type="number" name="pinGap" min="0" max="0.8" step="0.05" value="0" required></label>
-      <label><span data-i18n="print_resolution">Шаг детализации</span>
-        <select name="resolution">
-          <option value="0.1">0.10</option><option value="0.2">0.20</option>
-          <option value="0.3">0.30</option><option value="0.4" selected>0.40</option>
-          <option value="0.5">0.50</option><option value="0.6">0.60</option>
-        </select>
-      </label>
+      <fieldset>
+        <legend data-i18n="printFrameGroup">Рамка</legend>
+        <label><span data-i18n="print_frameThickness">Толщина рамки</span><input type="number" name="frameThickness" min="2" max="30" step="0.1" value="5" required></label>
+        <label><span data-i18n="print_frameRadius">Скругление рамки</span><input type="number" name="frameRadius" min="0" max="20" step="0.1" value="3" required></label>
+        <label><span data-i18n="print_frameHeight">Высота рамки</span><input type="number" name="frameHeight" min="6" max="24" step="0.1" value="10" required></label>
+        <label><span data-i18n="print_gap">Допуски на рамке</span><input type="number" name="gap" min="0" max="0.8" step="0.05" value="0.15" required></label>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="printTilesGroup">Плитки</legend>
+        <label><span data-i18n="print_pitch">Размер клетки</span><input type="number" name="pitch" min="12" max="40" step="0.5" value="20" required></label>
+        <label><span data-i18n="print_radius">Скругление углов</span><input type="number" name="radius" min="0" max="2.5" step="0.05" value="0.65" required></label>
+        <label><span data-i18n="print_chamfer">Фаска</span><input type="number" name="chamfer" min="0" max="0.8" step="0.05" value="0.45" required></label>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="printBlocksGroup">Блоки</legend>
+        <label><span data-i18n="print_blockHeight">Высота блоков</span><input type="number" name="blockHeight" min="2" max="15" step="0.1" value="3.0" required></label>
+        <label><span data-i18n="print_pinHeight">Высота штырька</span><input type="number" name="pinHeight" min="0.1" max="10" step="0.01" value="6" required></label>
+        <label><span data-i18n="print_blockGap">Зазор под блоком</span><input type="number" name="blockGap" min="0" step="0.1" value="0" required></label>
+        <label><span data-i18n="print_pinGap">Допуски на штырьках</span><input type="number" name="pinGap" min="0" max="0.8" step="0.05" value="0" required></label>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="printTextGroup">Надписи</legend>
+        <label class="print-text-choice"><span data-i18n="printTextMode">Вид надписи</span><select name="textMode">
+          <option value="none" data-i18n="printTextNone">Нет</option>
+          <option value="raised" data-i18n="printTextRaised">Выпуклый</option>
+          <option value="engraved" data-i18n="printTextEngraved">Вогнутый</option>
+          <option value="inlay" data-i18n="printTextInlay">Цветной</option>
+        </select></label>
+        <label class="print-text-field"><span data-i18n="printFrameText">Надпись на рамке</span><input name="frameText" type="text" maxlength="80"></label>
+        <label class="print-text-choice"><span data-i18n="printTextFont">Шрифт</span><select name="textFont">
+          <option value="Arial">Arial</option><option value="Georgia">Georgia</option>
+          <option value="Verdana">Verdana</option><option value="monospace">Monospace</option>
+        </select></label>
+        <label><span data-i18n="printTextSize">Размер</span><input name="textSize" type="number" min="2" max="20" step="0.1" value="5" required></label>
+        <label><span data-i18n="printTextSpacing">Межбуквенный интервал</span><input name="textSpacing" type="number" min="0" max="5" step="0.05" value="0.1" required></label>
+        <label><span data-i18n="printTextThickness">Толщина надписи</span><input name="textThickness" type="number" min="0.2" max="6" step="0.1" value="0.6" required></label>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="printOtherGroup">Прочие</legend>
+        <label><span data-i18n="print_resolution">Шаг детализации</span>
+          <select name="resolution">
+            <option value="0.1">0.10</option><option value="0.2">0.20</option>
+            <option value="0.3">0.30</option><option value="0.4" selected>0.40</option>
+            <option value="0.5">0.50</option><option value="0.6">0.60</option>
+          </select>
+        </label>
+      </fieldset>
       <button class="btn" type="button" id="printReset" data-i18n="printReset">Сбросить настройки</button>
     </form>
   </div>
@@ -1545,7 +1581,7 @@ var BUILTIN_TEXTS = [
 ];
 
 var UI_LANG = detectLanguage();
-var rus_eng = {"ru":{"printPuzzle":"Печать","anaUseMarkers":"Маркеры учитываем","anaUseColors":"Цвета учитываем","anaCompareBoards":"Сравнивать доски","anaNoSymmetricPositions":"В этой выборке нет симметричных позиций.","anaPathView":"Путь решения","anaTreeView":"Ближние / дальние","anaFilterView":"Фильтр","anaSymmetry":"Симметрия","anaSymAny":"Любая","anaSymVertical":"Вертикальное отражение","anaSymHorizontal":"Горизонтальное отражение","anaSymDiagonal":"Диагональное отражение","anaSymRotation":"Поворот","anaNear":"Ближние состояния","anaFar":"Дальние состояния","anaTreeStep":"{index} / {count} · ходов от корня: {depth}","anaPair":"Симметричная пара","anaDistance":"Между позициями: {moves}","anaDistanceChecking":"Считаю расстояние между позициями…","anaDistanceLimit":"Для поиска расстояния достигнут порог памяти.","anaDistanceUnreachable":"Из левой позиции правая недостижима.","anaDistanceError":"Не удалось вычислить расстояние между позициями.","anaFilterFound":"Пара {index} / {count}","anaFilterEmpty":"В выборке из ближних и дальних состояний нет пар с этой симметрией.","anaSavePair":"Создать головоломку","anaPairSame":"Старт и цель уже совпадают.","anaPairChecking":"Проверяю путь от старта к цели…","anaPairProgress":"Проверяю путь от старта к цели · состояний {count}","anaPairLimit":"Путь до цели не подтверждён до достижения порога памяти.","anaPairUnreachable":"Из этой стартовой позиции цель недостижима.","anaPairName":"{name} — симметрия {index}","anaPositionName":"{name} — вариант {index}","anaPairSaved":"В каталог добавлена «{name}» · решение: {depth} ходов.","anaPairSaveError":"Не удалось сохранить головоломку.","adjustmentStep":"Шаг настройки","anaMemory":"Бюджет памяти — {budget} ГиБ · расчётный порог — {count} состояний","anaMemoryReached":"Достигнут расчётный порог памяти ({budget} ГиБ) · состояний {count} · показан путь из {depth} ходов","anaOpen":"Анализатор","anaTitle":"Анализ головоломки","anaSearch":"🔍 Поиск","anaSwap":"⇄ Поменять","anaAuto":"↻ Авто","anaEmpty":"Нажмите «Поиск», чтобы найти дальнюю позицию.","anaSwapped":"Доски поменялись местами. Нажмите «Поиск» или «Авто».","anaProgress":"Поиск {round} · найдено состояний {count} · глубина {depth}","anaDone":"Обход завершён · ходов {depth} · состояний {count} · {time} с","anaAutoDone":"Авто завершено · поисков {round} · лучшее расстояние {depth} ходов · {time} с","anaStopped":"Поиск остановлен · показан найденный путь из {depth} ходов","anaStoppedEarly":"Поиск остановлен.","anaError":"Не удалось завершить поиск.","moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","tileBlockEditor":"РЕДАКТОР ПЛИТОК И БЛОКОВ","frameBlockEditor":"РЕДАКТОР РАМКИ И БЛОКОВ","hintGoalCaption":"Достигните заданного расположения","scramble":"🎲 Перемешать","scrambleRandom":"Перемешивание случайное","scrambleBfs":"Перемешивание BFS","scrambleBfsGoal":"BFS-перемешивание… Поиск собранной раскладки","scrambleBfsProgress":"BFS-перемешивание… Ходов от собранной раскладки: {depth}","scrambleBfsDone":"BFS-перемешивание завершено. Ходов от собранной раскладки: {depth}","scrambleBfsStopped":"BFS-перемешивание остановлено. Показана последняя найденная раскладка.","scrambleBfsStoppedEarly":"BFS-перемешивание остановлено.","scrambleBfsNoGoal":"BFS-перемешивание: собранная раскладка недостижима из текущей позиции.","scrambleBfsError":"Не удалось завершить BFS-перемешивание.","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Блок","palette":"Палитра","upperShape":"Форма блока","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","circleDiameter":"Диаметр (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","centerShift":"Сдвиг от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 3.18","shapeArrow":"Стрелка","arrowHead":"Размер стрелки","shapeOffset":"Сдвиг от центра","offsetDistance":"Расстояние сдвига","scrambleSteps":"Количество ходов скрамбла","startBoardTitle":"Стартовая доска","targetBoardTitle":"Целевая доска","hasTargetBoard":"Есть целевая доска","hasFixedFrame":"Есть рамка","fixedFrameTile":"Неподвижная плитка рамки","fixedFrameShape":"Башня на рамке","fixedTowerColor":"Цвет башни","fixedFrameDirection":"Направление / стороны","fixedFrameSize":"Размер / длина","frameShapeNone":"Нет башни","clearTowersWord1":"Удалить","clearTowersWord2":"башни","targetCopyTitle":"Копировать стартовую доску","targetClearTitle":"Очистить целевую доску","targetSwapTitle":"Поменять местами доски","clearAllMarkers":"Удалить маркеры","numberAllMarkers":"Расставить маркеры","clearAllTowers":"Удалить башни","markerColorLabel":"Цвет","markerColorBlack":"Черный","markerColorWhite":"Белый","targetSwapNeedsFull":"Чтобы поменять доски местами, заполните целевую доску всеми плитками.","targetHelp":"Перетащите плитки со стартовой доски. Для перестановки перетащите плитку на целевой; правый щелчок удаляет плитку.","targetEmpty":"На целевой доске нужно разместить хотя бы одну плитку.","clearMarker":"Очистить маркер","addModifier":"Добавить модификатор","removeModifier":"Удалить модификатор","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveDone":"Ходов в решении: {moves} · Время поиска: {time} с","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Поиск отменён. Время поиска: {time} с. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeScrew":"Шуруп","screw":"Шуруп","screwDiameter":"Диаметр (ширина плитки = 100%)","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы.","editorBondBlocked":"Невозможно перенести связку: край доски, вырез или другая связка.","phase3x3Bfs":"двунаправленный BFS","phaseSpecialBfs":"BFS с бандажами","phaseSpecialCut":"поэтапный поиск","phaseSpecialAstar":"общий поиск A*","phaseSpecialCheck":"проверка маршрута","phaseSpecialPattern":"поиск по кольцам","phaseSpecialMeeting":"встречный поиск","printTitle":"3D-печать головоломки","printDownload":"STL в ZIP","printPlanView":"Плоский вид","print3DView":"3D-вид","printAssembled":"В сборе","printOnBed":"Детали на столе","printSettings":"Размеры и допуски, мм","printReset":"Сбросить настройки","printHelp":"Левая кнопка — поворот, правая — сдвиг по горизонтали и вертикали, колесо — масштаб. Двойной щелчок — сброс вида.","printInvalid":"Проверьте диапазоны размеров.","printBuilding":"Построение деталей: {current} / {total}","printReady":"Готово · деталей: {count}","printFailed":"Не удалось построить или сохранить детали.","printNoWebGL":"3D-вид недоступен. Можно открыть плоский вид или скачать STL.","print_pitch":"Размер клетки","print_gap":"Допуски на рамке","print_radius":"Скругление углов","print_chamfer":"Фаска","print_pinGap":"Зазор штырьков","print_frameHeight":"Высота рамки","print_blockHeight":"Высота блоков","printSingle":"Один STL","printStepFile":"STEP","printBuild3D":"Построить 3D","print_resolution":"Шаг детализации","printTooFine":"Модель слишком велика для этого шага детализации. Увеличьте шаг.","printStepLimited":"Для этой геометрии пока доступен STL.","printStepGlyph":"STEP сохранён. Гравировка и фаски верхних блоков есть в STL.","print_pinHeight":"Высота штырька (60% высоты рамки)","print_blockGap":"Зазор под блоком","printBlockGapInvalid":"Зазор под блоком должен быть меньше высоты штырька."},"en":{"printPuzzle":"Print","anaUseMarkers":"Match markers","anaUseColors":"Match colors","anaCompareBoards":"Compare boards","anaNoSymmetricPositions":"No symmetric positions in this sample.","anaPathView":"Solution path","anaTreeView":"Near / far states","anaFilterView":"Filter","anaSymmetry":"Symmetry","anaSymAny":"Any","anaSymVertical":"Vertical reflection","anaSymHorizontal":"Horizontal reflection","anaSymDiagonal":"Diagonal reflection","anaSymRotation":"Rotation","anaNear":"Near states","anaFar":"Far states","anaTreeStep":"{index} / {count} · moves from root: {depth}","anaPair":"Symmetric pair","anaDistance":"Distance between positions: {moves}","anaDistanceChecking":"Calculating the distance between positions…","anaDistanceLimit":"The distance search reached the memory limit.","anaDistanceUnreachable":"The right position is unreachable from the left.","anaDistanceError":"Could not calculate the distance between positions.","anaFilterFound":"Pair {index} / {count}","anaFilterEmpty":"The near and far samples contain no pairs with this symmetry.","anaSavePair":"Create puzzle","anaPairSame":"The start already matches the target.","anaPairChecking":"Checking the path from start to target…","anaPairProgress":"Checking the path from start to target · {count} states","anaPairLimit":"The search reached the memory limit before confirming a path.","anaPairUnreachable":"The target is unreachable from this start.","anaPairName":"{name} — symmetry {index}","anaPositionName":"{name} — variant {index}","anaPairSaved":"Added “{name}” to the catalog · solution: {depth} moves.","anaPairSaveError":"Could not save the puzzle.","adjustmentStep":"Adjustment step","anaMemory":"Memory budget — {budget} GiB · estimated limit — {count} states","anaMemoryReached":"Estimated memory limit reached ({budget} GiB) · {count} states · showing a path of {depth} moves","anaOpen":"Analyzer","anaTitle":"Puzzle analysis","anaSearch":"🔍 Search","anaSwap":"⇄ Swap","anaAuto":"↻ Auto","anaEmpty":"Press Search to find a distant position.","anaSwapped":"Boards swapped. Press Search or Auto.","anaProgress":"Search {round} · {count} states found · depth {depth}","anaDone":"Search complete · {depth} moves · {count} states · {time} s","anaAutoDone":"Auto complete · {round} searches · best distance {depth} moves · {time} s","anaStopped":"Search stopped · showing a path of {depth} moves","anaStoppedEarly":"Search stopped.","anaError":"Could not complete the search.","moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","tileBlockEditor":"TILE AND BLOCK EDITOR","frameBlockEditor":"FRAME AND BLOCK EDITOR","hintGoalCaption":"Reach the specified arrangement","scramble":"🎲 Scramble","scrambleRandom":"Random scramble","scrambleBfs":"Super scramble","scrambleBfsGoal":"Super scramble… Looking for a solved layout","scrambleBfsProgress":"Super scramble… Moves from solved layout: {depth}","scrambleBfsDone":"Super scramble complete. Moves from solved layout: {depth}","scrambleBfsStopped":"Super scramble stopped. Showing the last discovered layout.","scrambleBfsStoppedEarly":"Super scramble stopped.","scrambleBfsNoGoal":"Super scramble: no solved layout is reachable from the current position.","scrambleBfsError":"Could not finish the super scramble.","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Block","palette":"Palette","upperShape":"Block shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","circleDiameter":"Diameter (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","centerShift":"Offset from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 3.18","shapeArrow":"Arrow","arrowHead":"Arrowhead size","shapeOffset":"Shift from center","offsetDistance":"Offset distance","scrambleSteps":"Scramble moves","startBoardTitle":"Start board","targetBoardTitle":"Target board","hasTargetBoard":"Has target board","hasFixedFrame":"Has frame","fixedFrameTile":"Fixed frame tile","fixedFrameShape":"Tower on frame","fixedTowerColor":"Tower color","fixedFrameDirection":"Direction / sides","fixedFrameSize":"Size / length","frameShapeNone":"No tower","clearTowersWord1":"Remove","clearTowersWord2":"towers","targetCopyTitle":"Copy start board","targetClearTitle":"Clear target board","targetSwapTitle":"Swap start and target boards","clearAllMarkers":"Remove markers","numberAllMarkers":"Number markers","clearAllTowers":"Remove towers","markerColorLabel":"Color","markerColorBlack":"Black","markerColorWhite":"White","targetSwapNeedsFull":"Fill the target board with all tiles before swapping boards.","targetHelp":"Drag tiles from the start board. Drag within the target board to rearrange; right-click removes a tile.","targetEmpty":"Place at least one tile on the target board.","clearMarker":"Clear marker","addModifier":"Add another modifier","removeModifier":"Remove modifier","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveDone":"Solution moves: {moves} · Search time: {time} s","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Search time: {time} s. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeScrew":"Screw","screw":"Screw","screwDiameter":"Diameter (cell width = 100%)","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group.","editorBondBlocked":"Cannot move the bonded group: board edge, cut-out, or another bonded group.","phase3x3Bfs":"bidirectional BFS","phaseSpecialBfs":"bond-aware BFS","phaseSpecialCut":"staged search","phaseSpecialAstar":"full-board A*","phaseSpecialCheck":"validating route","phaseSpecialPattern":"ring-pattern search","phaseSpecialMeeting":"meet-in-the-middle search","printTitle":"3D print the puzzle","printDownload":"STL in ZIP","printPlanView":"Top view","print3DView":"3D view","printAssembled":"Assembled","printOnBed":"Parts on bed","printSettings":"Dimensions and clearances, mm","printReset":"Reset settings","printHelp":"Drag with the left button to rotate or the right button to pan. Scroll to zoom. Double-click to reset the view.","printInvalid":"Check the allowed settings ranges.","printBuilding":"Building parts: {current} / {total}","printReady":"Ready · {count} parts","printFailed":"Could not build or save the parts.","printNoWebGL":"The 3D view is unavailable. The top view and STL download are available.","print_pitch":"Cell pitch","print_gap":"Frame clearance","print_radius":"Corner radius","print_chamfer":"Chamfer","print_pinGap":"Pin clearance","print_frameHeight":"Frame height","print_blockHeight":"Block height","printSingle":"Single STL","printStepFile":"STEP","printBuild3D":"Build 3D preview","print_resolution":"Detail step","printTooFine":"This model is too large at this detail step. Choose a coarser step.","printStepLimited":"This geometry currently requires STL.","printStepGlyph":"STEP saved. Engraved labels and upper-block chamfers are available in STL.","print_pinHeight":"Pin height (60% of frame height)","print_blockGap":"Clearance under blocks","printBlockGapInvalid":"The clearance under the block must be less than the pin height."}};
+var rus_eng = {"ru":{"printPuzzle":"Печать","anaUseMarkers":"Маркеры учитываем","anaUseColors":"Цвета учитываем","anaCompareBoards":"Сравнивать доски","anaNoSymmetricPositions":"В этой выборке нет симметричных позиций.","anaPathView":"Путь решения","anaTreeView":"Ближние / дальние","anaFilterView":"Фильтр","anaSymmetry":"Симметрия","anaSymAny":"Любая","anaSymVertical":"Вертикальное отражение","anaSymHorizontal":"Горизонтальное отражение","anaSymDiagonal":"Диагональное отражение","anaSymRotation":"Поворот","anaNear":"Ближние состояния","anaFar":"Дальние состояния","anaTreeStep":"{index} / {count} · ходов от корня: {depth}","anaPair":"Симметричная пара","anaDistance":"Между позициями: {moves}","anaDistanceChecking":"Считаю расстояние между позициями…","anaDistanceLimit":"Для поиска расстояния достигнут порог памяти.","anaDistanceUnreachable":"Из левой позиции правая недостижима.","anaDistanceError":"Не удалось вычислить расстояние между позициями.","anaFilterFound":"Пара {index} / {count}","anaFilterEmpty":"В выборке из ближних и дальних состояний нет пар с этой симметрией.","anaSavePair":"Создать головоломку","anaPairSame":"Старт и цель уже совпадают.","anaPairChecking":"Проверяю путь от старта к цели…","anaPairProgress":"Проверяю путь от старта к цели · состояний {count}","anaPairLimit":"Путь до цели не подтверждён до достижения порога памяти.","anaPairUnreachable":"Из этой стартовой позиции цель недостижима.","anaPairName":"{name} — симметрия {index}","anaPositionName":"{name} — вариант {index}","anaPairSaved":"В каталог добавлена «{name}» · решение: {depth} ходов.","anaPairSaveError":"Не удалось сохранить головоломку.","adjustmentStep":"Шаг настройки","anaMemory":"Бюджет памяти — {budget} ГиБ · расчётный порог — {count} состояний","anaMemoryReached":"Достигнут расчётный порог памяти ({budget} ГиБ) · состояний {count} · показан путь из {depth} ходов","anaOpen":"Анализатор","anaTitle":"Анализ головоломки","anaSearch":"🔍 Поиск","anaSwap":"⇄ Поменять","anaAuto":"↻ Авто","anaEmpty":"Нажмите «Поиск», чтобы найти дальнюю позицию.","anaSwapped":"Доски поменялись местами. Нажмите «Поиск» или «Авто».","anaProgress":"Поиск {round} · найдено состояний {count} · глубина {depth}","anaDone":"Обход завершён · ходов {depth} · состояний {count} · {time} с","anaAutoDone":"Авто завершено · поисков {round} · лучшее расстояние {depth} ходов · {time} с","anaStopped":"Поиск остановлен · показан найденный путь из {depth} ходов","anaStoppedEarly":"Поиск остановлен.","anaError":"Не удалось завершить поиск.","moves":"Ходы","time":"Время","congrats":"Поздравляем!","again":"🎲 Ещё раз","close":"Закрыть","puzzles":"Головоломки","tileBlockEditor":"РЕДАКТОР ПЛИТОК И БЛОКОВ","frameBlockEditor":"РЕДАКТОР РАМКИ И БЛОКОВ","hintGoalCaption":"Достигните заданного расположения","scramble":"🎲 Перемешать","scrambleRandom":"Перемешивание случайное","scrambleBfs":"Перемешивание BFS","scrambleBfsGoal":"BFS-перемешивание… Поиск собранной раскладки","scrambleBfsProgress":"BFS-перемешивание… Ходов от собранной раскладки: {depth}","scrambleBfsDone":"BFS-перемешивание завершено. Ходов от собранной раскладки: {depth}","scrambleBfsStopped":"BFS-перемешивание остановлено. Показана последняя найденная раскладка.","scrambleBfsStoppedEarly":"BFS-перемешивание остановлено.","scrambleBfsNoGoal":"BFS-перемешивание: собранная раскладка недостижима из текущей позиции.","scrambleBfsError":"Не удалось завершить BFS-перемешивание.","editor":"✎ Редактор","undo":"↶ Назад","redo":"↷ Вперёд","reset":"↺ Сброс","name":"Название","size":"Размер поля","clear":"Очистить","launch":"▶ Запустить","cancel":"Отмена","editNone":"Выберите плитку кликом. Чтобы поменять плитки местами (или переставить пустую клетку), перетащите плитку на другую клетку.","editHole":"Это пустая клетка. Можно создать плитку или перетащить сюда существующую.","marker":"Маркер","tier":"Башня","tile":"Плитка","upper":"Блок","palette":"Палитра","upperShape":"Форма блока","circle":"● Круг","shapeCircle":"Круг","square":"■ Квадрат","star":"✦ Звезда","bars":"✚ Выступы по центру","bars2":"⌗ Выступы со сдвигом","hook":"Γ Крюк","bodySize":"Размер (ширина плитки = 100%)","circleDiameter":"Диаметр (ширина плитки = 100%)","sideShift":"Сдвиг сторон","shift":"Сдвиг (% стороны)","length":"Длина от центра","centerShift":"Сдвиг от центра","thickness":"Толщина","offsetWidth":"⌗ Выступы со сдвигом","tabsHint":"Каждый выступ занимает свою половину стороны. Два выступа одной стороны примыкают друг к другу; выступы в разных половинах соседних плиток могут касаться без столкновения.","hookHint":"При касании выступов движение передаётся следующей плитке и далее по цепочке. Если любой необходимый участник упирается в препятствие, весь ход блокируется.","copy":"Скопировать в буфер","paste":"Вставить из буфера","delete":"Удалить","load":"Загрузить","hint":"Подсказка","newPuzzle":"Новая головоломка","clearBoard":"Сбросить все плитки к обычной доске","clearCuts":"Убрать срезы","clearTabs":"Убрать выступы","clearHooks":"Убрать крюки","shiftTop":"Сдвиг сверху","shiftRight":"Сдвиг справа","shiftBottom":"Сдвиг снизу","shiftLeft":"Сдвиг слева","top":"Сверху","right":"Справа","bottom":"Снизу","left":"Слева","topLeft":"Сверху, левый","topRight":"Сверху, правый","rightUpper":"Справа, верхний","rightLower":"Справа, нижний","bottomLeft":"Снизу, левый","bottomRight":"Снизу, правый","leftUpper":"Слева, верхний","leftLower":"Слева, нижний","appName":"Про Пятнашки","versionLine":"Про Пятнашки · версия 3.31","shapeArrow":"Стрелка","arrowHead":"Размер стрелки","arrowSharpness":"Острота","shapeOffset":"Сдвиг от центра","offsetDistance":"Расстояние сдвига","scrambleSteps":"Количество ходов скрамбла","startBoardTitle":"Стартовая доска","targetBoardTitle":"Целевая доска","hasTargetBoard":"Есть целевая доска","hasFixedFrame":"Есть рамка","fixedFrameTile":"Неподвижная плитка рамки","fixedFrameShape":"Башня на рамке","fixedTowerColor":"Цвет башни","fixedFrameDirection":"Направление / стороны","fixedFrameSize":"Размер / длина","frameShapeNone":"Нет башни","clearTowersWord1":"Удалить","clearTowersWord2":"башни","targetCopyTitle":"Копировать стартовую доску","targetClearTitle":"Очистить целевую доску","targetSwapTitle":"Поменять местами доски","clearAllMarkers":"Удалить маркеры","numberAllMarkers":"Расставить маркеры","clearAllTowers":"Удалить башни","markerColorLabel":"Цвет","markerColorBlack":"Черный","markerColorWhite":"Белый","targetSwapNeedsFull":"Чтобы поменять доски местами, заполните целевую доску всеми плитками.","targetHelp":"Перетащите плитки со стартовой доски. Для перестановки перетащите плитку на целевой; правый щелчок удаляет плитку.","targetEmpty":"На целевой доске нужно разместить хотя бы одну плитку.","clearMarker":"Очистить маркер","addModifier":"Добавить модификатор","removeModifier":"Удалить модификатор","aboutTitle":"О Программе","chooseLanguage":"выберите язык","pulseLabel":"Пульсация","pulseOn":"Вкл","pulseOff":"Выкл","copyTileParams":"Скопировать параметры плитки","pasteTileParams":"Вставить параметры","copyTileDone":"Параметры плитки скопированы без маркера.","pasteTileDone":"Параметры вставлены. Маркер плитки сохранён.","nothingToPaste":"Буфер пуст — сначала скопируйте параметры плитки.","collapseSection":"Свернуть блок","expandSection":"Развернуть блок","frameLabel":"Рамка плитки","frameNone":"Нет","frameCircle":"● Круг","frameSquare":"■ Квадрат","developers":"Разработчики:","puzzleAuthors":"Авторские головоломки:","puzzleNumber":"Головоломка {number}","defaultPuzzle":"Головоломка","importName":"Импорт","winSummary":"«{name}» собрана","plainStatus":"Тяните плитку к пустой клетке или кликните по ней.","playNamed":"«{name}». Тяните плитку к пустой клетке или кликните по ней.","editorConflict":"Конфликт: башня плиток (красная обводка) пересекается в собранной позиции. Измените форму или переставьте плитки — иначе запустить головоломку нельзя.","editorReady":"Редактор: настройте плитки. Конфликтов нет — можно нажать «Запустить».","editorLoaded":"Головоломка «{name}» загружена в редактор. Нажмите «Запустить», чтобы сохранить.","copyDone":"Головоломка «{name}» скопирована в буфер обмена.","copyFallback":"Скопируйте текст головоломки вручную (Ctrl+C)","pastePrompt":"Вставьте текст головоломки (Ctrl+V)","pasteError":"Не удалось вставить: {error}.","deleteAsk":"Удалить головоломку «{name}» из хранилища?","deleteTitle":"Удалить головоломку?","newBoard":"Новая головоломка","assembled":"Собрано! Ходов: {moves}, время: {time}.","noMoves":"Нет ни одного возможного хода — нажмите «Назад» или «Сброс».","notNeighbor":"Эта плитка не соседствует с пустой клеткой и её ряд/столбец нельзя сдвинуть.","shiftBlocked":"Групповой ход заблокирован: один из участников не может продолжить движение.","undoDone":"Ход отменён.","redoDone":"Ход возвращён.","scrambleNone":"На этой доске нет ни одного допустимого хода — измените форму плиток в редакторе.","scrambleDone":"Перемешивание выполнено за {moves} шагов.","resetDone":"Сброс: доска собрана.","solve":"✓ Решить","stop":"✕ Стоп","solveRunning":"Поиск решения…","solveProgress":"Поиск решения… {phase}Позиций: {count}, время: {time}","solveDone":"Ходов в решении: {moves} · Время поиска: {time} с","solveFailed":"Не удалось найти решение. Доска оставлена в текущем состоянии.","solveAborted":"Поиск отменён. Время поиска: {time} с. Доска оставлена в текущем состоянии.","computingRest":"Досчитываю решение…","retryAttempt":"Попытка {n} из {total}. Откат…","retryHeuristic":"Переключение на эвристику…","alreadySolvedTitle":"Головоломка уже собрана","alreadySolvedText":"Перемешать её?","scrambleShort":"🎲 Перемешать","pause":"Пауза","play":"Продолжить","toStart":"В начало","toEnd":"В конец","stepBack":"Шаг назад","stepFwd":"Шаг вперёд","phaseTopRow":"верхний ряд","phaseLeftCol":"левый столбик","phaseBlock":"финальный блок","phaseIda":"IDA*","phaseInit":"подготовка","phaseStagedRemainder4":"оставшаяся область 4×4","deleteTile":"Удалить плитку","createTile":"＋ Создать плитку","turnHook":"Отразить крюк","hookInward":"Перекладины внутрь","hookOutward":"Перекладины наружу","tileDeleted":"Плитка удалена. На её месте — пустая клетка.","tileCreated":"Плитка создана.","noHole":"Оставьте хотя бы одну пустую клетку, чтобы можно было двигать плитки.","solverOneHole":"Автоматический решатель пока работает только с одной пустой клеткой.","hookStemLength":"Длина ножки","hookWidth":"Ширина выступа","author":"Автор","chooseAuthor":"Выбрать автора","width":"Ширина поля","height":"Высота поля","unknownAuthor":"Без автора","unsupportedSolverSize":"Автоматический решатель поддерживает только доски 3×3 и 4×4. Играть и редактировать это поле можно.","shapeSquare":"Квадрат","shapeStar":"Звезда","shapeScrew":"Шуруп","screw":"Шуруп","screwDiameter":"Диаметр (ширина плитки = 100%)","shapeBars":"Выступы по центру","shapeBars2":"Выступы со сдвигом","shapeHook":"Крюк","frameCirclePlain":"Круг","frameSquarePlain":"Квадрат","boardTools":"Редактор доски","knifeButton":"✂ Нож","bandageButton":"⛓ Бандаж","unbindButton":"Разъединить","boardModeHelp":"Клик по плитке — редактирование плитки. Нож удаляет клетку (повторный клик восстанавливает). Бандаж соединяет соседние плитки.","knifeHelp":"Нож: нажмите клетку, чтобы удалить её вместе с плиткой. Повторный клик возвращает пустую клетку.","bandageHelp":"Бандаж: выберите первую плитку, затем соседние по общей стороне. Фиолетовый контур показывает склеенные плитки.","knifeLast":"Нельзя удалить все клетки или последнюю пустую клетку.","bandageAdjacent":"Склеивать можно только плитки, имеющие общую сторону с выбранной группой.","bandageWrong":"Нельзя соединять плитку с пустой или удалённой клеткой.","bandageBroken":"Склеенные плитки должны соприкасаться сторонами. Исправьте расположение в редакторе.","unsupportedSolverStructure":"Автоматический решатель для досок с вырезанными клетками или бандажами пока не поддерживается.","starRotate":"Поворот звезды","starStraight":"Звезда","starTurned":"Сюрикен","unbindHelp":"Разъединить: нажмите кнопку, затем щёлкните по забандаженной плитке — она отвяжется от своей группы.","unbindDone":"Плитка отвязана от группы.","editorBondBlocked":"Невозможно перенести связку: край доски, вырез или другая связка.","phase3x3Bfs":"двунаправленный BFS","phaseSpecialBfs":"BFS с бандажами","phaseSpecialCut":"поэтапный поиск","phaseSpecialAstar":"общий поиск A*","phaseSpecialCheck":"проверка маршрута","phaseSpecialPattern":"поиск по кольцам","phaseSpecialMeeting":"встречный поиск","printTitle":"3D-печать головоломки","printDownload":"STL в ZIP","printPlanView":"Плоский вид","print3DView":"3D-вид","printAssembled":"В сборе","printOnBed":"Детали на столе","printSettings":"Размеры и допуски, мм","printReset":"Сбросить настройки","printHelp":"Левая кнопка — поворот, правая — сдвиг по горизонтали и вертикали, колесо — масштаб. Двойной щелчок — сброс вида.","printInvalid":"Проверьте диапазоны размеров.","printBuilding":"Построение деталей: {current} / {total}","printReady":"Готово · деталей: {count} · уникальных плиток: {tiles} · уникальных блоков: {blocks}","printFailed":"Не удалось построить или сохранить детали.","printNoWebGL":"3D-вид недоступен. Можно открыть плоский вид или скачать STL.","print_pitch":"Размер клетки","print_gap":"Допуски на рамке","print_radius":"Скругление углов","print_chamfer":"Фаска","print_pinGap":"Допуски на штырьках","print_frameHeight":"Высота рамки","print_blockHeight":"Высота блоков","printSingle":"Один STL","printStepFile":"STEP","printBuild3D":"Построить 3D","print_resolution":"Шаг детализации","printTooFine":"Модель слишком велика для этого шага детализации. Увеличьте шаг.","printStepLimited":"Для этой геометрии пока доступен STL.","printStepGlyph":"STEP сохранён. Гравировка обычных маркеров плиток доступна в STL.","print_pinHeight":"Высота штырька","print_blockGap":"Зазор под блоком","printBlockGapInvalid":"Зазор под блоком должен быть меньше высоты штырька.","print_frameThickness":"Толщина рамки","print_frameRadius":"Скругление рамки","printFrameRadiusInvalid":"Уменьшите внешнее скругление или увеличьте толщину рамки.","printFrameGroup":"Рамка","printTilesGroup":"Плитки","printBlocksGroup":"Блоки","printTextGroup":"Надписи","printOtherGroup":"Прочие","printFrameText":"Надпись на рамке","printTextMode":"Вид надписи","printTextNone":"Нет","printTextRaised":"Выпуклый","printTextEngraved":"Вогнутый","printTextInlay":"Цветной","printTextFont":"Шрифт","printTextSize":"Размер","printTextSpacing":"Межбуквенный интервал","printTextThickness":"Толщина надписи","printTextDepthInvalid":"Уменьшите толщину надписи, чтобы углубление не дошло до разъёма рамки.","printFramePinGap":"Зазор под блоком рамки должен быть меньше высоты его штырька.","solveStoppedManual":"Поиск остановлен пользователем.","solveStoppedExhausted":"Доступные состояния перебраны, подходящая цель не найдена.","solveStoppedMemory":"Достигнут расчётный лимит памяти ({budget} ГиБ).","solveStoppedStagedGoal":"Не удалось составить полную целевую раскладку для поэтапного поиска.","solveStoppedWorker":"Вычислительный поток IDA* завершился с ошибкой.","solveStoppedUnsolvable":"Для классической доски проверка чётности показала, что цель недостижима.","solveStoppedInvalidRoute":"Найденный маршрут не прошёл проверку ходов или цели.","solveStoppedNoRoute":"Выбранный алгоритм завершил попытки без проверенного решения.","solveStoppedError":"Поиск прерван внутренней ошибкой. {error}","solveStopMethod":"Алгоритм — {method}","solveStopStage":"Этап — {stage}","solveStopDepth":"Глубина поиска — {depth} ходов","solveStopTime":"Время поиска — {time} с","solveStopPriorLimit":"На одной из попыток достигнут лимит памяти ({budget} ГиБ)","solveStopPlayback":"Воспроизведение решения, ход {index} из {total}"},"en":{"printPuzzle":"Print","anaUseMarkers":"Match markers","anaUseColors":"Match colors","anaCompareBoards":"Compare boards","anaNoSymmetricPositions":"No symmetric positions in this sample.","anaPathView":"Solution path","anaTreeView":"Near / far states","anaFilterView":"Filter","anaSymmetry":"Symmetry","anaSymAny":"Any","anaSymVertical":"Vertical reflection","anaSymHorizontal":"Horizontal reflection","anaSymDiagonal":"Diagonal reflection","anaSymRotation":"Rotation","anaNear":"Near states","anaFar":"Far states","anaTreeStep":"{index} / {count} · moves from root: {depth}","anaPair":"Symmetric pair","anaDistance":"Distance between positions: {moves}","anaDistanceChecking":"Calculating the distance between positions…","anaDistanceLimit":"The distance search reached the memory limit.","anaDistanceUnreachable":"The right position is unreachable from the left.","anaDistanceError":"Could not calculate the distance between positions.","anaFilterFound":"Pair {index} / {count}","anaFilterEmpty":"The near and far samples contain no pairs with this symmetry.","anaSavePair":"Create puzzle","anaPairSame":"The start already matches the target.","anaPairChecking":"Checking the path from start to target…","anaPairProgress":"Checking the path from start to target · {count} states","anaPairLimit":"The search reached the memory limit before confirming a path.","anaPairUnreachable":"The target is unreachable from this start.","anaPairName":"{name} — symmetry {index}","anaPositionName":"{name} — variant {index}","anaPairSaved":"Added “{name}” to the catalog · solution: {depth} moves.","anaPairSaveError":"Could not save the puzzle.","adjustmentStep":"Adjustment step","anaMemory":"Memory budget — {budget} GiB · estimated limit — {count} states","anaMemoryReached":"Estimated memory limit reached ({budget} GiB) · {count} states · showing a path of {depth} moves","anaOpen":"Analyzer","anaTitle":"Puzzle analysis","anaSearch":"🔍 Search","anaSwap":"⇄ Swap","anaAuto":"↻ Auto","anaEmpty":"Press Search to find a distant position.","anaSwapped":"Boards swapped. Press Search or Auto.","anaProgress":"Search {round} · {count} states found · depth {depth}","anaDone":"Search complete · {depth} moves · {count} states · {time} s","anaAutoDone":"Auto complete · {round} searches · best distance {depth} moves · {time} s","anaStopped":"Search stopped · showing a path of {depth} moves","anaStoppedEarly":"Search stopped.","anaError":"Could not complete the search.","moves":"Moves","time":"Time","congrats":"Congratulations!","again":"🎲 Play again","close":"Close","puzzles":"Puzzles","tileBlockEditor":"TILE AND BLOCK EDITOR","frameBlockEditor":"FRAME AND BLOCK EDITOR","hintGoalCaption":"Reach the specified arrangement","scramble":"🎲 Scramble","scrambleRandom":"Random scramble","scrambleBfs":"Super scramble","scrambleBfsGoal":"Super scramble… Looking for a solved layout","scrambleBfsProgress":"Super scramble… Moves from solved layout: {depth}","scrambleBfsDone":"Super scramble complete. Moves from solved layout: {depth}","scrambleBfsStopped":"Super scramble stopped. Showing the last discovered layout.","scrambleBfsStoppedEarly":"Super scramble stopped.","scrambleBfsNoGoal":"Super scramble: no solved layout is reachable from the current position.","scrambleBfsError":"Could not finish the super scramble.","editor":"✎ Editor","undo":"↶ Undo","redo":"↷ Redo","reset":"↺ Reset","name":"Name","size":"Board size","clear":"Clear","launch":"▶ Start","cancel":"Cancel","editNone":"Click a tile to select it. Drag a tile onto another cell to swap tiles or move the empty cell.","editHole":"This cell is empty. Create a tile or drag an existing tile here.","marker":"Marker","tier":"Tower","tile":"Tile","upper":"Block","palette":"Palette","upperShape":"Block shape","circle":"● Circle","shapeCircle":"Circle","square":"■ Square","star":"✦ Star","bars":"✚ Centered tabs","bars2":"⌗ Offset tabs","hook":"Γ Hook","bodySize":"Size (cell width = 100%)","circleDiameter":"Diameter (cell width = 100%)","sideShift":"Side shifts","shift":"Shift (% of side)","length":"Length from center","centerShift":"Offset from center","thickness":"Thickness","offsetWidth":"⌗ Offset tabs","tabsHint":"Each tab occupies one half of a side. Paired tabs meet at the center; tabs in opposite halves of neighboring tiles may touch without overlapping.","hookHint":"Contact transfers motion to the next tile and along the chain. If any required tile is blocked, the entire move is blocked.","copy":"Copy to clipboard","paste":"Paste from clipboard","delete":"Delete","load":"Load","hint":"Hint","newPuzzle":"New puzzle","clearBoard":"Reset all tiles to a plain board","clearCuts":"Remove side shifts","clearTabs":"Remove tabs","clearHooks":"Remove hooks","shiftTop":"Shift top","shiftRight":"Shift right","shiftBottom":"Shift bottom","shiftLeft":"Shift left","top":"Top","right":"Right","bottom":"Bottom","left":"Left","topLeft":"Top, left","topRight":"Top, right","rightUpper":"Right, upper","rightLower":"Right, lower","bottomLeft":"Bottom, left","bottomRight":"Bottom, right","leftUpper":"Left, upper","leftLower":"Left, lower","appName":"Fifteen Pro","versionLine":"Fifteen Pro · version 3.31","shapeArrow":"Arrow","arrowHead":"Arrowhead size","arrowSharpness":"Sharpness","shapeOffset":"Shift from center","offsetDistance":"Offset distance","scrambleSteps":"Scramble moves","startBoardTitle":"Start board","targetBoardTitle":"Target board","hasTargetBoard":"Has target board","hasFixedFrame":"Has frame","fixedFrameTile":"Fixed frame tile","fixedFrameShape":"Tower on frame","fixedTowerColor":"Tower color","fixedFrameDirection":"Direction / sides","fixedFrameSize":"Size / length","frameShapeNone":"No tower","clearTowersWord1":"Remove","clearTowersWord2":"towers","targetCopyTitle":"Copy start board","targetClearTitle":"Clear target board","targetSwapTitle":"Swap start and target boards","clearAllMarkers":"Remove markers","numberAllMarkers":"Number markers","clearAllTowers":"Remove towers","markerColorLabel":"Color","markerColorBlack":"Black","markerColorWhite":"White","targetSwapNeedsFull":"Fill the target board with all tiles before swapping boards.","targetHelp":"Drag tiles from the start board. Drag within the target board to rearrange; right-click removes a tile.","targetEmpty":"Place at least one tile on the target board.","clearMarker":"Clear marker","addModifier":"Add another modifier","removeModifier":"Remove modifier","aboutTitle":"About","chooseLanguage":"Choose language","pulseLabel":"Pulsation","pulseOn":"On","pulseOff":"Off","copyTileParams":"Copy tile parameters","pasteTileParams":"Paste parameters","copyTileDone":"Tile parameters copied without the marker.","pasteTileDone":"Parameters pasted. The tile marker was preserved.","nothingToPaste":"Clipboard is empty — copy tile parameters first.","collapseSection":"Collapse section","expandSection":"Expand section","frameLabel":"Tile frame","frameNone":"None","frameCircle":"● Circle","frameSquare":"■ Square","developers":"Developers:","puzzleAuthors":"Puzzle authors:","puzzleNumber":"Puzzle {number}","defaultPuzzle":"Puzzle","importName":"Imported puzzle","winSummary":"“{name}” solved","plainStatus":"Drag a tile into the empty cell or click it.","playNamed":"“{name}”. Drag a tile into the empty cell or click it.","editorConflict":"Conflict: tower shapes overlap in the solved layout (marked red). Change the shapes or positions before starting.","editorReady":"Edit the tiles. No conflicts detected — press “Start” when ready.","editorLoaded":"Puzzle “{name}” loaded in the editor. Press “Start” to save it.","copyDone":"Puzzle “{name}” copied to the clipboard.","copyFallback":"Copy the puzzle text manually (Ctrl+C)","pastePrompt":"Paste puzzle text (Ctrl+V)","pasteError":"Could not paste: {error}.","deleteAsk":"Delete puzzle “{name}” from storage?","deleteTitle":"Delete puzzle?","newBoard":"New puzzle","assembled":"Solved! Moves: {moves}, time: {time}.","noMoves":"No legal moves. Press “Undo” or “Reset”.","notNeighbor":"This tile is not next to the empty cell, and its row/column cannot be shifted.","shiftBlocked":"Group move blocked: a required tile cannot continue moving.","undoDone":"Move undone.","redoDone":"Move restored.","scrambleNone":"This board has no legal moves. Change tile shapes in the editor.","scrambleDone":"Shuffling completed in {moves} steps.","resetDone":"Reset: board solved.","solve":"✓ Solve","stop":"✕ Stop","solveRunning":"Solving…","solveProgress":"Solving… {phase}Positions: {count}, time: {time}","solveDone":"Solution moves: {moves} · Search time: {time} s","solveFailed":"Could not find a solution. Board left in its current state.","solveAborted":"Solving aborted. Search time: {time} s. Board left in its current state.","computingRest":"Finishing the solution…","retryAttempt":"Attempt {n} of {total}. Rolling back…","retryHeuristic":"Switching to heuristic…","alreadySolvedTitle":"Puzzle is already solved","alreadySolvedText":"Scramble it?","scrambleShort":"🎲 Scramble","pause":"Pause","play":"Play","toStart":"To start","toEnd":"To end","stepBack":"Step back","stepFwd":"Step forward","phaseTopRow":"top row","phaseLeftCol":"left column","phaseBlock":"final block","phaseIda":"IDA*","phaseInit":"init","phaseStagedRemainder4":"remaining 4×4 area","deleteTile":"Delete tile","createTile":"＋ Create tile","turnHook":"Mirror hook","hookInward":"Heads inward","hookOutward":"Heads outward","tileDeleted":"Tile deleted. Its cell is now empty.","tileCreated":"Tile created.","noHole":"Leave at least one empty cell so tiles can move.","solverOneHole":"The automatic solver currently requires exactly one empty cell.","hookStemLength":"Stem length","hookWidth":"Protrusion width","author":"Author","chooseAuthor":"Choose author","width":"Board width","height":"Board height","unknownAuthor":"Unknown author","unsupportedSolverSize":"Automatic solving currently supports only 3×3 and 4×4 boards. You can still play and edit this board.","shapeSquare":"Square","shapeStar":"Star","shapeScrew":"Screw","screw":"Screw","screwDiameter":"Diameter (cell width = 100%)","shapeBars":"Centered tabs","shapeBars2":"Offset tabs","shapeHook":"Hook","frameCirclePlain":"Circle","frameSquarePlain":"Square","boardTools":"Board editor","knifeButton":"✂ Knife","bandageButton":"⛓ Bandage","unbindButton":"Unglue","boardModeHelp":"Click a tile to edit it. Knife removes a cell (click again to restore). Bandage joins tiles that share an edge.","knifeHelp":"Knife: click a cell to remove it with its tile. Click again to restore it as empty.","bandageHelp":"Bandage: select a tile, then add edge-adjacent tiles. Purple outlines show bonded tiles.","knifeLast":"Cannot remove all cells or the last empty cell.","bandageAdjacent":"Only tiles sharing an edge with the selected group can be bonded.","bandageWrong":"Cannot bond an empty or removed cell.","bandageBroken":"Bonded tiles must be edge-connected. Fix their positions in the editor.","unsupportedSolverStructure":"Automatic solving for cut-out or bonded boards is not yet supported.","starRotate":"Rotate star","starStraight":"Star","starTurned":"Shuriken","unbindHelp":"Unglue: press the button, then click a bonded tile to detach it from its group.","unbindDone":"Tile detached from the group.","editorBondBlocked":"Cannot move the bonded group: board edge, cut-out, or another bonded group.","phase3x3Bfs":"bidirectional BFS","phaseSpecialBfs":"bond-aware BFS","phaseSpecialCut":"staged search","phaseSpecialAstar":"full-board A*","phaseSpecialCheck":"validating route","phaseSpecialPattern":"ring-pattern search","phaseSpecialMeeting":"meet-in-the-middle search","printTitle":"3D print the puzzle","printDownload":"STL in ZIP","printPlanView":"Top view","print3DView":"3D view","printAssembled":"Assembled","printOnBed":"Parts on bed","printSettings":"Dimensions and clearances, mm","printReset":"Reset settings","printHelp":"Drag with the left button to rotate or the right button to pan. Scroll to zoom. Double-click to reset the view.","printInvalid":"Check the allowed settings ranges.","printBuilding":"Building parts: {current} / {total}","printReady":"Ready · {count} parts · unique tiles: {tiles} · unique blocks: {blocks}","printFailed":"Could not build or save the parts.","printNoWebGL":"The 3D view is unavailable. The top view and STL download are available.","print_pitch":"Cell pitch","print_gap":"Frame clearance","print_radius":"Corner radius","print_chamfer":"Chamfer","print_pinGap":"Pin tolerance","print_frameHeight":"Frame height","print_blockHeight":"Block height","printSingle":"Single STL","printStepFile":"STEP","printBuild3D":"Build 3D preview","print_resolution":"Detail step","printTooFine":"This model is too large at this detail step. Choose a coarser step.","printStepLimited":"This geometry currently requires STL.","printStepGlyph":"STEP saved. Engraved tile markers are available in STL.","print_pinHeight":"Pin height","print_blockGap":"Clearance under blocks","printBlockGapInvalid":"The clearance under the block must be less than the pin height.","print_frameThickness":"Frame wall thickness","print_frameRadius":"Outer frame corner radius","printFrameRadiusInvalid":"Reduce the outer corner radius or increase the frame wall thickness.","printFrameGroup":"Frame","printTilesGroup":"Tiles","printBlocksGroup":"Blocks","printTextGroup":"Lettering","printOtherGroup":"Other","printFrameText":"Frame inscription","printTextMode":"Inscription style","printTextNone":"None","printTextRaised":"Raised","printTextEngraved":"Engraved","printTextInlay":"Color inlay","printTextFont":"Font","printTextSize":"Size","printTextSpacing":"Letter spacing","printTextThickness":"Inscription thickness","printTextDepthInvalid":"Reduce the inscription thickness so that the recess stays above the frame seam.","printFramePinGap":"The clearance under a frame block must be less than its pin height.","solveStoppedManual":"Search stopped by the user.","solveStoppedExhausted":"The reachable states were explored without matching the goal.","solveStoppedMemory":"The estimated memory limit was reached ({budget} GiB).","solveStoppedStagedGoal":"The staged search could not construct a complete target arrangement.","solveStoppedWorker":"The IDA* worker failed.","solveStoppedUnsolvable":"The classical board failed the parity check for reachability.","solveStoppedInvalidRoute":"The route failed move or goal validation.","solveStoppedNoRoute":"The selected search exhausted its attempts without a verified solution.","solveStoppedError":"An internal error interrupted the search. {error}","solveStopMethod":"Algorithm — {method}","solveStopStage":"Stage — {stage}","solveStopDepth":"Search depth — {depth} moves","solveStopTime":"Search time — {time} s","solveStopPriorLimit":"One attempt reached the memory limit ({budget} GiB)","solveStopPlayback":"Solution playback, move {index} of {total}"}};
 
 var LAST_STATUS = null, LAST_DIALOG = null;
 var pulseOn = true;
@@ -1634,7 +1670,7 @@ function makeExtraMod(kind, source) {
     barWidth: source.barWidth == null ? 0.70 : source.barWidth,
     sides: [0,0,0,0]
   };
-  if (kind === 'arrow') return { arrowSides:(source.arrowSides||[1,0,0,0]).slice(), arrowLength:source.arrowLength == null?.8:source.arrowLength, arrowShift:source.arrowShift||0, arrowThick:source.arrowThick == null?.25:source.arrowThick, arrowHead:source.arrowHead == null?.5:source.arrowHead };
+  if (kind === 'arrow') return { arrowSides:(source.arrowSides||[1,0,0,0]).slice(), arrowLength:source.arrowLength == null?.8:source.arrowLength, arrowShift:source.arrowShift||0, arrowThick:source.arrowThick == null?.25:source.arrowThick, arrowHead:source.arrowHead == null?.5:source.arrowHead, arrowSharpness:arrowSharpnessOf(source) };
   if (kind === 'bars2') return {
     bl2: source.bl2 == null ? 0.60 : source.bl2,
     bar2Shift: source.bar2Shift || 0,
@@ -1656,9 +1692,9 @@ function normalizeExtraMods(t) {
     arr = arr.slice(0,12).map(function(raw) {
       if (!raw || typeof raw !== 'object') raw = {};
       var e = makeExtraMod(kind, raw), names = kind === 'bars' ? ['bl','barShift','barWidth'] :
-        kind === 'bars2' ? ['bl2','bar2Shift','thick'] : kind === 'arrow' ? ['arrowLength','arrowShift','arrowThick','arrowHead'] : ['hookThick','hookLength','hookWidth'];
+        kind === 'bars2' ? ['bl2','bar2Shift','thick'] : kind === 'arrow' ? ['arrowLength','arrowShift','arrowThick','arrowHead','arrowSharpness'] : ['hookThick','hookLength','hookWidth'];
       var limits = kind === 'bars' ? [[0.30,1.50],[-0.50,0.50],[0.30,0.80]] :
-        kind === 'bars2' ? [[0.30,1.50],[-0.50,0.50],[0.40,1.50]] : kind === 'arrow' ? [[.30,1.50],[-.50,.50],[.10,.50],[.10,1]] : [[0.30,0.60],[0.50,1.10],[0.30,1]];
+        kind === 'bars2' ? [[0.30,1.50],[-0.50,0.50],[0.40,1.50]] : kind === 'arrow' ? [[.30,1.50],[-.50,.50],[.10,.50],[.10,1],[0,1]] : [[0.30,0.60],[0.50,1.10],[0.30,1]];
       names.forEach(function(field,i) {
         if (Number.isFinite(raw[field])) e[field] = Math.max(limits[i][0], Math.min(limits[i][1], raw[field]));
       });
@@ -1678,7 +1714,7 @@ function extraModsKey(t) {
     (x.bars || []).map(function(e){return [e.bl,e.barShift||0,e.barWidth,e.sides.join('')];}),
     (x.bars2 || []).map(function(e){return [e.bl2,e.bar2Shift||0,e.thick,e.sides2.join('')];}),
     (x.hook || []).map(function(e){return [e.hooks.join(''),e.hookThick,e.hookLength,e.hookWidth,e.hookOut?1:0];}),
-    (x.arrow||[]).map(function(e){return [e.arrowSides.join(''),e.arrowLength,e.arrowShift,e.arrowThick,e.arrowHead];})
+    (x.arrow||[]).map(function(e){return [e.arrowSides.join(''),e.arrowLength,e.arrowShift,e.arrowThick,e.arrowHead,arrowSharpnessOf(e)];})
   ]) : '';
 }
 function extraModCount(t, kind) { return t.extraMods && Array.isArray(t.extraMods[kind]) ? t.extraMods[kind].length : 0; }
@@ -1694,10 +1730,13 @@ function syncUpper(t) {
     EXTRA_MOD_TYPES.some(function(kind){ return extraModCount(t,kind) > 0; });
 }
 
+function arrowSharpnessOf(tile) {
+  return Number.isFinite(tile.arrowSharpness) ? Math.max(0,Math.min(1,tile.arrowSharpness)) : .5;
+}
 function newTile(marker) {
   return {
     marker: marker, markerColor: 'black', color: '#ffffff', upColor: UP_DEFAULT, upper: false,
-    body: 'none', cr: 0.60, sq: 0.70, star: 1.20, starTilt: false, bodyShiftDir: -1, bodyShift: 0, screw:false, screwCr:0.30, screwDir:-1, screwShift:0, arrow: false, arrowSides: [1,0,0,0], arrowLength: .8, arrowShift: 0, arrowThick: .25, arrowHead: .50, bond: 0, thick: 1.00, ch: [0, 0, 0, 0], cut: 0.30,
+    body: 'none', cr: 0.60, sq: 0.70, star: 1.20, starTilt: false, bodyShiftDir: -1, bodyShift: 0, screw:false, screwCr:0.30, screwDir:-1, screwShift:0, arrow: false, arrowSides: [1,0,0,0], arrowLength: .8, arrowShift: 0, arrowThick: .25, arrowHead: .50, arrowSharpness: .5, bond: 0, thick: 1.00, ch: [0, 0, 0, 0], cut: 0.30,
     bars: false, bl: 0.60, barShift: 0, barWidth: 0.70, bars2: false, bl2: 0.60, bar2Shift: 0,
     sides: [1, 1, 1, 1], sides2: [1, 1, 1, 1, 1, 1, 1, 1],
     frame: 'none',
@@ -1719,7 +1758,7 @@ function solverTileIdentity(t) {
   var key = tileSig(t);
   if (t.upper) {
     if (t.body !== 'none') key += '|offset:' + (t.bodyShiftDir == null ? -1 : t.bodyShiftDir) + '/' + (t.bodyShift || 0);
-    if (t.arrow) key += '|arrow:' + (t.arrowSides || []).join('') + '/' + t.arrowLength + '/' + t.arrowShift + '/' + t.arrowThick + '/' + t.arrowHead;
+    if (t.arrow) key += '|arrow:' + (t.arrowSides || []).join('') + '/' + t.arrowLength + '/' + t.arrowShift + '/' + t.arrowThick + '/' + t.arrowHead + '/' + arrowSharpnessOf(t);
   }
   return key;
 }
@@ -1805,7 +1844,7 @@ function puzzleToText(p) {
       if (t.body === 'circle') o.push('circle=' + Math.round(t.cr * 200));
       if (t.body !== 'none' && (t.bodyShiftDir||0)>=0 && t.bodyShiftDir != null && (t.bodyShift||0)>0) o.push('bodyoffset='+t.bodyShiftDir+':'+Math.round(t.bodyShift*100));
       if (t.screw) o.push('screw=' + Math.round(t.screwCr*100) + ':' + (t.screwDir == null ? -1 : t.screwDir) + ':' + Math.round((t.screwShift||0)*100));
-      if (t.arrow) o.push('arrow='+Math.round((t.arrowLength||.8)*100)+':'+sidesToLetters(t.arrowSides||[1,0,0,0])+':'+Math.round((t.arrowShift||0)*100)+':'+Math.round((t.arrowThick||.25)*100)+':'+Math.round((t.arrowHead||.5)*100));
+      if (t.arrow) o.push('arrow='+Math.round((t.arrowLength||.8)*100)+':'+sidesToLetters(t.arrowSides||[1,0,0,0])+':'+Math.round((t.arrowShift||0)*100)+':'+Math.round((t.arrowThick||.25)*100)+':'+Math.round((t.arrowHead||.5)*100)+(arrowSharpnessOf(t)===.5?'':':'+Math.round(arrowSharpnessOf(t)*100)));
       if (t.body === 'star') {
         o.push('star=' + Math.round(t.star * 100));
         if (t.starTilt) o.push('starturn=45');
@@ -1851,7 +1890,7 @@ function puzzleToText(p) {
       (t.extraMods.hook || []).forEach(function(e) {
         o.push('hookx='+e.hooks.join('')+':'+Math.round(e.hookThick*100)+':'+(e.hookOut?1:0)+':'+Math.round(e.hookLength*100)+':'+Math.round(e.hookWidth*100));
       });
-      (t.extraMods.arrow||[]).forEach(function(e){o.push('arrowx='+Math.round(e.arrowLength*100)+':'+sidesToLetters(e.arrowSides)+':'+Math.round(e.arrowShift*100)+':'+Math.round(e.arrowThick*100)+':'+Math.round(e.arrowHead*100));});
+      (t.extraMods.arrow||[]).forEach(function(e){o.push('arrowx='+Math.round(e.arrowLength*100)+':'+sidesToLetters(e.arrowSides)+':'+Math.round(e.arrowShift*100)+':'+Math.round(e.arrowThick*100)+':'+Math.round(e.arrowHead*100)+(arrowSharpnessOf(e)===.5?'':':'+Math.round(arrowSharpnessOf(e)*100)));});
     }
     if (t.bond > 0) o.push('bond=' + t.bond);
     L.push('cell: ' + t.marker + ' |' + (o.length ? ' ' + o.join(' ') : ''));
@@ -1918,13 +1957,13 @@ function applyOpts(t, optStr) {
       return;
     }
     if(k==='arrow') {
-      if(parts.length!==5||!/^[TRBL]*$/i.test(parts[1])||!parts.filter(function(_,i){return i!==1;}).every(function(v){return v!==''&&Number.isFinite(+v);})) {err='неверный параметр arrow';return;}
+      if((parts.length!==5&&parts.length!==6)||!/^[TRBL]*$/i.test(parts[1])||!parts.filter(function(_,i){return i!==1;}).every(function(v){return v!==''&&Number.isFinite(+v);})) {err='неверный параметр arrow';return;}
       t.arrow=true;t.arrowLength=clampN(+parts[0],30,150)/100;t.arrowSides=lettersToSides(parts[1]);
-      t.arrowShift=clampN(+parts[2],-50,50)/100;t.arrowThick=clampN(+parts[3],10,50)/100;t.arrowHead=clampN(+parts[4],10,100)/100;return;
+      t.arrowShift=clampN(+parts[2],-50,50)/100;t.arrowThick=clampN(+parts[3],10,50)/100;t.arrowHead=clampN(+parts[4],10,100)/100;t.arrowSharpness=parts.length===6?clampN(+parts[5],0,100)/100:.5;return;
     }
     if(k==='arrowx'){
-      if(parts.length!==5||!/^[TRBL]*$/i.test(parts[1])||!parts.filter(function(_,i){return i!==1;}).every(function(v){return v!==''&&Number.isFinite(+v);})) {err='неверный параметр arrowx';return;}
-      var eArrow=makeExtraMod('arrow');eArrow.arrowLength=clampN(+parts[0],30,150)/100;eArrow.arrowSides=lettersToSides(parts[1]);eArrow.arrowShift=clampN(+parts[2],-50,50)/100;eArrow.arrowThick=clampN(+parts[3],10,50)/100;eArrow.arrowHead=clampN(+parts[4],10,100)/100;normalizeExtraMods(t).arrow.push(eArrow);return;
+      if((parts.length!==5&&parts.length!==6)||!/^[TRBL]*$/i.test(parts[1])||!parts.filter(function(_,i){return i!==1;}).every(function(v){return v!==''&&Number.isFinite(+v);})) {err='неверный параметр arrowx';return;}
+      var eArrow=makeExtraMod('arrow');eArrow.arrowLength=clampN(+parts[0],30,150)/100;eArrow.arrowSides=lettersToSides(parts[1]);eArrow.arrowShift=clampN(+parts[2],-50,50)/100;eArrow.arrowThick=clampN(+parts[3],10,50)/100;eArrow.arrowHead=clampN(+parts[4],10,100)/100;eArrow.arrowSharpness=parts.length===6?clampN(+parts[5],0,100)/100:.5;normalizeExtraMods(t).arrow.push(eArrow);return;
     }
     if (k === 'barsx' || k === 'bars2x' || k === 'hookx') {
       // Independent secondary configurations. Fields are colon-separated,
@@ -2170,7 +2209,13 @@ function shapesOf(t, cx, cy) {
     var head=Math.max(.1,Math.min(1,t.arrowHead == null ? .5 : t.arrowHead));
     for(var as=0;as<4;as++)if(A[as]&&len>inner+.01){
       var span=len-inner;
-      var headLen=Math.max(.06,Math.min(span*.8,head*.50));
+      // Slide the shoulders along the shaft while preserving its width,
+      // the full head width, and the locations of the tip and tail.
+      var oldHeadLen=Math.max(.06,Math.min(span*.8,head*.50));
+      var sharpness=arrowSharpnessOf(t);
+      var headLen=sharpness<=.5
+        ? oldHeadLen*(.45+1.1*sharpness)
+        : oldHeadLen+(Math.max(oldHeadLen,span*.93)-oldHeadLen)*(2*sharpness-1);
       var hw=Math.max(thick*1.35,thick*(1+head*2));
       var pts=[[inner,-thick/2],[len-headLen,-thick/2],[len-headLen,-hw/2],[len,0],[len-headLen,hw/2],[len-headLen,thick/2],[inner,thick/2]];
       var angle=(as-1)*Math.PI/2; // R=1, T=0, B=2, L=3
@@ -2214,7 +2259,7 @@ function shapesOf(t, cx, cy) {
       var mock = {upper:true,body:'none',bars:false,bars2:false};
       if (kind === 'bars') { mock.bars=true; mock.bl=e.bl; mock.barShift=e.barShift; mock.barWidth=e.barWidth; mock.sides=e.sides; }
       else if (kind === 'bars2') { mock.bars2=true; mock.bl2=e.bl2; mock.bar2Shift=e.bar2Shift; mock.thick=e.thick; mock.sides2=e.sides2; }
-      else if(kind==='arrow'){mock.arrow=true;mock.arrowSides=e.arrowSides;mock.arrowLength=e.arrowLength;mock.arrowShift=e.arrowShift;mock.arrowThick=e.arrowThick;mock.arrowHead=e.arrowHead;}
+      else if(kind==='arrow'){mock.arrow=true;mock.arrowSides=e.arrowSides;mock.arrowLength=e.arrowLength;mock.arrowShift=e.arrowShift;mock.arrowThick=e.arrowThick;mock.arrowHead=e.arrowHead;mock.arrowSharpness=arrowSharpnessOf(e);}
       else { mock.hooks=e.hooks; mock.hookThick=e.hookThick; mock.hookLength=e.hookLength; mock.hookWidth=e.hookWidth; mock.hookOut=e.hookOut; }
       var extraShapes = shapesOf(mock,cx,cy);
       for (var z=0;z<extraShapes.length;z++) o.push(extraShapes[z]);
@@ -2264,7 +2309,7 @@ function contourShape(s, env) {
 }
 function geometryKey(t) {
   var hk = t.hooks ? t.hooks.join('') : '00000000';
-  return [t.upper ? 1 : 0, t.body, t.cr, t.sq, t.star, t.starTilt ? 1 : 0, t.bodyShiftDir == null ? -1 : t.bodyShiftDir, t.bodyShift || 0, t.arrow ? 1 : 0, (t.arrowSides||[]).join(''), t.arrowLength, t.arrowShift, t.arrowThick, t.arrowHead, t.cut, t.ch.join(''),
+  return [t.upper ? 1 : 0, t.body, t.cr, t.sq, t.star, t.starTilt ? 1 : 0, t.bodyShiftDir == null ? -1 : t.bodyShiftDir, t.bodyShift || 0, t.arrow ? 1 : 0, (t.arrowSides||[]).join(''), t.arrowLength, t.arrowShift, t.arrowThick, t.arrowHead, arrowSharpnessOf(t), t.cut, t.ch.join(''),
     t.bars ? 1 : 0, t.bl, t.barShift || 0, t.barWidth === undefined ? 0.70 : t.barWidth, t.sides.join(''),
     t.bars2 ? 1 : 0, t.bl2, t.bar2Shift || 0, t.thick === undefined ? 1 : t.thick, t.sides2.join(''),
     t.frame || 'none', hk, t.hookThick === undefined ? 0.5 : t.hookThick, t.hookOut ? 1 : 0, 'hook-178', hookLengthOf(t), hookWidthOf(t), HOOK_EDGE_SHIFT, hookGeometryDelta(), extraModsKey(t)].join('|');
@@ -4742,8 +4787,8 @@ function updateEditor() {
       document.querySelectorAll('[data-compass="'+shape+'"] button').forEach(function(b){b.classList.toggle('on',b.dataset.dir!==undefined&&Number(b.dataset.dir)===dir);});
     });
     $('arrowBox').classList.toggle('hidden',!on.arrow);
-    ['Length','Shift','Thick','Head'].forEach(function(part){
-      var field={Length:'arrowLength',Shift:'arrowShift',Thick:'arrowThick',Head:'arrowHead'}[part], val=Math.round((t[field]||0)*100);
+    ['Length','Shift','Thick','Head','Sharpness'].forEach(function(part){
+      var field={Length:'arrowLength',Shift:'arrowShift',Thick:'arrowThick',Head:'arrowHead',Sharpness:'arrowSharpness'}[part], val=Math.round((part==='Sharpness'?arrowSharpnessOf(t):t[field]||0)*100);
       $('arrow'+part+'Range').value=val;$('arrow'+part+'Val').textContent=val+'%';
     });
     $('arrowSides').querySelectorAll('button').forEach(function(b){b.classList.toggle('on',!!(t.arrowSides||[])[+b.dataset.arrowSide]);});
@@ -4805,7 +4850,7 @@ var EXTRA_INPUT_FIELDS = {
   bars: {blRange:'bl',barShiftRange:'barShift',barWidthRange:'barWidth'},
   bars2: {bl2Range:'bl2',bar2ShiftRange:'bar2Shift',thickRange:'thick'},
   hook: {hookWidthRange:'hookWidth',hookLengthRange:'hookLength',hookThickRange:'hookThick'},
-  arrow:{arrowLengthRange:'arrowLength',arrowShiftRange:'arrowShift',arrowThickRange:'arrowThick',arrowHeadRange:'arrowHead'}
+  arrow:{arrowLengthRange:'arrowLength',arrowShiftRange:'arrowShift',arrowThickRange:'arrowThick',arrowHeadRange:'arrowHead',arrowSharpnessRange:'arrowSharpness'}
 };
 function appendExtraEditor(kind, ix, after) {
   var box = $(kind === 'bars' ? 'barsBox' : kind === 'bars2' ? 'bars2Box' : kind === 'arrow' ? 'arrowBox' : 'hookBox');
@@ -5683,6 +5728,7 @@ function solverProgressBegin(labelKey) {
 }
 function solverProgressSetLabel(labelKey, tileId) {
   if (!solverProgress) return;
+  if(solverProgress.labelKey!==labelKey)solverProgress.bfsDepth=null;
   solverProgress.labelKey = labelKey;
   if (tileId === undefined || tileId === null) { solverProgress.tileLabel = ''; return; }
   var t = cfg && cfg.tiles[tileId];
@@ -5721,6 +5767,7 @@ function solverProgressFlush(now) {
   }), '');
 }
 function solverProgressEnd() {
+  if(solverProgress)solverLastStage=solverStageSnapshot();
   solverProgress = null; solverAttemptDescription = '';
 }
 
@@ -6591,21 +6638,21 @@ function stagedHeuristic(state,targets,goalPositions,goalLayout){
   for(var j=0;j<targets.length;j++){
     var dest=targets[j],id=goalLayout[dest],pos=positions[id];
     if(pos===dest)placed++;
-    else sum+=Math.abs((pos%4)-(dest%4))+Math.abs(((pos/4)|0)-((dest/4)|0));
+    else sum+=Math.abs((pos%n)-(dest%n))+Math.abs(((pos/n)|0)-((dest/n)|0));
   }
   for(var k=0;k<positions.length;k++){
     var at=positions[k],to=goalPositions[k];
     if(at!==undefined&&to!==undefined)
-      rest+=Math.abs((at%4)-(to%4))+Math.abs(((at/4)|0)-((to/4)|0));
+      rest+=Math.abs((at%n)-(to%n))+Math.abs(((at/n)|0)-((to/n)|0));
   }
   return {primary:sum,secondary:rest,placed:placed};
 }
 // A small bounded cache is shared across stages, never between puzzles.
-function stagedLegalNeighbors(state,cache){
-  if(!cache)return solverNeighbors(state,{});
+function stagedLegalNeighbors(state,cache,frozen){
+  if(!cache)return solverNeighbors(state,frozen||{});
   var k=state.join(','),res=cache.get(k);
   if(res)return res;
-  res=solverNeighbors(state,{});
+  res=solverNeighbors(state,frozen||{});
   if(cache.size>=24000)cache.clear();
   cache.set(k,res);
   return res;
@@ -6627,7 +6674,7 @@ function stagedDedupe(candidates,limit){
   for(var j=0;j<deferred.length&&chosen.length<limit;j++)chosen.push(deferred[j]);
   return chosen;
 }
-async function stagedFindCandidates(source,targets,goalPositions,count,variant,cache,goalLayout){
+async function stagedFindCandidates(source,targets,goalPositions,count,variant,cache,goalLayout,frozen){
   var root={lay:source.lay.slice(),parent:null,move:-1,depth:0};
   var visited=new Map(),heap=[],output=[],outSet=new Set(),expanded=0,lastYield=Date.now();
   var hh=stagedHeuristic(root.lay,targets,goalPositions,goalLayout);
@@ -6656,7 +6703,7 @@ async function stagedFindCandidates(source,targets,goalPositions,count,variant,c
       solverProgressAdd(128);
       if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
     }
-    var nbrs=stagedLegalNeighbors(curr.lay,cache);
+    var nbrs=stagedLegalNeighbors(curr.lay,cache,frozen);
     if(variant&1)nbrs=nbrs.slice().reverse();
     for(var j=0;j<nbrs.length;j++){
       var nb=nbrs[j],key=nb.lay.join(','),depth=curr.depth+1;
@@ -6673,7 +6720,7 @@ async function stagedFindCandidates(source,targets,goalPositions,count,variant,c
 }
 // A last-resort weighted A* search; previously solved border tiles
 // can be moved if a geometric puzzle requires temporarily undoing progress.
-async function stagedFinishAStar(source,goalPositions,cache,weight,goalLayout){
+async function stagedFinishAStar(source,goalPositions,cache,weight,goalLayout,frozen){
   goalLayout=goalLayout||cfg.layout;
   var heap=[],visited=new Map(),lastYield=Date.now(),expanded=0;
   var root={lay:source.lay,parent:null,move:-1,depth:0};
@@ -6696,7 +6743,7 @@ async function stagedFinishAStar(source,goalPositions,cache,weight,goalLayout){
       solverProgressAdd(256);
       if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
     }
-    var nbrs=stagedLegalNeighbors(node.lay,cache);
+    var nbrs=stagedLegalNeighbors(node.lay,cache,frozen);
     for(var i=0;i<nbrs.length;i++){
       var child=nbrs[i],nk=child.lay.join(','),depth=node.depth+1;
       if(visited.has(nk)&&visited.get(nk)<=depth)continue;
@@ -6708,107 +6755,25 @@ async function stagedFinishAStar(source,goalPositions,cache,weight,goalLayout){
   }
   return null;
 }
-async function stagedFindCandidatesLegacy(source, targets, goalPositions, count, variant, goalLayout) {
-  var first=source.lay.slice(), visited=new Map(), heap=[];
-  var initialH=stagedHeuristic(first,targets,goalPositions,goalLayout);
-  var root={lay:first, parent:null, move:-1, depth:0};
-  stagedHeapPush(heap,{node:root,priority:initialH.primary*3+initialH.secondary*.035});
-  visited.set(first.join(','),0);
-  var output=[], seenOut=new Set(), expanded=0, lastYield=Date.now();
-  var capacity=solverMemoryCapacity(source.lay.length);
-  search: while(heap.length && !solveAbort) {
-    var curr=stagedHeapPop(heap).node;
-    var h=stagedHeuristic(curr.lay,targets,goalPositions,goalLayout);
-    if(h.primary===0) {
-      var candidateKey=curr.lay.join(',');
-      if(!seenOut.has(candidateKey)) {
-        var route=[]; var walk=curr;
-        while(walk.parent){route.push(walk.move);walk=walk.parent;}
-        route.reverse();
-        seenOut.add(candidateKey);output.push({lay:curr.lay,moves:source.moves.concat(route),score:h.secondary});
-      }
-      if(output.length>=count)break;
-      // Do not expand an already satisfactory boundary: seek alternate endpoints.
-      continue;
-    }
-    ++expanded;
-    if((expanded&127)===0) {
-      solverProgressAdd(128);
-      if(Date.now()-lastYield>35){await solverSleep(0);lastYield=Date.now();}
-    }
-    var neighbors=solverNeighbors(curr.lay,{});
-    if(variant&1)neighbors.reverse();
-    for(var j=0;j<neighbors.length;j++) {
-      var nb=neighbors[j],key=nb.lay.join(','),depth=curr.depth+1;
-      if(visited.has(key)&&visited.get(key)<=depth)continue;
-      if(solverMemoryFull(Math.max(visited.size,expanded+heap.length),capacity))break search;
-      visited.set(key,depth);
-      var nh=stagedHeuristic(nb.lay,targets,goalPositions,goalLayout);
-      var priority=depth*.65+nh.primary*3.5+nh.secondary*.055;
-      // A stable alternate ordering, without random resets.
-      priority+=(variant%3)*.00001*j;
-      stagedHeapPush(heap,{node:{lay:nb.lay,parent:curr,move:nb.move,depth:depth},priority:priority});
-    }
-  }
-  return output;
-}
-function stagedDedupeLegacy(candidates, limit) {
-  var seen=new Set(),chosen=[];
-  candidates.sort(function(a,b){return a.moves.length-b.moves.length + (a.score-b.score)*.12;});
-  for(var i=0;i<candidates.length && chosen.length<limit;i++) {
-    var item=candidates[i],key=item.lay.join(',');
-    if(seen.has(key))continue;
-    seen.add(key);chosen.push(item);
-  }
-  return chosen;
-}
-async function stagedSearchLegacy4x4(start, goalLayout) {
+async function stagedSearch4x4(start,goalLayout,region,outer){
   goalLayout=goalLayout||cfg.layout;
+  outer=outer||{};
+  if(region&&!cfg.tiles.some(function(tile){return tile.upper;})){
+    var border=await stagedPlainBorder(start,goalLayout,region,4,outer);
+    if(!border||solveAbort)return null;
+    solverProgressSetLabel('phaseBlock');
+    var finish=await bidirectionalBFS(border.lay,goalLayout,border.frozen);
+    return finish?border.moves.concat(finish):null;
+  }
   var goals=new Array(cfg.tiles.length);
-  for(var p=0;p<16;p++)if(goalLayout[p]>=0)goals[goalLayout[p]]=p;
+  for(var p=0;p<goalLayout.length;p++)if(goalLayout[p]>=0)goals[goalLayout[p]]=p;
   var orders=[
     [[0,1],[0,1,2,3],[0,1,2,3,4,8,12]],
     [[0,4],[0,4,8,12],[0,4,8,12,1,2,3]]
   ];
-  for(var orderIndex=0;orderIndex<orders.length && !solveAbort;orderIndex++) {
-    var paths=[{lay:start.slice(),moves:[],score:0}];
-    var stages=orders[orderIndex];
-    for(var stage=0;stage<stages.length && paths.length && !solveAbort;stage++) {
-      solverAttemptDescription=(orderIndex+1)+'/2 · '+(orderIndex===0?tr('phaseTopRow'):tr('phaseLeftCol'))+' · '+(stage+1)+'/3';
-      solverProgressSetLabel(stage===0?(orderIndex===0?'phaseTopRow':'phaseLeftCol'):'phaseBlock');
-      solverProgressFlush();
-      var found=[];
-      for(var k=0;k<paths.length && !solveAbort;k++) {
-        var candidate=paths[k];
-        var additions=await stagedFindCandidatesLegacy(candidate,stages[stage],goals,stage===2?5:7,(k+stage)%4,goalLayout);
-        for(var j=0;j<additions.length;j++)found.push(additions[j]);
-      }
-      paths=stagedDedupeLegacy(found,stage===2?14:9);
-    }
-    solverAttemptDescription=(orderIndex+1)+'/2 · '+tr('phaseBlock');
-    for(var ci=0;ci<paths.length && !solveAbort;ci++) {
-      var candidate=paths[ci],fixed={};
-      var cells=stages[2];
-      for(var fi=0;fi<cells.length;fi++)fixed[cells[fi]]=true;
-      // The final 9-cell search is exact; all paths are validated before playback.
-      var ending=await bidirectionalBFS(candidate.lay,goalLayout,fixed);
-      if(ending) {
-        var route=candidate.moves.concat(ending);
-        if(solverValidatePath(start,route,goalLayout,{}))return route;
-      }
-    }
-  }
-  return null;
-}
-
-async function stagedSearch4x4(start,goalLayout){
-  goalLayout=goalLayout||cfg.layout;
-  var goals=new Array(cfg.tiles.length);
-  for(var p=0;p<16;p++)if(goalLayout[p]>=0)goals[goalLayout[p]]=p;
-  var orders=[
-    [[0,1],[0,1,2,3],[0,1,2,3,4,8,12]],
-    [[0,4],[0,4,8,12],[0,4,8,12,1,2,3]]
-  ];
+  if(region)orders=orders.map(function(stages){
+    return stages.map(function(cells){return cells.map(function(cell){return region[cell];});});
+  });
   var neighborCache=new Map(),fallback=[];
   for(var orderIndex=0;orderIndex<orders.length&&!solveAbort;orderIndex++){
     var paths=[{lay:start.slice(),moves:[],score:0}],stages=orders[orderIndex];
@@ -6819,14 +6784,14 @@ async function stagedSearch4x4(start,goalLayout){
       var found=[];
       for(var k=0;k<paths.length&&!solveAbort;k++){
         var candidate=paths[k];
-        var additions=await stagedFindCandidates(candidate,stages[stage],goals,stage===2?8:10,(k+stage)%4,neighborCache,goalLayout);
+        var additions=await stagedFindCandidates(candidate,stages[stage],goals,stage===2?8:10,(k+stage)%4,neighborCache,goalLayout,outer);
         for(var j=0;j<additions.length;j++)found.push(additions[j]);
       }
       paths=stagedDedupe(found,stage===2?18:12);
     }
     solverAttemptDescription=(orderIndex+1)+'/2 · '+tr('phaseBlock');
     for(var ci=0;ci<paths.length&&!solveAbort;ci++){
-      var candidate=paths[ci],fixed={},cells=stages[2];
+      var candidate=paths[ci],fixed=Object.assign({},outer),cells=stages[2];
       for(var fi=0;fi<cells.length;fi++)fixed[cells[fi]]=true;
       var ending=await bidirectionalBFS(candidate.lay,goalLayout,fixed);
       if(ending){
@@ -6844,11 +6809,125 @@ async function stagedSearch4x4(start,goalLayout){
     solverAttemptDescription=tr('phaseBlock')+' · A* '+(f+1)+'/'+finals.length;
     solverProgressFlush();
     var from=finals[f];
-    var suffix=await stagedFinishAStar(from,goals,neighborCache,f%2?2.5:3.5,goalLayout);
+    var suffix=await stagedFinishAStar(from,goals,neighborCache,f%2?2.5:3.5,goalLayout,outer);
     if(suffix){
       var complete=from.moves.concat(suffix);
       if(solverValidatePath(start,complete,goalLayout,{}))return complete;
     }
+  }
+  return null;
+}
+
+function canUseStagedSearch(state) {
+  return (n===4||n===5)&&n===boardRows&&!hasSpecialBoard()&&
+    state.filter(function(id){return id===-1;}).length===1;
+}
+
+// With ordinary tiles only the empty cell and the one or two pieces being
+// placed affect a border step. Search that small projected state exactly.
+async function stagedPlainBorder(start,goal,region,width,outer) {
+  var state=start.slice(),moves=[],frozen=Object.assign({},outer);
+  var lines=[region.slice(0,width),region.filter(function(_,i){return i>0&&i%width===0;})];
+  for(var line=0;line<lines.length;line++){
+    var cells=lines[line];
+    for(var i=0;i<cells.length&&!solveAbort;){
+      var destinations=cells.slice(i,i+(cells.length-i===2?2:1));
+      var first=goal[destinations[0]],second=destinations.length===2?goal[destinations[1]]:null;
+      if(first<0||second===-1)return null;
+      solverProgressSetLabel(line===0?'phaseTopRow':'phaseLeftCol',first);
+      solverProgressFlush();
+      var root={hole:state.indexOf(-1),a:state.indexOf(first),b:second===null?-1:state.indexOf(second),parent:null};
+      var initialKey=(root.hole*state.length+root.a)*(state.length+1)+root.b+1;
+      var queue=[root],seen=new Set([initialKey]),found=null,lastYield=Date.now();
+      for(var head=0;head<queue.length&&!solveAbort;head++){
+        var node=queue[head];
+        if(node.a===destinations[0]&&(second===null||node.b===destinations[1])){found=node;break;}
+        for(var cell of neighborsOf(node.hole)){
+          if(frozen[cell])continue;
+          var a=cell===node.a?node.hole:node.a,b=cell===node.b?node.hole:node.b;
+          var key=(cell*state.length+a)*(state.length+1)+b+1;
+          if(seen.has(key))continue;
+          seen.add(key);queue.push({hole:cell,a:a,b:b,parent:node});
+        }
+        if((head&127)===127){
+          solverProgressAdd(128);
+          if(Date.now()-lastYield>30){await solverSleep(0);lastYield=Date.now();}
+        }
+      }
+      if(!found)return null;
+      var route=[];
+      while(found.parent){route.push(found.hole);found=found.parent;}
+      for(var move of route.reverse()){
+        state[state.indexOf(-1)]=state[move];state[move]=-1;moves.push(move);
+      }
+      for(var at of destinations)frozen[at]=true;
+      i+=destinations.length;
+    }
+  }
+  return solveAbort?null:{lay:state,moves:moves,frozen:frozen};
+}
+
+// Normalize an edge goal using reversible slides so that its empty cell
+// won't be locked in either of the two borders. Keep the return path.
+async function stagedInnerGoal(goal) {
+  var root={lay:goal,previous:null},queue=[root],seen=new Set([goal.join(',')]);
+  var capacity=solverMemoryCapacity(goal.length),lastYield=Date.now();
+  for(var head=0;head<queue.length&&!solveAbort;head++){
+    var node=queue[head],hole=node.lay.indexOf(-1);
+    if(hole%n>=2&&Math.floor(hole/n)>=2){
+      var tail=[],within=node.lay;
+      while(node.previous){node=node.previous;tail.push(node.lay.indexOf(-1));}
+      return {goal:within,tail:tail};
+    }
+    for(var edge of solverNeighbors(node.lay,{})){
+      if(travelInState(hole,edge.move,edge.lay)<1-1e-9)continue;
+      var key=edge.lay.join(',');
+      if(seen.has(key))continue;
+      if(solverMemoryFull(seen.size,capacity))return null;
+      seen.add(key);queue.push({lay:edge.lay,previous:node});
+    }
+    if((head&127)===127){
+      solverProgressAdd(128);
+      if(Date.now()-lastYield>30){await solverSleep(0);lastYield=Date.now();}
+    }
+  }
+  return null;
+}
+async function stagedSearch5x5(start,goalLayout){
+  solverProgressSetLabel('phaseInit');
+  var normalized=await stagedInnerGoal(goalLayout);
+  if(!normalized){
+    if(!solverStopped)noteSolverStop('solveStoppedStagedGoal');
+    return null;
+  }
+  var goal=normalized.goal,all=Array.from({length:25},function(_,i){return i;});
+  var region=all.filter(function(i){return i>=5&&i%5!==0;});
+  var row=all.slice(0,5),column=[5,10,15,20],frozenRow={},frozen={};
+  for(var cell of row)frozenRow[cell]=frozen[cell]=true;
+  for(var cell of column)frozen[cell]=true;
+  var candidates=[];
+  if(!cfg.tiles.some(function(tile){return tile.upper;})){
+    var plain=await stagedPlainBorder(start,goal,all,5,{});
+    if(plain)candidates.push(plain);
+  }else{
+    var goals=new Array(cfg.tiles.length);
+    goal.forEach(function(id,cell){if(id>=0)goals[id]=cell;});
+    solverProgressSetLabel('phaseTopRow');
+    var top=await stagedFindCandidates({lay:start,moves:[]},row,goals,8,0,new Map(),goal,{});
+    var cache=new Map();
+    for(var i=0;i<top.length&&!solveAbort;i++){
+      solverProgressSetLabel('phaseLeftCol');
+      solverAttemptDescription=(i+1)+'/'+top.length;
+      candidates.push(...await stagedFindCandidates(top[i],column,goals,5,i%4,cache,goal,frozenRow));
+    }
+    candidates=stagedDedupe(candidates,12);
+  }
+  for(var i=0;i<candidates.length&&!solveAbort;i++){
+    solverProgressSetLabel('phaseStagedRemainder4');
+    solverAttemptDescription=(i+1)+'/'+candidates.length;
+    solverProgressFlush();
+    var suffix=await stagedSearch4x4(candidates[i].lay,goal,region,frozen);
+    if(suffix&&!solveAbort)return candidates[i].moves.concat(suffix,normalized.tail);
   }
   return null;
 }
@@ -7604,18 +7683,15 @@ function targetMultipleHoleNeighbors(state, ctx) {
   }
   return found;
 }
-// Exact breadth-first search for every 3x3 board with a user-defined goal.
-// It supports partial targets, multiple empty cells, cut-outs, bonded tiles,
-// and all physical collision rules. Every edge comes from the actual
-// movement planner, never from the scramble or undo history.
-async function targetBFSUpTo12(start) {
+// A partial target has no single reverse starting position.
+async function targetForwardBFS(start) {
   var wanted = cfg.targetLayout;
   if (!wanted || !wanted.some(function(id){return id >= 0;})) return null;
   if (targetMatches(start, cfg)) return [];
 
   var types=solverEquivalentTypes();
   var key=function(state){return solverCanonicalKey(state,types);};
-  var ctx = {key:key, neighborsMemo:null};
+  var getNext=createPhysicalBfsNeighbors(key);
   var initialKey = key(start);
   var root = {state:start, key:initialKey, parent:null, move:null, depth:0};
   var queue = [root], head = 0, visited = new Set([initialKey]);
@@ -7630,12 +7706,7 @@ async function targetBFSUpTo12(start) {
     }
     if (targetMatches(node.state, cfg)) return specialBacktrace(node);
 
-    var holeCount = 0;
-    for (var h = 0; h < node.state.length; h++)
-      if (node.state[h] === -1) holeCount++;
-    var neighbors = holeCount === 1
-      ? specialSolverNeighbors(node.state, ctx)
-      : targetMultipleHoleNeighbors(node.state, ctx);
+    var neighbors=getNext(node.state);
 
     for (var i = 0; i < neighbors.length; i++) {
       var next = neighbors[i];
@@ -7660,81 +7731,82 @@ async function targetBFSUpTo12(start) {
       }
     }
   }
+  noteSolverStop('solveStoppedExhausted');
   return null;
 }
 
-// Forward exact-state A* for a fully or partially specified target board.
-// No reverse scramble/history is read, and each generated edge is a legal game move.
+// Search over visual tile identities and the same cached physical moves
+// used by directed BFS. The game planner still checks the final route.
 async function targetSearchRoute(start) {
-  var wanted=cfg.targetLayout, wantedIds=[];
-  for(var i=0;i<wanted.length;i++)if(wanted[i]>=0)wantedIds.push([wanted[i],i]);
-  if(!wantedIds.length)return null;
-  var base=specialSolverContext();
-  // Exact tile identities are important for partial goals with repeated markers.
-  base.key=function(a){return a.join(',');};
-  base.neighborsMemo=null;
-  var steps=new Array(wanted.length);
-  for(var at=0;at<wanted.length;at++){
-    var dist=Array(wanted.length).fill(999),q=[at],h=0;dist[at]=0;
-    while(h<q.length){var c=q[h++],r=(c/n)|0,x=c%n;
-      var adj=[r>0?c-n:-1,r<boardRows-1?c+n:-1,x>0?c-1:-1,x<n-1?c+1:-1];
-      for(var a=0;a<4;a++){var next=adj[a];if(next>=0&&cfg.layout[next]!==-2&&dist[next]===999){dist[next]=dist[c]+1;q.push(next);}}
+  var wanted=cfg.targetLayout,types=solverEquivalentTypes(),targets=[];
+  var key=function(state){return solverCanonicalKey(state,types);};
+  var getNext=createPhysicalBfsNeighbors(key),cells=start.length;
+  for(var i=0;i<cells;i++)if(wanted[i]>=0){
+    var dist=new Uint8Array(cells).fill(127),q=[i],head=0;dist[i]=0;
+    while(head<q.length){
+      var from=q[head++];
+      for(var pos of neighborsOf(from))if(dist[pos]===127){dist[pos]=dist[from]+1;q.push(pos);}
     }
-    steps[at]=dist;
+    targets.push({type:types[wanted[i]],dist:dist,cell:i});
   }
-  function metric(state){
-    var loc=[];for(var j=0;j<state.length;j++)if(state[j]>=0)loc[state[j]]=j;
-    var distance=0,errors=0;
-    for(var k=0;k<wantedIds.length;k++){
-      var v=wantedIds[k],d=steps[loc[v[0]]][v[1]];
-      if(d){errors++;distance+=d;}
+  if(!targets.length)return null;
+  var firstByType=new Int8Array(types.length),nextOfType=new Int8Array(cells);
+  function estimate(state) {
+    firstByType.fill(-1);
+    for(var j=0;j<cells;j++)if(state[j]>=0){
+      var type=types[state[j]];
+      nextOfType[j]=firstByType[type];firstByType[type]=j;
     }
-    return {errors:errors,distance:distance};
+    var score=0;
+    for(var target of targets){
+      if(state[target.cell]>=0&&types[state[target.cell]]===target.type)continue;
+      var nearest=127;
+      for(var pos=firstByType[target.type];pos>=0;pos=nextOfType[pos])
+        nearest=Math.min(nearest,target.dist[pos]);
+      score+=3.6+2.2*nearest;
+    }
+    return score;
   }
-  var firstMetric=metric(start),root={state:start,parent:null,move:null,depth:0};
-  if(!firstMetric.errors)return [];
-  var queue=[];heapPush(queue,{f:firstMetric.distance*2+firstMetric.errors*3,node:root});
-  var best=new Map([[base.key(start),0]]),seenCount=0;
-  var capacity=solverMemoryCapacity(start.length);
+  var root={state:start,parent:null,move:null,depth:0,key:key(start),h:estimate(start)};
+  var queue=[],best=new Map([[root.key,0]]),expanded=0,lastYield=Date.now();
+  var capacity=solverMemoryCapacity(cells);
+  heapPush(queue,{f:root.h,node:root});
   while(queue.length&&!solveAbort){
-    if((seenCount&127)===0){
+    var node=heapPop(queue).node;
+    if(best.get(node.key)!==node.depth)continue;
+    if(!node.h)return specialBacktrace(node);
+    if((++expanded&127)===0){
       solverProgressAdd(128);
-      await solverSleep(0);
+      if(Date.now()-lastYield>25){await solverSleep(0);lastYield=Date.now();}
     }
-    var node=heapPop(queue).node,k0=base.key(node.state);
-    if(best.get(k0)!==node.depth)continue;
-    seenCount++;
-    var h=metric(node.state);
-    if(!h.errors)return specialBacktrace(node);
-    var nbrs=node.state.filter(function(x){return x===-1;}).length===1 ? specialSolverNeighbors(node.state,base) : targetMultipleHoleNeighbors(node.state,base);
-    for(var b=0;b<nbrs.length;b++){
-      var nb=nbrs[b],d=node.depth+1;
-      if(best.has(nb.key)&&best.get(nb.key)<=d)continue;
-      if(solverMemoryFull(seenCount+queue.length,capacity))return null;
-      best.set(nb.key,d);
-      var est=metric(nb.state);
-      var child={state:nb.state,parent:node,move:nb.move,depth:d};
-      heapPush(queue,{f:d+2.2*est.distance+3.6*est.errors,node:child});
+    for(var nb of getNext(node.state)){
+      var depth=node.depth+1,known=best.get(nb.key);
+      if(known!==undefined&&known<=depth)continue;
+      if(solverMemoryFull(Math.max(best.size,expanded+queue.length),capacity))return null;
+      best.set(nb.key,depth);
+      var h=estimate(nb.state);
+      heapPush(queue,{f:depth+h,node:{state:nb.state,parent:node,move:nb.move,depth:depth,key:nb.key,h:h}});
     }
   }
+  noteSolverStop('solveStoppedExhausted');
   return null;
 }
 // Convert a full visual target into a reachable, uniquely numbered staging goal.
 // Same-looking pieces are interchangeable: choose a numbering consistent with
 // the 15-puzzle parity, never falsely report an impossible two-piece exchange.
-function targetStagedGoal4x4(start) {
-  if(n!==4 || boardRows!==4 || !hasTargetLayout(cfg) ||
-     hasSpecialBoard() || start.filter(function(x){return x===-1;}).length!==1)return null;
+function targetStagedGoal(start) {
+  if(!hasTargetLayout(cfg)||!canUseStagedSearch(start))return null;
+  var count=start.length;
   var target=cfg.targetLayout, types=solverEquivalentTypes();
   if(!target.some(function(id){return id>=0;}))return null;
   // A -1 in the target is unconstrained; complete those cells with remaining
   // physical pieces so the original exact-goal staged solver can be reused.
-  var pools=new Map(),result=new Array(16).fill(null),free=[];
+  var pools=new Map(),result=new Array(count).fill(null),free=[];
   for(var p=0;p<start.length;p++)if(start[p]>=0){
     var t=types[start[p]];if(!pools.has(t))pools.set(t,[]);
     pools.get(t).push(start[p]);
   }
-  for(var i=0;i<16;i++){
+  for(var i=0;i<count;i++){
     if(target[i]===-2)return null;
     if(target[i]<0){free.push(i);continue;}
     var cls=types[target[i]],pool=pools.get(cls);
@@ -7744,7 +7816,7 @@ function targetStagedGoal4x4(start) {
   if(!free.length)return null;
   // Keep the blank in the last block whenever possible; this preserves the
   // unchanged top-row/left-column decomposition of the 4x4 solver.
-  var holePos=free.indexOf(15)>=0?15:free[free.length-1];
+  var holePos=free[free.length-1];
   result[holePos]=-1;
   var leftovers=[];
   pools.forEach(function(items){for(var k=0;k<items.length;k++)leftovers.push(items[k]);});
@@ -7765,7 +7837,7 @@ function targetStagedGoal4x4(start) {
   for(var a=0;a<permutation.length;a++)for(var b=a+1;b<permutation.length;b++)
     if(permutation[a]>permutation[b])parity^=1;
   var hStart=start.indexOf(-1),hGoal=result.indexOf(-1);
-  var blankParity=(Math.abs(hStart%4-hGoal%4)+Math.abs((hStart>>2)-(hGoal>>2)))&1;
+  var blankParity=(Math.abs(hStart%n-hGoal%n)+Math.abs(Math.floor(hStart/n)-Math.floor(hGoal/n)))&1;
   if(parity!==blankParity){
     var swapped=false;
     // First swap two *identical* physical tiles: the visual goal is unchanged.
@@ -7787,19 +7859,18 @@ function targetStagedGoal4x4(start) {
   }
   return result;
 }
-async function findStagedTarget4x4(initial,goalLayout){
+async function findStagedTargetRoute(initial,goalLayout){
   var planned=null,positions=new Array(cfg.tiles.length),distance=0;
-  for(var p=0;p<16;p++)if(goalLayout[p]>=0)positions[goalLayout[p]]=p;
-  for(var i=0;i<16;i++)if(initial[i]>=0){
+  for(var p=0;p<initial.length;p++)if(goalLayout[p]>=0)positions[goalLayout[p]]=p;
+  for(var i=0;i<initial.length;i++)if(initial[i]>=0){
     var t=positions[initial[i]];
-    distance+=Math.abs(i%4-t%4)+Math.abs((i>>2)-(t>>2));
+    distance+=Math.abs(i%n-t%n)+Math.abs(Math.floor(i/n)-Math.floor(t/n));
   }
-  if(distance<=16){
+  if(n===4&&distance<=16){
     solverProgressSetLabel('phaseBlock');
     planned=await bidirectionalBFS(initial,goalLayout,{});
   }
-  if(!planned && !solveAbort)planned=await stagedSearchLegacy4x4(initial,goalLayout);
-  if(!planned && !solveAbort)planned=await stagedSearch4x4(initial,goalLayout);
+  if(!planned && !solveAbort)planned=await (n===5?stagedSearch5x5(initial,goalLayout):stagedSearch4x4(initial,goalLayout));
   solverAttemptDescription='';
   if(!planned || solveAbort || !solverValidatePath(initial,planned,goalLayout,{}))return null;
   planned=simplifySolverMoves(initial,planned);
@@ -7807,7 +7878,7 @@ async function findStagedTarget4x4(initial,goalLayout){
   var board=initial.slice(),moves=[];
   for(var i=0;i<planned.length;i++){
     var hole=board.indexOf(-1),tile=planned[i];
-    var dx=hole%4-tile%4,dy=(hole>>2)-(tile>>2);
+    var dx=hole%n-tile%n,dy=Math.floor(hole/n)-Math.floor(tile/n);
     if(Math.abs(dx)+Math.abs(dy)!==1)return null;
     var plan=buildDirectedMovePlan(tile,board,dx,dy);
     if(!plan || !plan.ok)return null;
@@ -7819,26 +7890,30 @@ async function findStagedTarget4x4(initial,goalLayout){
 async function solveTargetBoard(records,animateStep) {
   var useBFS = cfg.tiles.length <= 12 && selectedSolverMethod==='auto';
   var initial=layout.slice(),route=null;
-  var stagedGoal=targetStagedGoal4x4(initial);
-  if(stagedGoal && selectedSolverMethod!=='targetAstar'){
-    // Exactly the original no-target 4x4 row/column staging algorithm.
-    // It emits ordinary tile-cell moves and never reads scramble history.
+  var stagedGoal=selectedSolverMethod==='targetAstar'?null:targetStagedGoal(initial);
+  if(!stagedGoal&&selectedSolverMethod==='targetStaged'){
+    noteSolverStop('solveStoppedStagedGoal');
+    return false;
+  }
+  if(stagedGoal){
+    // Use the same border stages as the no-target solver, with explicit
+    // destinations from the visual goal.
     solverProgressSetLabel('phaseTopRow');
-    route=await findStagedTarget4x4(initial,stagedGoal);
+    route=await findStagedTargetRoute(initial,stagedGoal);
   }
   if(!route && !solveAbort && selectedSolverMethod!=='targetStaged'){
     solverProgressSetLabel(useBFS ? 'phase3x3Bfs' : 'phaseSpecialAstar');
     if (useBFS && solverProgress) {solverProgress.bfsDepth=0;solverProgressFlush();}
-    route=useBFS ? await targetBFSUpTo12(initial) : await targetSearchRoute(initial);
+    route=useBFS ? await targetForwardBFS(initial) : await targetSearchRoute(initial);
   }
   if(!route||solveAbort)return false;
   var check=initial.slice();
   for(var i=0;i<route.length;i++){
     var m=route[i],plan=buildDirectedMovePlan(m.cell,check,m.dx,m.dy);
-    if(!plan||!plan.ok)return false;
+    if(!plan||!plan.ok){noteSolverStop('solveStoppedInvalidRoute');return false;}
     applyMotionRecord(check,motionRecord(plan),false);
   }
-  if(!targetMatches(check,cfg))return false;
+  if(!targetMatches(check,cfg)){noteSolverStop('solveStoppedInvalidRoute');return false;}
   if(pb&&pb.live&&!pb.precompute){pb.knownTotal=route.length;updatePlaybackUI();}
   for(var j=0;j<route.length;j++){
     if(solveAbort||!await specialApplyMove(route[j],records,animateStep))return false;
@@ -7897,7 +7972,6 @@ async function solve4x4(records, animateStep, goalLayout) {
     solverProgressSetLabel('phaseBlock');
     planned=await bidirectionalBFS(initial,goalLayout,{});
   }
-  if(!planned && !solveAbort)planned=await stagedSearchLegacy4x4(initial,goalLayout);
   if(!planned && !solveAbort)planned=await stagedSearch4x4(initial,goalLayout);
   solverAttemptDescription='';
   if(solveAbort)return false;
@@ -8017,7 +8091,10 @@ async function solveSmallBidirectionalBFS(records, animateStep) {
   solverProgressSetLabel('phase3x3Bfs');
   if (solverProgress) {solverProgress.bfsDepth=0;solverProgressFlush();}
   var moves = await bidirectionalBFS(layout, cfg.layout, {}, solverEquivalentTypes());
-  if (!moves) return false;
+  if (!moves) {
+    if(!solverStopped)noteSolverStop('solveStoppedExhausted');
+    return false;
+  }
   moves = simplifySolverMoves(layout, moves);
   if (pb && pb.live && !pb.precompute) {
     pb.knownTotal = records.length + moves.length;
@@ -8135,8 +8212,8 @@ async function bondedBidirectionalBFS(start,goal){
     while(back.get(k).previous!==null){var b=back.get(k);second.push(b.move);k=b.previous;}
     return first.concat(second);
   }
-  while(fq.length&&bq.length&&!solveAbort){
-    var forward=fq.length<=bq.length,queue=forward?fq:bq,next=[];
+  while(fq.length&&!solveAbort){
+    var forward=!bq.length||fq.length<=bq.length,queue=forward?fq:bq,next=[];
     var own=forward?front:back,other=forward?back:front;
     if(solverProgress){solverProgress.bfsDepth=frontDepth+backDepth+1;
       if(Date.now()-solverProgress.lastReport>=200)solverProgressFlush();}
@@ -8180,13 +8257,15 @@ async function bondedBidirectionalBFS(start,goal){
     }
     if(forward){fq=next;frontDepth++;}else{bq=next;backDepth++;}
   }
+  noteSolverStop('solveStoppedExhausted');
   return null;
 }
 async function solveBondedBidirectional(records,animateStep){
-  var goal=bondedBidiGoal();if(!goal)return false;
-  solverProgressSetLabel('phase3x3Bfs');
+  var goal=bondedBidiGoal();
+  if(!goal&&!hasTargetLayout(cfg))return false;
+  solverProgressSetLabel(goal?'phase3x3Bfs':'phaseSpecialBfs');
   if(solverProgress){solverProgress.bfsDepth=0;solverProgressFlush();}
-  var start=layout.slice(),moves=await bondedBidirectionalBFS(start,goal);
+  var start=layout.slice(),moves=goal?await bondedBidirectionalBFS(start,goal):await targetForwardBFS(start);
   if(!moves||solveAbort)return false;
   if(pb&&pb.live&&!pb.precompute){pb.knownTotal=moves.length;updatePlaybackUI();}
   for(var i=0;i<moves.length;i++)if(!await specialApplyMove(moves[i],records,animateStep))return false;
@@ -8196,8 +8275,7 @@ async function solveBondedBidirectional(records,animateStep){
 // Each choice is a distinct search path. Automatic mode retains the original
 // fallback sequence; explicit choices never silently run another algorithm.
 var selectedSolverMethod='auto';
-// Retain the last search boundary reached, even when automatic fallback retries.
-var solverLimitReason='';
+var solverLastStage=null, solverStopped=null, solverMemoryStop=null;
 function searchMemoryGiB(userAgent) {
   return /Firefox\//i.test(userAgent) ? 8 : 3;
 }
@@ -8206,50 +8284,58 @@ function solverMemoryCapacity(cells) {
   // The Analyzer uses packed strings and has its own smaller estimate per state.
   return Math.floor(searchMemoryGiB(navigator.userAgent) * 1024 ** 3 / (384 + 12 * cells));
 }
+function solverStageSnapshot() {
+  if(!solverProgress)return solverLastStage;
+  var labels=[tr(solverProgress.labelKey)];
+  if(solverProgress.tileLabel)labels.push('«'+solverProgress.tileLabel+'»');
+  if(solverAttemptDescription)labels.push(solverAttemptDescription);
+  return {stage:labels.join(' · '),depth:solverProgress.bfsDepth};
+}
+function noteSolverStop(reason,params){
+  if(solveRunning&&!solveAbort)solverStopped={reason:reason,params:params,stage:solverStageSnapshot()};
+}
 function solverMemoryFull(inUse, capacity) {
   if (inUse < capacity) return false;
   markSolverMemoryLimit();
   return true;
 }
 function markSolverMemoryLimit() {
-  var budget = searchMemoryGiB(navigator.userAgent);
-  solverLimitReason = UI_LANG === 'ru' ? 'расчётный бюджет памяти (' + budget + ' ГиБ)'
-                                       : 'estimated memory budget (' + budget + ' GiB)';
+  if(!solveRunning||solveAbort)return;
+  var params={budget:searchMemoryGiB(navigator.userAgent)};
+  noteSolverStop('solveStoppedMemory',params);
+  solverMemoryStop=params;
 }
 function solverElapsedSeconds(){
   return (Math.max(0, Date.now() - solverStartedAt) / 1000).toFixed(1);
 }
-function solverFailedStatus(){
-  var ru=UI_LANG==='ru', prefix=solverLimitReason ?
-    (ru?'Достигнут лимит поиска — ':'Search limit reached — ')+solverLimitReason+
-    (ru?'. Решение не получено.':'. No solution obtained.') :
-    (ru?'Решение не найдено.':'No solution found.');
-  var time = solverElapsedSeconds();
-  return prefix + (ru ? ' Время поиска: ' + time + ' с. Доска оставлена в текущем состоянии.'
-                      : ' Search time: ' + time + ' s. Board left in its current state.');
-}
-function solverAbortedStatus(){
-  return msg('solveAborted', {time: solverElapsedSeconds()});
+function solverFailureStatus(){
+  var stop=solverStopped||{reason:'solveStoppedNoRoute',stage:solverStageSnapshot()};
+  var method=availableSolverMethods().find(function(option){return option[0]===selectedSolverMethod;});
+  var detail=[tr('solveStopMethod',{method:method?method[1]:selectedSolverMethod})];
+  if(stop.stage){
+    detail.push(tr('solveStopStage',stop.stage));
+    if(Number.isFinite(stop.stage.depth))detail.push(tr('solveStopDepth',stop.stage));
+  }
+  if(solverMemoryStop&&stop.reason!=='solveStoppedMemory')
+    detail.push(tr('solveStopPriorLimit',solverMemoryStop));
+  detail.push(tr('solveStopTime',{time:solverElapsedSeconds()}));
+  return tr(stop.reason,stop.params||{})+' '+detail.join(' · ')+'.';
 }
 function solverSolvedStatus(moves){
   return msg('solveDone', {moves: moves, time: solverElapsedSeconds()});
 }
 function availableSolverMethods(){
-  var opts=[['auto',UI_LANG==='ru'?'Автоматический подбор':'Automatic selection']];
+  var opts=[['auto',UI_LANG==='ru'?'Автоматический подбор':'Automatic selection'],
+    ['bidiBfs',UI_LANG==='ru'?'Двунаправленный BFS':'Bidirectional BFS']];
   if(hasTargetLayout(cfg)){
-    if(canUseBondedBidirectionalBFS())
-      opts.push(['bondedBidi',UI_LANG==='ru'?'Двунаправленный BFS (бандажи)':'Bidirectional BFS (bonded pieces)']);
-    if(n===4 && boardRows===4 && !hasSpecialBoard() && layout.filter(function(x){return x===-1;}).length===1)
-      opts.push(['targetStaged',UI_LANG==='ru'?'Поэтапный поиск 4×4':'Staged search 4×4']);
+    if(canUseStagedSearch(layout))
+      opts.push(['targetStaged',(UI_LANG==='ru'?'Поэтапный поиск ':'Staged search ')+n+'×'+n]);
     opts.push(['targetAstar',UI_LANG==='ru'?'Поиск A* по целевой доске':'Target-board A*']);
-  }else if(n===4 && boardRows===4 && !hasSpecialBoard()){
-    if(isClassic())opts.push(['ida', 'IDA*']);
-    opts.push(['stagedLegacy',UI_LANG==='ru'?'Поэтапный поиск (первый)':'Staged search (legacy)']);
-    opts.push(['stagedNew',UI_LANG==='ru'?'Поэтапный поиск (новый)':'Staged search (new)']);
-    opts.push(['bidiBfs',UI_LANG==='ru'?'Двунаправленный BFS':'Bidirectional BFS']);
-  }else{
-    if(canUseBondedBidirectionalBFS())
-      opts.push(['bondedBidi',UI_LANG==='ru'?'Двунаправленный BFS (бандажи)':'Bidirectional BFS (bonded pieces)']);
+  }else if(canUseStagedSearch(layout)){
+    if(n===4&&isClassic())opts.push(['ida', 'IDA*']);
+    opts.push(['stagedNew',n===5?(UI_LANG==='ru'?'Поэтапный поиск 5×5':'Staged search 5×5'):
+      (UI_LANG==='ru'?'Поэтапный поиск (новый)':'Staged search (new)')]);
+  }else if(!canUseBidirectionalBFS()){
     opts.push(['specialAstar',UI_LANG==='ru'?'Поиск A* по состояниям':'State-space A*']);
     opts.push(['specialStaged',UI_LANG==='ru'?'Поэтапный поиск по областям':'Staged region search']);
     opts.push(['specialBfs',UI_LANG==='ru'?'Поиск BFS':'BFS search']);
@@ -8276,17 +8362,15 @@ function openSolverSelectMenu(){
   });
   menu.classList.remove('hidden');$('solveBtn').setAttribute('aria-expanded','true');
 }
-function solveDirect4x4(records,animateStep,goalLayout,method){
+function solveDirectStaged(records,animateStep,goalLayout){
   return (async function(){
-    var initial=layout.slice(),route=null;
-    solverAttemptDescription=method;
-    if(method==='stagedLegacy')route=await stagedSearchLegacy4x4(initial,goalLayout);
-    else if(method==='stagedNew')route=await stagedSearch4x4(initial,goalLayout);
-    else if(method==='bidiBfs')route=await bidirectionalBFS(initial,goalLayout,{});
+    var initial=layout.slice();
+    var route=await (n===5?stagedSearch5x5(initial,goalLayout):stagedSearch4x4(initial,goalLayout));
     solverAttemptDescription='';
-    if(!route||solveAbort||!solverValidatePath(initial,route,goalLayout,{}))return false;
+    if(!route||solveAbort)return false;
+    if(!solverValidatePath(initial,route,goalLayout,{})){noteSolverStop('solveStoppedInvalidRoute');return false;}
     route=simplifySolverMoves(initial,route);
-    if(!solverValidatePath(initial,route,goalLayout,{}))return false;
+    if(!solverValidatePath(initial,route,goalLayout,{})){noteSolverStop('solveStoppedInvalidRoute');return false;}
     if(pb&&pb.live&&!pb.precompute){pb.knownTotal=route.length;updatePlaybackUI();}
     if(!await animatePlannedSlides(route,records,animateStep))return false;
     return isSolved();
@@ -8347,12 +8431,16 @@ async function runSolver() {
     var solved = false;
     var triedIda = false;
 
-    if (cfg.tiles.length > 12 && (selectedSolverMethod==='auto'||selectedSolverMethod==='ida') && !hasTargetLayout(cfg) && !hasSpecialBoard() && boardRows === n && isClassic()) {
+    if (n===4 && cfg.tiles.length > 12 && (selectedSolverMethod==='auto'||selectedSolverMethod==='ida') && !hasTargetLayout(cfg) && !hasSpecialBoard() && boardRows === n && isClassic()) {
       var state = buildClassicState();
       if (state) {
         triedIda = true;
+        solverProgressBegin('phaseIda');
         var res = await solveWithWorker(state, n);
         if(res && res.error==='memory-limit')markSolverMemoryLimit();
+        else if(res && res.error==='unsolvable')noteSolverStop('solveStoppedUnsolvable');
+        else if(res && (res.error==='no-worker'||res.error==='worker-error'))noteSolverStop('solveStoppedWorker');
+        solverProgressEnd();
         if (res && res.moves && !solveAbort) {
           res.moves = simplifySolverMoves(layout, res.moves);
           if (pb && pb.live && !pb.precompute) {
@@ -8369,7 +8457,11 @@ async function runSolver() {
       if (triedIda && (!pb || !pb.precompute)) {
         setStatus(msg('retryHeuristic'), '');
         await solverSleep(2000);
-        if (solveAbort) return;
+        if (solveAbort) {
+          if(pb)exitPlayback();
+          setStatus(solverFailureStatus(),'');
+          return;
+        }
       }
       layout = snap.lay.slice();
       hist = snap.hist.slice();
@@ -8378,10 +8470,13 @@ async function runSolver() {
       if (pb && pb.live && !pb.precompute) { pb.index = 0; pb.knownTotal = null; updatePlaybackUI(); }
       renderAll(false);
       solverProgressBegin('phaseInit');
+      solverStopped=null;
       var ok;
-      if (selectedSolverMethod==='stagedLegacy'||selectedSolverMethod==='stagedNew'||selectedSolverMethod==='bidiBfs') ok=await solveDirect4x4(records,true,cfg.layout,selectedSolverMethod);
-      else if(selectedSolverMethod==='bondedBidi' ||
-              (selectedSolverMethod==='auto' && canUseBondedBidirectionalBFS())){
+      if(selectedSolverMethod==='stagedNew'||(selectedSolverMethod==='auto'&&n===5&&canUseStagedSearch(layout)&&!hasTargetLayout(cfg)))
+        ok=await solveDirectStaged(records,true,cfg.layout);
+      else if(selectedSolverMethod==='bidiBfs') ok=await solveBondedBidirectional(records,true);
+      else if(selectedSolverMethod==='targetAstar'||selectedSolverMethod==='targetStaged') ok=await solveTargetBoard(records,true);
+      else if(selectedSolverMethod==='auto' && canUseBondedBidirectionalBFS()){
         ok=await solveBondedBidirectional(records,true);
         // For one-way geometries a verified reverse frontier can be too small.
         // Auto can fall back to the existing full directed search.
@@ -8445,13 +8540,15 @@ async function runSolver() {
     // No complete, verified solution: never offer playback of a partial route.
     if (pb) exitPlayback();
     renderAll(true);
-    setStatus(solveAbort ? solverAbortedStatus() : solverFailedStatus(), solveAbort ? '' : 'err');
+    setStatus(solverFailureStatus(), solveAbort ? '' : 'err');
   } catch (e) {
+    console.error(e);
+    noteSolverStop('solveStoppedError',{error:String(e?.message||e).slice(0,180)});
     solverProgressEnd();
     greedyShuffle = false;
     if (pb) exitPlayback();
     renderAll(true);
-    setStatus(solverFailedStatus(), 'err');
+    setStatus(solverFailureStatus(), solveAbort ? '' : 'err');
   } finally {
     releaseCollisions();
   }
@@ -8459,11 +8556,12 @@ async function runSolver() {
 
 function startSolve() {
   closeSolverSelectMenu();
-  if(cfg.tiles.length<=12)selectedSolverMethod='auto';
   if(busy || drag)return;
   if (mode !== 'play' || busy || solveRunning || pb) return;
-  if(!hasTargetLayout(cfg) && layout.filter(function(id){return id===-1;}).length!==1){setStatus(msg('solverOneHole'),'err');return;}
-  if ((!hasTargetLayout(cfg) && cfg.layout.filter(function(id){return id===-1;}).length!==1) || !bondIsConnected(layout)) {
+  if(!layout.includes(-1)||(!hasTargetLayout(cfg)&&selectedSolverMethod!=='bidiBfs'&&
+     layout.filter(function(id){return id===-1;}).length!==1)){setStatus(msg('solverOneHole'),'err');return;}
+  if ((!hasTargetLayout(cfg) && selectedSolverMethod!=='bidiBfs' &&
+       cfg.layout.filter(function(id){return id===-1;}).length!==1) || !bondIsConnected(layout)) {
     setStatus(msg('unsupportedSolverStructure'),'err');return;
   }
   if(hasTargetLayout(cfg)&&!targetTileCount(cfg)){
@@ -8472,7 +8570,7 @@ function startSolve() {
   if (isSolved()) { openAskPop(); return; }
   closeWin(); closeHint();
   solveAbort = false;
-  solverLimitReason='';
+  solverStopped=solverLastStage=solverMemoryStop=null;
   solverStartedAt = Date.now();
   setSolveUI(true);
   setStatus(msg('solveRunning'), '');
@@ -8480,6 +8578,10 @@ function startSolve() {
 }
 
 function abortSolve() {
+  if(solveAbort)return;
+  var stage=solverStageSnapshot();
+  if(pb?.knownTotal>0)stage={stage:tr('solveStopPlayback',{index:pb.index,total:pb.knownTotal}),depth:null};
+  solverStopped={reason:'solveStoppedManual',stage:stage};
   solveAbort = true;
   interruptSleep();
   if (cancelSolverWorker) cancelSolverWorker();
@@ -9160,8 +9262,8 @@ async function analyzerSweepWithCache(start, stateLimit, stopped, progress, isTa
   // On the solver's single-slide branches, do not add multi-tile shortcuts.
   // Shape and bond branches retain the physical pushes required by the solver.
   var singleMoves = singleHole && (canUseBidirectionalBFS(start) ||
-    (!hasSpecialBoard() && (hasTargetLayout(cfg) ? !!targetStagedGoal4x4(start) :
-      n === boardRows && (n === 4 || isClassic()))));
+    (!hasSpecialBoard() && (hasTargetLayout(cfg) ? !!targetStagedGoal(start) :
+      canUseStagedSearch(start) || isClassic())));
   var neighbors = singleHole ? (isClassic() ? analyzerPlainNeighbors : analyzerSingleHoleNeighbors(singleMoves)) : null;
   var codes = new Array(start.length);
   function pack(state, canonical) {
@@ -10360,18 +10462,8 @@ $('scrambleBfs').addEventListener('click', function() {
 $('solveBtn').addEventListener('click', function () {
   if (solveRunning) { abortSolve(); return; }
   if (pb && !pb.live) { exitPlayback(); return; }
-  if (cfg.tiles.length>12){
-    var opts=availableSolverMethods();
-    // A menu with only Auto and A* presents the same algorithm twice.
-    if(opts.length===2 && opts[0][0]==='auto' &&
-       (opts[1][0]==='targetAstar'||opts[1][0]==='specialAstar')){
-      closeSolverSelectMenu();selectedSolverMethod=opts[1][0];startSolve();return;
-    }
-    if ($('solverSelectMenu').classList.contains('hidden'))openSolverSelectMenu();
-    else closeSolverSelectMenu();
-    return;
-  }
-  selectedSolverMethod='auto';startSolve();
+  if ($('solverSelectMenu').classList.contains('hidden'))openSolverSelectMenu();
+  else closeSolverSelectMenu();
 });
 document.addEventListener('pointerdown',function(event){
   if (!$('solverSelectWrap').contains(event.target)) closeSolverSelectMenu();
@@ -10442,10 +10534,17 @@ function buildPrintMesh(part) {
     const a=j*mask.w+i, f=u-i, g=v-j, d=mask.data;
     return (128-(d[a]*(1-f)+d[a+1]*f)*(1-g)-(d[a+mask.w]*(1-f)+d[a+mask.w+1]*f)*g)/128*mask.unit;
   }
-  const nx=Math.ceil((bounds[3]-bounds[0])/step)+4;
-  const ny=Math.ceil((bounds[4]-bounds[1])/step)+4;
-  const nz=Math.ceil((bounds[5]-bounds[2])/step)+4;
-  const x0=bounds[0]-step*1.179, y0=bounds[1]-step*1.233, z0=bounds[2]-step*1.371;
+  // Lettering and its frame share a sampling grid to keep the two meshes
+  // apart even when the glyph sides fall between sample points.
+  const grid=part.gridBounds||bounds;
+  const start=(axis,pad)=>{
+    const first=grid[axis]-step*pad;
+    return first+Math.floor((bounds[axis]-grid[axis])/step)*step;
+  };
+  const x0=start(0,1.179),y0=start(1,1.233),z0=start(2,1.371);
+  const nx=Math.ceil((bounds[3]-(part.gridBounds?x0:bounds[0]))/step)+(part.gridBounds?2:4);
+  const ny=Math.ceil((bounds[4]-(part.gridBounds?y0:bounds[1]))/step)+(part.gridBounds?2:4);
+  const nz=Math.ceil((bounds[5]-(part.gridBounds?z0:bounds[2]))/step)+(part.gridBounds?2:4);
   function slice(k,out) {
     const z=z0+k*step, active=[];
     for (const layer of layers) {
@@ -10459,6 +10558,14 @@ function buildPrintMesh(part) {
       const holes=layer.section==='frame' ? applySection(layer.holes,section) : layer.holes;
       active.push({shapes,holes,slab,bevel});
     }
+    const activeCuts=[];
+    for(const cut of part.cuts) {
+      const slab=Math.max(cut.bottom-z,z-cut.top);
+      if(slab>step*2) continue;
+      const amount=printSocketBevel(cut,z);
+      const shapes=amount ? cut.shapes.map(shape=>printSocketSection(shape,amount)) : cut.shapes;
+      activeCuts.push({cut,slab,shapes});
+    }
     for (let j=0;j<ny;j++) for(let i=0;i<nx;i++) {
       const x=x0+i*step,y=y0+j*step;
       let d=step*3;
@@ -10466,10 +10573,12 @@ function buildPrintMesh(part) {
         const outer=union(shapes,x,y), hole=holes ? -union(holes,x,y) : -Infinity;
         d=Math.min(d,Math.max(slab,outer+bevel,hole));
       }
-      for (const cut of part.cuts) {
-        const slab=Math.max(cut.bottom-z,z-cut.top);
-        if (slab>step*2) continue;
-        const xy=cut.glyph ? glyph(cut.glyph,x,y) : union(cut.shapes,x,y);
+      if(part.relief && z>=part.relief.bottom-step && z<=part.relief.top+step) {
+        const relief=part.relief;
+        d=Math.min(d,Math.max(relief.bottom-z,z-relief.top,glyph(relief.glyph,x,y)+(relief.inset||0)));
+      }
+      for (const {cut,slab,shapes} of activeCuts) {
+        const xy=cut.glyph ? glyph(cut.glyph,x,y) : Math.max(union(shapes,x,y),cut.holes?-union(cut.holes,x,y):-Infinity);
         d=Math.max(d,-Math.max(slab,xy));
       }
       // Avoid zero-valued grid vertices, which can collapse tetrahedra.
@@ -10669,11 +10778,15 @@ function simplifyPrintSurface(points, faces, tolerance) {
   return faces;
 }
 
-// Half profiles sampled every 0.05 mm from Frame 3x3.STEP at 20 mm pitch.
-const [stepTileProfile,stepFrameProfile]=[[[-1e-06,1e-06],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,-0.0],[0.0,-0.0],[0.0,-0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[-0.041955,-0.041955],[-0.08391,-0.08391],[-0.125865,-0.125865],[-0.16782,-0.16782],[-0.209775,-0.209775],[-0.25173,-0.25173],[-0.293685,-0.293685],[-0.33564,-0.33564],[-0.377595,-0.377595],[-0.41955,-0.41955],[-0.461505,-0.461505],[-0.50346,-0.50346],[-0.545415,-0.545415],[-0.58737,-0.58737],[-0.629325,-0.629325],[-0.67128,-0.67128],[-0.713235,-0.713235],[-0.75519,-0.75519],[-0.797145,-0.797145],[-0.8391,-0.8391],[-0.881055,-0.881055],[-0.92301,-0.92301],[-0.964965,-0.964965],[-1.00692,-1.00692],[-1.048875,-1.048875],[-1.09083,-1.09083],[-1.132784,-1.132784],[-1.17252,-1.174739],[-1.204795,-1.216694],[-1.230616,-1.258649],[-1.250865,-1.300604],[-1.266127,-1.342559],[-1.276788,-1.384514],[-1.283093,-1.426469],[-1.28518,-1.468424],[-1.283093,-1.426469],[-1.276788,-1.384514],[-1.266127,-1.342559],[-1.250865,-1.300604],[-1.230616,-1.258649],[-1.204795,-1.216694],[-1.17252,-1.174739],[-1.132784,-1.132784],[-1.09083,-1.09083],[-1.048875,-1.048875],[-1.00692,-1.00692],[-0.964965,-0.964965],[-0.92301,-0.92301],[-0.881055,-0.881055],[-0.8391,-0.8391],[-0.797145,-0.797145],[-0.75519,-0.75519],[-0.713235,-0.713235],[-0.67128,-0.67128],[-0.629325,-0.629325],[-0.58737,-0.58737],[-0.545415,-0.545415],[-0.50346,-0.50346],[-0.461505,-0.461505],[-0.41955,-0.41955],[-0.377595,-0.377595],[-0.33564,-0.33564],[-0.293685,-0.295905],[-0.25173,-0.263629],[-0.209775,-0.237809],[-0.16782,-0.217559],[-0.125865,-0.202297],[-0.08391,-0.191636],[-0.041955,-0.185331],[-1e-06,-0.183244]],[[-0.699999,0.699999],[-0.65,0.65],[-0.6,0.6],[-0.55,0.55],[-0.5,0.5],[-0.45,0.45],[-0.4,0.4],[-0.35,0.35],[-0.3,0.3],[-0.25,0.25],[-0.2,0.2],[-0.15,0.15],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.1,0.1],[-0.100475,0.1],[-0.10377,0.1],[-0.110237,0.1],[-0.119957,0.1],[-0.133051,0.1],[-0.149698,0.1],[-0.17014,0.1],[-0.194707,0.088586],[-0.223848,0.046631],[-0.258187,0.004676],[-0.298361,-0.037279],[-0.340316,-0.079234],[-0.382271,-0.121189],[-0.424226,-0.163144],[-0.466181,-0.205099],[-0.508136,-0.247054],[-0.550091,-0.289009],[-0.592046,-0.330964],[-0.634001,-0.372919],[-0.675955,-0.414874],[-0.71791,-0.456829],[-0.759865,-0.498784],[-0.80182,-0.540739],[-0.843775,-0.582694],[-0.88573,-0.624649],[-0.927685,-0.666604],[-0.96964,-0.708559],[-1.011595,-0.750514],[-1.05355,-0.792469],[-1.095505,-0.834424],[-1.13746,-0.876379],[-1.179415,-0.918334],[-1.22137,-0.960289],[-1.263325,-1.002244],[-1.30528,-1.041979],[-1.347235,-1.074254],[-1.38919,-1.100075],[-1.431145,-1.120325],[-1.4731,-1.135587],[-1.515055,-1.146247],[-1.55701,-1.152552],[-1.598965,-1.154639],[-1.55701,-1.152552],[-1.515055,-1.146247],[-1.4731,-1.135587],[-1.431145,-1.120325],[-1.38919,-1.100075],[-1.347235,-1.074254],[-1.30528,-1.041979],[-1.263325,-1.002244],[-1.22137,-0.960289],[-1.179415,-0.918334],[-1.13746,-0.876379],[-1.095505,-0.834424],[-1.05355,-0.792469],[-1.011595,-0.750514],[-0.96964,-0.708559],[-0.927685,-0.666604],[-0.88573,-0.624649],[-0.843775,-0.582694],[-0.80182,-0.540739],[-0.759865,-0.498784],[-0.71791,-0.456829],[-0.675955,-0.414874],[-0.634001,-0.372919],[-0.592046,-0.330964],[-0.550091,-0.289009],[-0.514085,-0.247054],[-0.49105,-0.205099],[-0.478089,-0.163144],[-0.473893,-0.121189],[-0.478089,-0.079234],[-0.49105,-0.037279],[-0.514085,0.004676],[-0.550286,0.046631],[-0.608062,0.088586],[-0.773118,0.13054]]];
-const printSettingsDefaults={pitch:20, frameHeight:10, blockHeight:3.8, gap:.35, radius:.65, chamfer:.45, blockGap:0, pinGap:0, resolution:.4};
+// Common mating profile from Frame 3x3.STEP, sampled every 0.05 mm
+// at 20 mm pitch. Opposite sides share the same lateral displacement.
+const stepTileProfile=[[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[0.0,0.0],[-0.041955,-0.041955],[-0.08391,-0.08391],[-0.125865,-0.125865],[-0.16782,-0.16782],[-0.209775,-0.209775],[-0.25173,-0.25173],[-0.293685,-0.293685],[-0.33564,-0.33564],[-0.377595,-0.377595],[-0.41955,-0.41955],[-0.461505,-0.461505],[-0.50346,-0.50346],[-0.545415,-0.545415],[-0.58737,-0.58737],[-0.629325,-0.629325],[-0.67128,-0.67128],[-0.713235,-0.713235],[-0.75519,-0.75519],[-0.797145,-0.797145],[-0.8391,-0.8391],[-0.881055,-0.881055],[-0.92301,-0.92301],[-0.964965,-0.964965],[-1.00692,-1.00692],[-1.048875,-1.048875],[-1.09083,-1.09083],[-1.132784,-1.132784],[-1.1736295,-1.1736295],[-1.2107445,-1.2107445],[-1.2446325,-1.2446325],[-1.2757345,-1.2757345],[-1.304343,-1.304343],[-1.330651,-1.330651],[-1.354781,-1.354781],[-1.376802,-1.376802],[-1.354781,-1.354781],[-1.330651,-1.330651],[-1.304343,-1.304343],[-1.2757345,-1.2757345],[-1.2446325,-1.2446325],[-1.2107445,-1.2107445],[-1.1736295,-1.1736295],[-1.132784,-1.132784],[-1.09083,-1.09083],[-1.048875,-1.048875],[-1.00692,-1.00692],[-0.964965,-0.964965],[-0.92301,-0.92301],[-0.881055,-0.881055],[-0.8391,-0.8391],[-0.797145,-0.797145],[-0.75519,-0.75519],[-0.713235,-0.713235],[-0.67128,-0.67128],[-0.629325,-0.629325],[-0.58737,-0.58737],[-0.545415,-0.545415],[-0.50346,-0.50346],[-0.461505,-0.461505],[-0.41955,-0.41955],[-0.377595,-0.377595],[-0.33564,-0.33564],[-0.294795,-0.294795],[-0.2576795,-0.2576795],[-0.223792,-0.223792],[-0.1926895,-0.1926895],[-0.164081,-0.164081],[-0.137773,-0.137773],[-0.113643,-0.113643],[-0.0916225,-0.0916225]];
+const printSettingsDefaults={pitch:20, frameHeight:10, frameThickness:5, frameRadius:3, blockHeight:3, gap:.15, radius:.65, chamfer:.45, blockGap:0, pinGap:0, resolution:.4};
+const printTextDefaults={textMode:'none',textFont:'Arial',textSize:5,textSpacing:.1,textThickness:.6};
+const printInlayFit={belowSurface:.04,bottomClearance:.05};
 const printForm=$('printForm'), printDialog=$('printDialog');
-let printJob=null, printModel=null, printViewer=null, printTimer=0;
+let printTextPuzzle=null;
+let printJob=null, printModel=null, printViewer=null, printTimer=0, printPinHeightEdited=false;
 
 function printRect(x,y,w,h,r=0) {
   return {kind:'rect',x,y,w,h,r:Math.max(0,Math.min(r,w,h))};
@@ -10820,6 +10933,152 @@ function offsetPrintMount(shape,x,y) {
   return {...shape,x:shape.x+x,y:shape.y+y};
 }
 
+function printShapeTransform(shape,transform) {
+  if(shape.kind==='polygon') return {...shape,points:shape.points.map(([x,y])=>transform(x,y))};
+  const [x,y]=transform(shape.x,shape.y);
+  if(shape.kind==='circle') return {...shape,x,y};
+  const [w,h]=transform(shape.w,shape.h).map(Math.abs);
+  return {...shape,x,y,w,h};
+}
+
+function canonicalPrintShapes(shapes) {
+  let best;
+  const round=value=>Math.round(value*1e6);
+  function key(shape) {
+    if(shape.kind==='polygon') return 'p:'+shape.points.map(p=>p.map(round).join(',')).sort().join(';');
+    return [shape.kind,...printShapeBounds(shape).map(round)].join(',');
+  }
+  for(const swap of [false,true]) for(const a of [-1,1]) for(const b of [-1,1]) {
+    const forward=(x,y)=>swap?[a*y,b*x]:[a*x,b*y];
+    const backward=(x,y)=>swap?[b*y,a*x]:[a*x,b*y];
+    const ordered=shapes.map(shape=>printShapeTransform(shape,forward))
+      .map(shape=>[key(shape),shape]).sort(([x],[y])=>x<y?-1:x>y?1:0);
+    const signature=ordered.map(([key])=>key).join('|');
+    if(!best||signature<best.signature) best={signature,shapes:ordered.map(([,shape])=>shape),forward,backward};
+  }
+  return best;
+}
+
+function printBlockShapes(tile,pitch) {
+  if(!tile.upper)return [];
+  const shapes=shapesOf(tile,0,0).map(shape=>printShape(shape,pitch));
+  if(shapes.length||!tile.screw)return shapes;
+  const s=screwVisualSpec(tile);
+  return [{kind:'circle',x:(s.left+s.size/2-50)*UPK*pitch/100,
+    y:-(s.top+s.size/2-50)*UPK*pitch/100,r:s.size*UPK*pitch/200}];
+}
+
+// Cover as many distinct block footprints as possible with each square
+// socket. Coordinates stay in the tile's rail orientation.
+function sharedPrintMounts(shapesById,limit,pitch) {
+  const minHalf=2, variants=new Map(), result=new Map();
+  const signature=shapes=>JSON.stringify(shapes,(key,value)=>
+    typeof value==='number'?Math.round(value*1e7)/1e7:value);
+  shapesById.forEach((shapes,id)=>{
+    if(!shapes.length)return;
+    const key=signature(shapes);
+    if(!variants.has(key))variants.set(key,{shapes,ids:[]});
+    variants.get(key).ids.push(id);
+  });
+  if(variants.size<2 || limit<minHalf)return result;
+
+  const groups=[...variants.values()], xs=new Set([0]),ys=new Set([0]);
+  const step=pitch/80;
+  for(let i=1;i*step<=limit-minHalf;i++){xs.add(i*step);xs.add(-i*step);ys.add(i*step);ys.add(-i*step);}
+  for(const group of groups) {
+    for(const shape of group.shapes) {
+      const [l,b,r,t]=printShapeBounds(shape);
+      xs.add((l+r)/2);ys.add((b+t)/2);
+      if(r-l>=4){xs.add(l+2);xs.add(r-2);}
+      if(t-b>=4){ys.add(b+2);ys.add(t-2);}
+    }
+  }
+  const candidates=[];
+  for(const rawX of xs) for(const rawY of ys) {
+    const x=Math.round(rawX*1e7)/1e7,y=Math.round(rawY*1e7)/1e7;
+    const wall=limit-Math.max(Math.abs(x),Math.abs(y));
+    if(wall<minHalf-1e-8)continue;
+    const fits=[];
+    groups.forEach(({shapes},index)=>{
+      let room=0;
+      for(const shape of shapes)room=Math.max(room,printSquareRoom(shape,x,y));
+      const half=Math.min(wall,room);
+      if(half>=minHalf-1e-8)fits.push({index,half});
+    });
+    if(fits.length>1)candidates.push({x,y,fits});
+  }
+  const assigned=new Set();
+  while(true){
+    let best=null;
+    for(const candidate of candidates) {
+      const fits=candidate.fits.filter(row=>!assigned.has(row.index));
+      if(fits.length<2)continue;
+      const room=Math.min(...fits.map(row=>row.half));
+      const half=Math.max(minHalf,Math.floor((room-.04)*100+1e-7)/100);
+      const offset=Math.hypot(candidate.x,candidate.y);
+      if(!best||fits.length>best.fits.length||
+        (fits.length===best.fits.length&&(half>best.half||(half===best.half&&offset<best.offset))))
+        best={x:candidate.x,y:candidate.y,half,offset,fits};
+    }
+    if(!best)break;
+    for(const {index} of best.fits){
+      assigned.add(index);
+      for(const id of groups[index].ids)result.set(id,{x:best.x,y:best.y,half:best.half});
+    }
+  }
+  return result;
+}
+
+function printChamferCorners(shape,width) {
+  if(!width||shape.kind==='circle'||shape.r) return shape;
+  const points=shape.kind==='rect' ? [
+    [shape.x-shape.w,shape.y-shape.h],[shape.x+shape.w,shape.y-shape.h],
+    [shape.x+shape.w,shape.y+shape.h],[shape.x-shape.w,shape.y+shape.h]
+  ] : shape.points;
+  const winding=Math.sign(points.reduce((sum,[x,y],i)=>{
+    const [u,v]=points[(i+1)%points.length];
+    return sum+x*v-y*u;
+  },0));
+  return {kind:'polygon',points:points.flatMap(([x,y],i)=>{
+    const [ax,ay]=points[(i+points.length-1)%points.length], [bx,by]=points[(i+1)%points.length];
+    const u=ax-x,v=ay-y,r=bx-x,t=by-y;
+    if((v*r-u*t)*winding<=1e-9) return [[x,y]];
+    const m=Math.hypot(u,v),n=Math.hypot(r,t),d=Math.min(width,m/4,n/4);
+    return [[x+d*u/m,y+d*v/m],[x+d*r/n,y+d*t/n]];
+  })};
+}
+
+// Parallel offset with mitered joins for the straight-sided pin sockets.
+function printOffsetPolygon(points,amount) {
+  const ccw=points.reduce((sum,[x,y],i)=>{
+    const [u,v]=points[(i+1)%points.length];
+    return sum+x*v-y*u;
+  },0)>0;
+  const d=ccw?amount:-amount;
+  return points.map(([x,y],i)=>{
+    const a=points[(i+points.length-1)%points.length],b=points[(i+1)%points.length];
+    const l=Math.hypot(x-a[0],y-a[1]),r=Math.hypot(b[0]-x,b[1]-y);
+    const u=[(y-a[1])/l,(a[0]-x)/l],v=[(b[1]-y)/r,(x-b[0])/r];
+    const m=d/(1+u[0]*v[0]+u[1]*v[1]);
+    return [x+(u[0]+v[0])*m,y+(u[1]+v[1])*m];
+  });
+}
+
+function printSocketBevel(cut,z) {
+  if(!cut.mouth) return 0;
+  const sign=cut.entrySign;
+  const floor=sign>0?cut.bottom:cut.top;
+  const entry=Math.max(0,cut.mouth-Math.max(0,sign*(cut.entryZ-z)));
+  const heel=Math.max(0,cut.heel-Math.max(0,sign*(z-floor)));
+  return entry-heel;
+}
+
+function printSocketSection(shape,amount) {
+  if(!amount) return shape;
+  if(shape.kind==='rect') return {...shape,w:shape.w+amount,h:shape.h+amount};
+  return {...shape,points:printOffsetPolygon(shape.points,amount)};
+}
+
 function printMarkerMask(marker,pitch,dx=0,dy=0) {
   const canvas=document.createElement('canvas');
   canvas.width=canvas.height=128;
@@ -10833,22 +11092,124 @@ function printMarkerMask(marker,pitch,dx=0,dy=0) {
   return {w:128,h:128,x:dx-.4*pitch,top:dy+.4*pitch,unit:.8*pitch/128,data};
 }
 
+function printInscription(text,font,size,spacing) {
+  const unit=.12, canvas=document.createElement('canvas');
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  const fontSpec='900 '+(size/unit)+'px '+font;
+  ctx.font=fontSpec;
+  const chars=Array.from(text), metricsByChar=chars.map(c=>ctx.measureText(c));
+  const strokeWidth=.06*size/unit;
+  const advances=metricsByChar.map((current,i)=>{
+    const next=metricsByChar[i+1];
+    if(!next)return current.width;
+    if(!chars[i].trim()||!chars[i+1].trim())return current.width+spacing/unit;
+    const inkWidth=(current.actualBoundingBoxRight??current.width)+(next.actualBoundingBoxLeft||0);
+    return Math.max(current.width,inkWidth)+strokeWidth+spacing/unit;
+  });
+  const metrics=ctx.measureText(text);
+  const pad=2+Math.ceil(size/unit*.15);
+  const ascent=Math.ceil(metrics.actualBoundingBoxAscent||size/unit);
+  const descent=Math.ceil(metrics.actualBoundingBoxDescent||size/unit*.2);
+  canvas.width=Math.ceil(advances.reduce((a,b)=>a+b,0))+2*pad;
+  canvas.height=ascent+descent+2*pad;
+  ctx.font=fontSpec;
+  ctx.fillStyle=ctx.strokeStyle='#fff';
+  ctx.lineWidth=strokeWidth;
+  ctx.lineJoin='round';
+  ctx.textBaseline='alphabetic';
+  let x=pad;
+  chars.forEach((char,i)=>{
+    ctx.strokeText(char,x,pad+ascent);
+    ctx.fillText(char,x,pad+ascent);
+    x+=advances[i];
+  });
+  const w=canvas.width,h=canvas.height;
+  const rgba=ctx.getImageData(0,0,w,h).data, data=new Uint8Array(w*h);
+  for(let i=0;i<data.length;i++) data[i]=rgba[4*i+3];
+  return {w,h,unit,data,x:0,top:0};
+}
+
+// Vectorize the half-alpha contour, preserving counterforms such as O and А.
+function printInscriptionContours(glyph,threshold=128) {
+  const {w,h,data,unit,x,top}=glyph;
+  const links=new Map(),visited=new Set();
+  const add=(a,b)=>{
+    const key=a.join(','),other=b.join(',');
+    if(!links.has(key)) links.set(key,[]);
+    links.get(key).push(other);
+  };
+  const connect=(a,b)=>{add(a,b);add(b,a);};
+  for(let y=0;y<h-1;y++) for(let x=0;x<w-1;x++) {
+    const inside=[data[y*w+x],data[y*w+x+1],data[(y+1)*w+x+1],data[(y+1)*w+x]].map(v=>v>=threshold);
+    const u=2*x,v=2*y;
+    const mids=[[u+1,v],[u+2,v+1],[u+1,v+2],[u,v+1]];
+    const active=mids.filter((_,i)=>inside[i]!==inside[(i+1)%4]);
+    if(active.length===2) connect(...active);
+    else if(active.length===4) inside.forEach((on,i)=>{if(on) connect(mids[i],mids[(i+3)%4]);});
+  }
+  const loops=[];
+  for(const start of links.keys()) {
+    if(visited.has(start)) continue;
+    let current=start,previous=null;
+    const points=[];
+    while(current && !visited.has(current)) {
+      visited.add(current);
+      const [u,v]=current.split(',').map(Number);
+      points.push([x+u*unit/2,top-v*unit/2]);
+      const next=links.get(current).find(key=>key!==previous);
+      previous=current;current=next;
+    }
+    if(current!==start||points.length<4) continue;
+    const corners=points.filter(([x,y],i)=>{
+      const [a,b]=points[(i+points.length-1)%points.length],[c,d]=points[(i+1)%points.length];
+      return Math.abs((x-a)*(d-y)-(y-b)*(c-x))>1e-8;
+    });
+    if(corners.length>=3) loops.push(corners);
+  }
+  return loops;
+}
+
+function printScrewEngraving(tile,pitch,shapes,top) {
+  if(!tile.screw) return [];
+  const spec=screwVisualSpec(tile), scale=UPK*pitch/100;
+  const x=(spec.left+spec.size/2-50)*scale,y=-(spec.top+spec.size/2-50)*scale;
+  let radius=spec.size*scale*.41;
+  // The engraving must fit on the top face, including its edge bevel.
+  while(radius>.65&&!Array.from({length:20},(_,i)=>i*Math.PI/10).every(a=>
+    shapes.some(s=>printContains(s,x+(radius+.23)*Math.cos(a),y+(radius+.23)*Math.sin(a))))) radius*=.9;
+  if(radius<=.65) return [];
+  const ring={kind:'circle',x,y,r:radius};
+  const hole={...ring,r:radius-Math.min(.55,Math.max(.22,radius*.22))};
+  const width=Math.max(.105,.13/radius);
+  const cross=[-1,1].map(sign=>({kind:'polygon',points:[
+    [-.49,-width],[.49,-width],[.49,width],[-.49,width]
+  ].map(([u,v])=>[x+(u-sign*v)*radius*Math.SQRT1_2,y+(sign*u+v)*radius*Math.SQRT1_2])}));
+  const bottom=top-.38;
+  return [{shapes:[ring],holes:[hole],bottom,top:top+.05,engrave:true},
+    {shapes:cross,bottom,top:top+.05,engrave:true}];
+}
+
 function printPinHeight(frameHeight) {
   return Math.round(frameHeight*60)/100;
 }
 
 function printPlan(puzzle,state,settings) {
-  const {pitch,frameHeight,blockHeight,gap,radius,chamfer,blockGap,pinGap,resolution}=settings;
-  const pinHeight=printPinHeight(frameHeight);
+  const {pitch,frameHeight,frameThickness,frameRadius,blockHeight,gap,radius,chamfer,blockGap,pinGap,resolution}=settings;
+  const tilePinHeight=settings.pinHeight ?? printPinHeight(frameHeight);
   const cols=puzzle.n, rows=puzzleRows(puzzle);
   const unit=pitch/20, baseTop=frameHeight, halfHeight=baseTop/2;
   const tiles=puzzle.tiles, fixed=Array.isArray(puzzle.frameTiles);
   const parts=[], upperCuts=[];
   const guideAndBevelInset=Math.max(...stepTileProfile.map(([left,right],i)=>
     Math.max(-left,-right)*unit+Math.max(0,chamfer-i*baseTop/200)));
-  const wall=7*unit+(fixed?pitch:0);
-  const outer=printRect((cols-1)*pitch/2,(rows-1)*pitch/2,
-    cols*pitch/2+wall,rows*pitch/2+wall,Math.max(radius,1.1*unit));
+  const socketEdge=pitch/2-guideAndBevelInset-radius*(1-Math.SQRT1_2)-pinGap;
+  const socketLimit=socketEdge-.8;
+  const tileShapes=new Map();
+  for(const id of state)if(id>=0&&!tileShapes.has(id))tileShapes.set(id,printBlockShapes(tiles[id],pitch));
+  const commonMounts=sharedPrintMounts(tileShapes,socketLimit,pitch);
+  const mountWall=frameThickness+(fixed?pitch:0);
+  let left=-pitch/2-mountWall, right=(cols-.5)*pitch+mountWall;
+  let bottom=-pitch/2-mountWall, top=(rows-.5)*pitch+mountWall;
 
   function part(name,color,layers,cuts=[],flip=false,offset=[0,0,0]) {
     const bounds=printBounds(layers.flatMap(layer=>layer.shapes.map(shape=>{
@@ -10856,22 +11217,20 @@ function printPlan(puzzle,state,settings) {
       return [b[0]-extra,b[1]-extra,b[2]+extra,b[3]+extra];
     })));
     const section=layers.find(layer=>layer.section)?.section;
-    const profile=section ? {unit,height:baseTop,samples:section==='tile'?stepTileProfile:stepFrameProfile} : null;
+    const profile=section ? {unit,height:baseTop,samples:stepTileProfile} : null;
     // Sample closely around walls narrowed by a flush square socket.
-    const step=cuts.some(cut=>cut.flushSquare) ? Math.min(resolution,.1) : resolution;
+    const step=cuts.some(cut=>cut.flushSquare) ? Math.min(resolution,.1)
+      : cuts.some(cut=>cut.engrave) ? Math.min(resolution,.2) : resolution;
     parts.push({name,color,layers,cuts,flip,offset,step,profile,bounds:[bounds[0],bounds[1],
       Math.min(...layers.map(layer=>layer.bottom)),bounds[2],bounds[3],Math.max(...layers.map(layer=>layer.top))]});
   }
 
-  function upper(tile,x,y,name,baseCuts,isFixed) {
-    if (!tile.upper) return false;
-    const shapes=shapesOf(tile,0,0).map(shape=>printShape(shape,pitch));
-    if (!shapes.length && tile.screw) {
-      const s=screwVisualSpec(tile);
-      shapes.push({kind:'circle',x:(s.left+s.size/2-50)*UPK*pitch/100,
-        y:-(s.top+s.size/2-50)*UPK*pitch/100,r:s.size*UPK*pitch/200});
-    }
-    if (!shapes.length) return false;
+  function upper(tile,x,y,name,baseCuts,isFixed,id) {
+    const pinHeight=isFixed ? halfHeight-1 : tilePinHeight;
+    const original=isFixed?printBlockShapes(tile,pitch):tileShapes.get(id);
+    if(!original.length)return false;
+    const {shapes,forward,backward}=canonicalPrintShapes(original);
+    const shared=commonMounts.get(id);
     const points=shapes.map(shape=>{
       const [l,b,r,t]=printShapeBounds(shape), center=[(l+r)/2,(b+t)/2];
       if (printContains(shape,...center)) return center;
@@ -10883,14 +11242,18 @@ function printPlan(puzzle,state,settings) {
       return center;
     });
     // Keep material between the socket and the nearest guide or tile edge.
-    const socketEdge=(pitch-gap)/2-guideAndBevelInset-radius*(1-Math.SQRT1_2)-pinGap;
-    const socketLimit=socketEdge-.8;
     const minSquareHalf=2;
     const body=shapes[0];
-    const flushSquare=shapes.length===1 && body.kind==='rect' && body.w>=minSquareHalf &&
+    const flushSquare=!shared && shapes.length===1 && body.kind==='rect' && body.w>=minSquareHalf &&
       Math.abs(body.w-body.h)<1e-6 &&
       Math.max(Math.abs(body.x)+body.w,Math.abs(body.y)+body.h)<=socketEdge-.12;
-    const fitted=flushSquare ? {x:body.x,y:body.y,half:body.w} : fitPrintPin(shapes,socketLimit);
+    let fitted;
+    if(shared) {
+      const [x,y]=forward(shared.x,shared.y);
+      fitted={x,y,half:shared.half};
+    } else {
+      fitted=flushSquare ? {x:body.x,y:body.y,half:body.w} : fitPrintPin(shapes,socketLimit);
+    }
     const footprint=fitted.half<minSquareHalf ? fitPrintFootprintMount(shapes,socketLimit,pinGap) : null;
     const needsPad=!footprint&&fitted.half<minSquareHalf;
     let {x:px,y:py,half:pinHalf}=fitted;
@@ -10912,15 +11275,20 @@ function printPlan(puzzle,state,settings) {
       const a=-dy/len*.7,b=dx/len*.7;
       pads.push({kind:'polygon',points:[[px+a,py+b],[tx+a,ty+b],[tx-a,ty-b],[px-a,py-b]]});
     }
-    const cuts=tile.marker?[{bottom:blockHeight-.65,top:blockHeight+.3,glyph:printMarkerMask(tile.marker,pitch,...points[0])}]:[];
+    const edge=Math.min(chamfer,.45);
+    const finish=shape=>printShapeTransform(printChamferCorners(shape,edge),backward);
+    const cuts=tile.marker?[{bottom:blockHeight-.65,top:blockHeight+.3,glyph:printMarkerMask(tile.marker,pitch,...backward(...points[0]))}]:[];
+    cuts.push(...printScrewEngraving(tile,pitch,original,blockHeight));
     part(name,tile.upColor,[
-      {shapes:[pin],bottom:-pinHeight,top:.42,bevel:.2,bevelAt:flushSquare?'bottom':null},
-      ...(pads.length ? [{shapes:pads,bottom:0,top:Math.min(1.4,blockHeight*.6)}] : []),
-      {shapes,bottom:0,top:blockHeight,bevel:Math.min(chamfer,.45),bevelAt:flushSquare?'top':null}
+      {shapes:[finish(pin)],bottom:-pinHeight,top:.42,bevel:Math.min(edge,pinHeight/3),bevelAt:'bottom'},
+      ...(pads.length ? [{shapes:pads.map(finish),bottom:0,top:Math.min(1.4,blockHeight*.6)}] : []),
+      {shapes:shapes.map(finish),bottom:0,top:blockHeight,bevel:edge,bevelAt:flushSquare||footprint?'top':null}
     ],cuts,true,[x,y,baseTop+blockGap]);
-    const socket=footprint?.socket ?? printRect(px,py,pinHalf+pinGap,pinHalf+pinGap);
+    const socket=finish(footprint?.socket ?? printRect(px,py,pinHalf+pinGap,pinHalf+pinGap));
+    const mouth=Math.min(edge,(pinHeight-blockGap)/2);
+    const heel=footprint?0:Math.min(mouth,pinHalf/4,pinHeight/3);
     baseCuts.push({shapes:[isFixed ? offsetPrintMount(socket,x,y) : socket],
-      bottom:baseTop+blockGap-pinHeight-pinGap,top:baseTop+.5,flushSquare});
+      bottom:baseTop+blockGap-pinHeight,top:baseTop+.5,entryZ:baseTop,entrySign:1,mouth,heel,flushSquare});
     return true;
   }
 
@@ -10935,21 +11303,21 @@ function printPlan(puzzle,state,settings) {
     const [ox,oy]=[items[0].x,items[0].y];
     const shapes=[], cuts=[];
     for(const {tile,x,y,id} of items) {
-      const dx=x-ox,dy=y-oy, half=(pitch-gap)/2;
+      const dx=x-ox,dy=y-oy, half=pitch/2;
       shapes.push(printRect(dx,dy,half,half,radius));
       for(const other of items) {
-        if(other.y===y && other.x===x+pitch) shapes.push(printRect(dx+pitch/2,dy,gap/2+.4,half-radius));
-        if(other.x===x && other.y===y+pitch) shapes.push(printRect(dx,dy+pitch/2,half-radius,gap/2+.4));
+        if(other.y===y && other.x===x+pitch) shapes.push(printRect(dx+pitch/2,dy,.4,half-radius));
+        if(other.x===x && other.y===y+pitch) shapes.push(printRect(dx,dy+pitch/2,half-radius,.4));
       }
       const topCuts=[], topName='top-'+(id+1);
-      const hasTop=upper(tile,x,y,topName,topCuts,false);
+      const hasTop=upper(tile,x,y,topName,topCuts,false,id);
       for(const cut of topCuts) {
         cut.shapes[0]=offsetPrintMount(cut.shapes[0],dx,dy);cuts.push(cut);
       }
       if (!hasTop && tile.marker) cuts.push({bottom:baseTop-.75,top:baseTop+.45,glyph:printMarkerMask(tile.marker,pitch,dx,dy)});
     }
     part(tag,items[0].tile.color,[{shapes,bottom:0,top:baseTop,section:'tile',bevel:chamfer,
-      grid:items.length>1?items.map(item=>({x:item.x-ox,y:item.y-oy})):null,pitch,gap,radius}],
+      grid:items.length>1?items.map(item=>({x:item.x-ox,y:item.y-oy})):null,pitch,radius}],
       cuts,false,[ox,oy,0]);
   }
 
@@ -10972,32 +11340,127 @@ function printPlan(puzzle,state,settings) {
     const x=i%cols*pitch,y=(rows-1-Math.floor(i/cols))*pitch;
     if(!edgeCuts.has(i)) openings.push(printRect(x,y,pitch/2+gap,pitch/2+gap));
     if(state[i]!==-2 || edgeCuts.has(i)) continue;
-    const name='blocked-'+(i+1), size=(pitch-gap)/2;
+    const name='blocked-'+(i+1), size=pitch/2;
     part(name,'#a2b0c5',[{shapes:[printRect(x,y,size,size,radius)],
       bottom:0,top:baseTop,section:'tile',bevel:chamfer}]);
   }
   if(!edgeCuts.size) openings.splice(0,openings.length,
-    printRect(outer.x,outer.y,cols*pitch/2+gap,rows*pitch/2+gap));
+    printRect((cols-1)*pitch/2,(rows-1)*pitch/2,cols*pitch/2+gap,rows*pitch/2+gap));
 
   if (fixed) puzzle.frameTiles.forEach((tile,i)=>{
     if (!tile || !isFrameIndex(i,cols,rows)) return;
     const column=i%(cols+2)-1, row=Math.floor(i/(cols+2))-1;
     const name='frame-top-'+i;
-    upper(tile,column*pitch,(rows-1-row)*pitch,name,upperCuts,true);
+    if(!upper(tile,column*pitch,(rows-1-row)*pitch,name,upperCuts,true)) return;
+    const [l,b,r,t]=printShapeBounds(upperCuts.at(-1).shapes[0]);
+    const margin=1+upperCuts.at(-1).mouth+chamfer+frameRadius*(1-Math.SQRT1_2);
+    left=Math.min(left,l-margin);right=Math.max(right,r+margin);
+    bottom=Math.min(bottom,b-margin);top=Math.max(top,t+margin);
   });
+  let inscription=null;
+  const frameText=settings.frameText?.trim();
+  const textThickness=settings.textThickness??printTextDefaults.textThickness;
+  if(frameText && ['raised','engraved','inlay'].includes(settings.textMode)) {
+    const glyph=printInscription(frameText,settings.textFont,settings.textSize,settings.textSpacing);
+    const centerX=(cols-1)*pitch/2, halfWidth=glyph.w*glyph.unit/2;
+    const mountsTop=Math.max((rows-.5)*pitch+gap,...parts.filter(part=>part.name.startsWith('frame-top-'))
+      .map(part=>part.offset[1]+part.bounds[4]));
+    left=Math.min(left,centerX-halfWidth-frameRadius-1);
+    right=Math.max(right,centerX+halfWidth+frameRadius+1);
+    glyph.x=centerX-halfWidth;
+    glyph.top=mountsTop+1.5+glyph.h*glyph.unit;
+    top=Math.max(top,glyph.top+1.5+chamfer);
+    const raised=settings.textMode==='raised';
+    const cavityDepth=textThickness+(settings.textMode==='inlay'?
+      printInlayFit.belowSurface+printInlayFit.bottomClearance:0);
+    inscription={glyph,raised,bottom:baseTop-(raised?Math.min(.6,halfHeight/2):cavityDepth),
+      top:baseTop+(raised?textThickness:.6)};
+    if(!raised) upperCuts.push({...inscription,engrave:true});
+  }
+  const outer=printRect((left+right)/2,(bottom+top)/2,(right-left)/2,(top-bottom)/2,frameRadius);
 
-  // The donor CAD has a 5 × 2.57 mm flat recess, 1 mm deep per half.
-  // At the seam the paired recesses admit a flat-blade screwdriver.
-  const right=outer.x+outer.w, notchDepth=2.57*unit, overrun=2;
-  const pryCut={shapes:[printRect(right+(overrun-notchDepth)/2,outer.y,(notchDepth+overrun)/2,2.5*unit)],
-    bottom:halfHeight-unit,top:halfHeight+unit};
+  // Measure the length in the plane of the frame and the depth from the
+  // seam. Both halves have a 1 mm recess regardless of cell pitch.
+  const notchDepth=1, notchLength=.8*frameThickness, overrun=2;
+  const outside=outer.x+outer.w-Math.max(0,chamfer-notchDepth);
+  const pryCut={shapes:[printRect(outside+(overrun-notchLength)/2,outer.y,(notchLength+overrun)/2,2.5)],
+    bottom:halfHeight-notchDepth,top:halfHeight+notchDepth};
   upperCuts.push(pryCut);
-  const lowerCuts=upperCuts.map(cut=>({...cut,bottom:baseTop-cut.top,top:baseTop-cut.bottom}));
+  const lowerCuts=[{...pryCut,bottom:baseTop-pryCut.top,top:baseTop-pryCut.bottom}];
   const ring={shapes:[outer],holes:openings,section:'frame',bevel:chamfer,pitch,gap};
   part('frame-lower','#a2b0c5',[{...ring,bottom:0,top:halfHeight}],lowerCuts,false);
-  part('frame-upper','#a2b0c5',[{...ring,bottom:halfHeight,top:baseTop}],upperCuts,true);
-  parts.at(-1).mirrorHeight=baseTop;
-  return {parts};
+  part('frame-upper','#a2b0c5',[{...ring,bottom:halfHeight,top:baseTop}],upperCuts,!inscription);
+  const cover=parts.at(-1);
+  if(inscription) cover.step=Math.min(cover.step,.2,textThickness/2);
+  if(inscription?.raised) {
+    cover.relief=inscription;
+    cover.bounds[5]=inscription.top;
+  }
+  if(!inscription && upperCuts.length===1) cover.mirrorHeight=baseTop;
+  if(inscription&&settings.textMode==='inlay') {
+    const {glyph}=inscription;
+    const relief={glyph,bottom:inscription.bottom+printInlayFit.bottomClearance,
+      top:baseTop-printInlayFit.belowSurface,inset:.018};
+    if(printInscriptionContours(glyph,128*(1+relief.inset/glyph.unit)).length) {
+      parts.push({name:'frame-lettering',color:'#d5a829',layers:[],cuts:[],relief,
+        mountedOn:cover.name,offset:cover.offset,flip:cover.flip,step:cover.step,gridBounds:cover.bounds,
+        bounds:[glyph.x,glyph.top-glyph.h*glyph.unit,relief.bottom,
+          glyph.x+glyph.w*glyph.unit,glyph.top,relief.top]});
+    }
+  }
+  return {parts,counts:printPartCounts(parts)};
+}
+
+function printPartCounts(parts) {
+  const tileKeys=new Set(),blockKeys=new Set();
+
+  for(const part of parts) {
+    const name=part.name;
+    const keys=name.startsWith('tile-')||name.startsWith('bond-') ? tileKeys
+      : name.startsWith('top-')||name.startsWith('frame-top-') ? blockKeys : null;
+    if(keys) keys.add(printPartGeometryKey(part));
+  }
+  return {count:parts.length,tiles:tileKeys.size,blocks:blockKeys.size};
+}
+
+// Parts with the same printed geometry are interchangeable after a turn
+// on the board. Keep the locations of sockets, pins and engravings relative
+// to the body so asymmetric parts are counted correctly.
+function printPartGeometryKey(part) {
+  const [left,bottom,,right,top]=part.bounds;
+  const cx=(left+right)/2,cy=(bottom+top)/2;
+  const cuts=part.cuts.map(({glyph,...cut})=>glyph ? {...cut,
+    shapes:printInscriptionContours(glyph).map(points=>({kind:'polygon',points}))} : cut);
+  const round=(_,value)=>typeof value==='number'?Math.round(value*1e6)/1e6:value;
+  let best;
+
+  for(let turn=0;turn<4;turn++) {
+    const rotate=(x,y)=>turn===0?[x,y]:turn===1?[-y,x]:turn===2?[-x,-y]:[y,-x];
+    const project=(x,y)=>rotate(x-cx,y-cy);
+    function ringKey(points) {
+      const vertices=points.map(point=>JSON.stringify(point,round));
+      const first=vertices.indexOf(vertices.reduce((a,b)=>a<b?a:b));
+      const cycle=vertices.slice(first).concat(vertices.slice(0,first));
+      const forward=cycle.join(','),reverse=[cycle[0],...cycle.slice(1).reverse()].join(',');
+      return forward<reverse?forward:reverse;
+    }
+    const shapeKeys=shapes=>shapes?.map(shape=>{
+      if(shape.kind==='polygon')return 'polygon:'+ringKey(shape.points.map(([x,y])=>project(x,y)));
+      const [x,y]=project(shape.x,shape.y);
+      const size=shape.kind==='rect'?rotate(shape.w,shape.h).map(Math.abs):[];
+      return JSON.stringify([shape.kind,x,y,...size,shape.r],round);
+    }).sort();
+    const layerKeys=part.layers.map(({shapes,grid,...layer})=>JSON.stringify({
+      ...layer,shapes:shapeKeys(shapes),
+      grid:grid?.map(({x,y})=>JSON.stringify(project(x,y),round)).sort()
+    },round)).sort();
+    const cutKeys=cuts.map(({shapes,holes,flushSquare,...cut})=>JSON.stringify({
+      ...cut,shapes:shapeKeys(shapes),holes:shapeKeys(holes)
+    },round)).sort();
+    const key=JSON.stringify([layerKeys,cutKeys]);
+    if(best===undefined||key<best)best=key;
+  }
+  return best;
 }
 
 function mirrorPrintMesh(mesh,height) {
@@ -11113,7 +11576,11 @@ function makeFifteenPrintStep(parts,title,bed) {
   }
   const surfaceOfArc=(a,b)=>{
     const d=sub(b.c,a.c),u=sub(a.a,a.c),r=Math.hypot(...u);
-    if(Math.hypot(d[0],d[1])<1e-8) return {type:'CYLINDRICAL_SURFACE',p:a.c,n:Z,u,params:[r]};
+    if(Math.hypot(d[0],d[1])<1e-8) {
+      const delta=Math.hypot(...sub(b.a,b.c))-r;
+      if(Math.abs(delta)>1e-8) return {type:'CONICAL_SURFACE',p:a.c,n:Z,u,params:[r,Math.atan2(delta,d[2])]};
+      return {type:'CYLINDRICAL_SURFACE',p:a.c,n:Z,u,params:[r]};
+    }
     return {type:'extrusion',p:a.c,n:Z,u,params:[r],d};
   };
   function walls(w,low,high){
@@ -11253,13 +11720,50 @@ function makeFifteenPrintStep(parts,title,bed) {
       const vertices=loop.flatMap(e=>e.c?[e.a,interpolate(e,.5)]:[e.a]);
       (area(vertices)>0?positive:negative).push(loop);
     }
-    for(const outer of positive){
-      const holes=negative.filter(h=>containsLoop(outer,h[0].a));
-      const bounds=[outer,...holes];
-      horizontal(w,up?bounds:bounds.map(reversed),z,up);
+    const faces=new Map(positive.map(loop=>[loop,[loop]]));
+    for(const hole of negative) {
+      // A hole belongs only to the innermost containing face. An engraved
+      // ring can surround a separate island with an engraving of its own.
+      const containers=positive.filter(loop=>containsLoop(loop,hole[0].a));
+      const owner=containers.find(loop=>!containers.some(other=>other!==loop&&containsLoop(loop,other[0].a)));
+      if(owner) faces.get(owner).push(hole);
     }
+    for(const bounds of faces.values()) horizontal(w,up?bounds:bounds.map(reversed),z,up);
   }
   const atZ=(loop,z)=>loop.map(e=>({...e,a:[e.a[0],e.a[1],z],b:[e.b[0],e.b[1],z],c:e.c&&[e.c[0],e.c[1],z]}));
+  function inscriptionLoops(feature,z) {
+    const {glyph}=feature;
+    const threshold=128*(1+(feature.inset||0)/glyph.unit);
+    const outlines=printInscriptionContours(glyph,threshold)
+      .map(outline=>polygon(outline.map(([x,y])=>[x,y,z])));
+    return outlines.map(loop=>{
+      const depth=outlines.filter(other=>other!==loop&&containsLoop(other,loop[0].a)).length;
+      return (area(loop.map(e=>e.a))>0)===(depth%2===0) ? loop : reversed(loop);
+    });
+  }
+  function decorateCap(w,part,loops,z) {
+    const marks=part.cuts.filter(cut=>cut.engrave);
+    if(part.relief) marks.push(part.relief);
+    for(const feature of marks) {
+      let profile;
+      if(feature.glyph) {
+        profile=inscriptionLoops(feature,z);
+      } else {
+        const holes=feature.holes||[];
+        profile=region([...feature.shapes,...holes],z,(x,y)=>
+          feature.shapes.some(shape=>includes(shape,x,y))&&!holes.some(shape=>includes(shape,x,y)));
+      }
+      const end=feature.raised?feature.top:feature.bottom;
+      for(const loop of profile) {
+        const edge=atZ(loop,end);
+        if(feature.raised) walls(w,loop,edge);
+        else walls(w,reversed(edge),reversed(loop));
+        loops.push(reversed(loop));
+      }
+      planeLoops(w,profile.map(loop=>atZ(loop,end)),end,true);
+    }
+    return loops;
+  }
   function upperSolids(w,part){
     const layers=part.layers;
     const heights=[...new Set(layers.flatMap(l=>[l.bottom,l.top]))].sort((a,b)=>a-b);
@@ -11269,8 +11773,48 @@ function makeFifteenPrintStep(parts,title,bed) {
       const filled=(x,y)=>shapes.some(shape=>includes(shape,x,y));
       return {shapes,filled,loops:region(shapes,z,filled)};
     });
-    profile.forEach(({loops},i)=>loops.forEach(loop=>walls(w,atZ(loop,heights[i]),atZ(loop,heights[i+1]))));
+    const endFaces=new Map();
+    function capBevel(loop,z,width) {
+      if(!width) return {loop:atZ(loop,z),width:0};
+      if(loop.every(e=>!e.c)) {
+        // Trim the bevel when a short edge would reverse or disappear.
+        let amount=Math.min(width,...loop.map(e=>Math.hypot(...sub(e.b,e.a))*.45));
+        while(amount>1e-5) {
+          const offset=printOffsetPolygon(loop.map(e=>e.a),-amount);
+          const cap=polygon(offset.map(([x,y])=>[x,y,z]));
+          if(cap.every((e,i)=>dot(sub(e.b,e.a),sub(loop[i].b,loop[i].a))>1e-8))
+            return {loop:cap,width:amount};
+          amount/=2;
+        }
+      } else if(loop.every(e=>e.c&&snap(e.c)===snap(loop[0].c))) {
+        const radius=Math.hypot(...sub(loop[0].a,loop[0].c));
+        const amount=Math.min(width,radius/2);
+        const factor=1-amount/radius;
+        const cap=atZ(loop,z).map(e=>{
+          const inset=p=>[e.c[0]+(p[0]-e.c[0])*factor,e.c[1]+(p[1]-e.c[1])*factor,z];
+          return {...e,a:inset(e.a),b:inset(e.b)};
+        });
+        return {loop:cap,width:amount};
+      }
+      return {loop:atZ(loop,z),width:0};
+    }
+    profile.forEach(({loops},i)=>loops.forEach(loop=>{
+      const lo=heights[i],hi=heights[i+1];
+      const bottom=i===0 ? capBevel(loop,lo,Math.min((hi-lo)/2,layers[0].bevel||0)) : null;
+      const top=i===profile.length-1 ? capBevel(loop,hi,Math.min((hi-lo)/2,layers.at(-1).bevel||0)) : null;
+      const low=atZ(loop,lo+(bottom?.width||0)), high=atZ(loop,hi-(top?.width||0));
+      if(bottom?.width) walls(w,bottom.loop,low);
+      walls(w,low,high);
+      if(top?.width) walls(w,high,top.loop);
+      if(bottom) endFaces.set(lo,[...(endFaces.get(lo)||[]),bottom.loop]);
+      if(top) endFaces.set(hi,[...(endFaces.get(hi)||[]),top.loop]);
+    }));
     heights.forEach((z,i)=>{
+      if(endFaces.has(z)) {
+        const loops=endFaces.get(z);
+        planeLoops(w,i>0?decorateCap(w,part,loops,z):loops,z,i>0);
+        return;
+      }
       const bottom=profile[i-1],top=profile[i];
       const shapes=[...(bottom?.shapes||[]),...(top?.shapes||[])];
       const below=region(shapes,z,(x,y)=>bottom?.filled(x,y)&&!top?.filled(x,y));
@@ -11283,13 +11827,20 @@ function makeFifteenPrintStep(parts,title,bed) {
   function sockets(w,cuts,bottom,top,faces){
     for(const cut of cuts){
       const shape=cut.shapes[0],lo=Math.max(bottom,cut.bottom),hi=Math.min(top,cut.top);
-      const outline=shape.kind==='polygon' ? polyAt : rectAt;
-      const outerLow=outline(shape,lo),outerHigh=outline(shape,hi);
+      const outline=z=>{
+        const section=printSocketSection(shape,printSocketBevel(cut,z));
+        return section.kind==='polygon' ? polyAt(section,z) : rectAt(section,z);
+      };
+      const outerLow=outline(lo),outerHigh=outline(hi);
       if(lo===bottom)faces[0].push(reversed(outerLow));
       else horizontal(w,[outerLow],lo,true);
       if(hi===top)faces[1].push(reversed(outerHigh));
       else horizontal(w,[reversed(outerHigh)],hi,false);
-      walls(w,reversed(outerLow),reversed(outerHigh));
+      const sign=cut.entrySign||1;
+      const shoulder=cut.entryZ-sign*(cut.mouth||0);
+      const heel=(sign>0?cut.bottom:cut.top)+sign*(cut.heel||0);
+      const levels=[lo,...[...new Set([shoulder,heel])].filter(z=>z>lo&&z<hi).sort((a,b)=>a-b),hi];
+      for(let i=1;i<levels.length;i++) walls(w,reversed(outline(levels[i-1])),reversed(outline(levels[i])));
     }
   }
   function gridOutline(rects,pitch) {
@@ -11384,7 +11935,7 @@ function makeFifteenPrintStep(parts,title,bed) {
     function outline(z,cut){
       const inset=Math.max(0,layer.bevel-Math.min(z-bottom,top-z));
       const loop=rectAt(outer,z,inset,ring?null:printRailSection(part.profile,z));
-      if(tileGrid)return tileGrid.map(points=>gridProfile(points,z,-layer.gap/2-inset,
+      if(tileGrid)return tileGrid.map(points=>gridProfile(points,z,-inset,
         printRailSection(part.profile,z),layer.radius));
       if(!tool)return [loop];
       return [loop.flatMap(e=>{
@@ -11410,12 +11961,25 @@ function makeFifteenPrintStep(parts,title,bed) {
     }
     const bottomLoops=outline(bottom,isNotched(bottom)),topLoops=outline(top,isNotched(top));
     if(inner){bottomLoops.push(...aperture(bottom));topLoops.push(...aperture(top));}
-    sockets(w,part.cuts.filter(cut=>cut.shapes&&cut!==tool),bottom,top,[bottomLoops,topLoops]);
+    sockets(w,part.cuts.filter(cut=>cut.shapes&&cut!==tool&&!cut.engrave),bottom,top,[bottomLoops,topLoops]);
     planeLoops(w,bottomLoops,bottom,false);
-    planeLoops(w,topLoops,top,true);
+    planeLoops(w,decorateCap(w,part,topLoops,top),top,true);
   }
 
-  const solids=printScene(parts,bed).entries.map(({part,sign,offset:[x,y,z]})=>{
+  const solids=printScene(parts,bed).entries.flatMap(({part,sign,offset:[x,y,z]})=>{
+    if(part.mountedOn) {
+      const {bottom,top}=part.relief,loops=inscriptionLoops(part.relief,bottom);
+      const outer=loops.filter(loop=>area(loop.map(e=>e.a))>0);
+      return outer.map((loop,i)=>{
+        const holes=loops.filter(hole=>area(hole.map(e=>e.a))<0&&containsLoop(loop,hole[0].a)&&
+          !outer.some(inner=>inner!==loop&&containsLoop(loop,inner[0].a)&&containsLoop(inner,hole[0].a)));
+        const w=writer(part.name+'-'+(i+1),[sign,sign,x,y,z],false);
+        const base=[loop,...holes],cap=base.map(edge=>atZ(edge,top));
+        base.forEach((edge,j)=>walls(w,edge,cap[j]));
+        planeLoops(w,base,bottom,false);planeLoops(w,cap,top,true);
+        return w.solid();
+      });
+    }
     const w=writer(part.name,[sign,sign,x,y,z],!part.profile);
     if(part.profile)railSolid(w,part);
     else upperSolids(w,part);
@@ -11518,6 +12082,20 @@ function printZip(files) {
   return new Blob([...chunks,...central,end],{type:'application/zip'});
 }
 
+function puzzlePrintFileName(title,extension) {
+  const safe=String(title||'').trim().replace(/[<>:"/\\|?*\x00-\x1f\x7f]/g,'_');
+  const encoder=new TextEncoder();
+  let name='',bytes=0;
+  for(const char of safe) {
+    bytes+=encoder.encode(char).length;
+    if(bytes>240)break;
+    name+=char;
+  }
+  name=name.replace(/[ .]+$/,'');
+  if(/^(?:con|prn|aux|nul|com[1-9¹²³]|lpt[1-9¹²³])(?:\.|$)/i.test(name))name='_'+name;
+  return (name||'Fifteen-Pro')+'.'+extension;
+}
+
 function printSave(blob,name) {
   const url=URL.createObjectURL(blob), link=document.createElement('a');
   link.href=url;link.download=name;
@@ -11527,16 +12105,20 @@ function printSave(blob,name) {
 
 function printPlacements(parts,bed) {
   if (!bed) return parts.map(part=>part.offset);
-  const widest=Math.max(...parts.map(p=>p.bounds[3]-p.bounds[0]));
-  const area=parts.reduce((a,{bounds:b})=>a+(b[3]-b[0]+4)*(b[4]-b[1]+4),0);
+  const roots=parts.filter(part=>!part.mountedOn);
+  const widest=Math.max(...roots.map(p=>p.bounds[3]-p.bounds[0]));
+  const area=roots.reduce((a,{bounds:b})=>a+(b[3]-b[0]+4)*(b[4]-b[1]+4),0);
   const width=Math.max(widest+4,Math.sqrt(area)*1.25);
   let x=0,y=0,row=0;
-  return parts.map(({bounds:b,flip})=>{
+  const offsets=new Map();
+  for(const {name,bounds:b,flip} of roots){
     const w=b[3]-b[0]+4,h=b[4]-b[1]+4;
     if (x+w>width && x>0) {x=0;y+=row;row=0;}
     const offset=[x-(flip?-b[3]:b[0]),y-b[1],flip?b[5]:-b[2]];
-    x+=w;row=Math.max(row,h);return offset;
-  });
+    x+=w;row=Math.max(row,h);
+    offsets.set(name,offset);
+  }
+  return parts.map(part=>offsets.get(part.mountedOn||part.name));
 }
 
 function printScene(parts,bed) {
@@ -11547,6 +12129,8 @@ function printScene(parts,bed) {
       rect:[x+(flip?-b[3]:b[0]),y+b[1],x+(flip?-b[0]:b[3]),y+b[4]],
       height:z+(flip?-b[2]:b[5])};
   });
+  const parents=new Map(entries.map(entry=>[entry.part.name,entry]));
+  for(const entry of entries) if(entry.part.mountedOn)entry.height=parents.get(entry.part.mountedOn).height;
   return {entries,bounds:printBounds(entries.map(entry=>entry.rect)),height:Math.max(...entries.map(entry=>entry.height))};
 }
 
@@ -11595,8 +12179,32 @@ function drawFlatPrint(scene) {
     }
     face.globalCompositeOperation='source-atop';
     face.fillStyle='#78899e';
-    for(const cut of part.cuts)if(cut.shapes&&cut.bottom<=z&&z<=cut.top){
-      for(const shape of cut.shapes)paint(shape);
+    const paintGlyph=glyph=>{
+      face.beginPath();
+      for(const points of printInscriptionContours(glyph)){
+        points.forEach(([x,y],i)=>i?face.lineTo(x,y):face.moveTo(x,y));
+        face.closePath();
+      }
+      face.fill('evenodd');
+    };
+    for(const cut of part.cuts)if(cut.bottom<=z&&z<=cut.top){
+      if(cut.engrave&&cut.glyph) paintGlyph(cut.glyph);
+      if(!cut.shapes) continue;
+      if(cut.holes) {
+        face.beginPath();
+        for(const shape of [...cut.shapes,...cut.holes]){
+          face.moveTo(shape.x+shape.r,shape.y);
+          face.arc(shape.x,shape.y,shape.r,0,2*Math.PI);
+        }
+        face.fill('evenodd');
+      } else {
+        for(const shape of cut.shapes)paint(printSocketSection(shape,printSocketBevel(cut,z)));
+      }
+    }
+    if(part.relief&&sign>0) {
+      if(part.mountedOn)face.globalCompositeOperation='source-over';
+      face.fillStyle=part.mountedOn?part.color:'#46566d';
+      paintGlyph(part.relief.glyph);
     }
     face.restore();ctx.drawImage(surface,0,0);
   }
@@ -11749,17 +12357,31 @@ function rebuildPrint() {
   if (!printDialog.open) return;
   const fields=printForm.elements;
   const settings=Object.fromEntries(Object.keys(printSettingsDefaults).map(key=>[key,Number(fields[key].value)]));
-  const pinHeight=printPinHeight(settings.frameHeight);
-  fields.pinHeight.value=fields.frameHeight.validity.valid ? pinHeight : '';
+  fields.pinHeight.max=fields.frameHeight.value;
+  if(!printPinHeightEdited && fields.frameHeight.validity.valid)
+    fields.pinHeight.value=printPinHeight(settings.frameHeight);
+  settings.pinHeight=Number(fields.pinHeight.value);
+  settings.frameText=fields.frameText.value;
+  for(const [key,value] of Object.entries(printTextDefaults))
+    settings[key]=typeof value==='number' ? Number(fields[key].value) : fields[key].value;
+  // Keep the rounded exterior clear of the corners of the rail opening.
+  const wall=settings.frameThickness+(Array.isArray(cfg.frameTiles)?settings.pitch:0);
+  const cornerInset=settings.frameRadius*(1-Math.SQRT1_2)+settings.gap + Math.max(settings.chamfer,1.4*settings.pitch/20);
+  const textCutsFrame=settings.frameText.trim()&&['engraved','inlay'].includes(settings.textMode);
+  const textDepth=settings.textThickness+(settings.textMode==='inlay'?
+    printInlayFit.belowSurface+printInlayFit.bottomClearance:0);
   const error=!printForm.checkValidity() ? 'printInvalid'
-    : settings.blockGap>=pinHeight ? 'printBlockGapInvalid' : '';
+    : textCutsFrame && textDepth>=settings.frameHeight/2 ? 'printTextDepthInvalid'
+    : settings.blockGap>=settings.pinHeight ? 'printBlockGapInvalid'
+    : cfg.frameTiles?.some(tile=>tile?.upper) && settings.blockGap>=settings.frameHeight/2-1 ? 'printFramePinGap'
+    : settings.frameRadius>0 && cornerInset>=wall ? 'printFrameRadiusInvalid' : '';
   if(error) {
     $('printStatus').textContent=tr(error);
     return;
   }
   printModel=printPlan(cfg,layout,settings);
   setPrintExports(false);
-  $('printStatus').textContent=tr('printReady',{count:printModel.parts.length});
+  $('printStatus').textContent=tr('printReady',printModel.counts);
   updatePrintPreview();
 }
 
@@ -11804,7 +12426,7 @@ function buildPrintMeshes(done) {
       if(job.worker) job.worker.terminate();
       printJob=null;
       setPrintExports(false);
-      $('printStatus').textContent=tr('printReady',{count:model.parts.length});
+      $('printStatus').textContent=tr('printReady',model.counts);
       try{done();}catch(error){console.error(error);$('printStatus').textContent=tr('printFailed');}
     }
   }
@@ -11824,7 +12446,7 @@ function buildPrintMeshes(done) {
     setTimeout(next,0);
   }
   $('printStatus').textContent=tr('printBuilding',{current:0,total:model.parts.length});
-  const workerCode=printRailSection.toString()+'\n'+simplifyPrintSurface.toString()+ '\n' + buildPrintMesh.toString()+`
+  const workerCode=printRailSection.toString()+'\n'+printOffsetPolygon.toString()+'\n'+printSocketBevel.toString()+'\n'+printSocketSection.toString()+'\n'+simplifyPrintSurface.toString()+ '\n' + buildPrintMesh.toString()+`
     self.onmessage=function(event){
       event.data.forEach(function(part,i){
         const mesh=buildPrintMesh(part);
@@ -11848,6 +12470,10 @@ function buildPrintMeshes(done) {
 
 $('printBtn').addEventListener('click',()=>{
   if(mode!=='edit' || printDialog.open) return;
+  if(printTextPuzzle!==cfg.name) {
+    printForm.elements.frameText.value=cfg.name||'';
+    printTextPuzzle=cfg.name;
+  }
   printDialog.showModal();fitPrintDialog();rebuildPrint();
 });
 printDialog.addEventListener('close',()=>{
@@ -11855,23 +12481,33 @@ printDialog.addEventListener('close',()=>{
   if(printViewer) printViewer.clear();
 });
 printForm.addEventListener('submit',event=>event.preventDefault());
-printForm.addEventListener('input',()=>{
+printForm.addEventListener('input',event=>{
+  if(event.target===printForm.elements.pinHeight) printPinHeightEdited=true;
   cancelPrintBuild();setPrintExports(true);printTimer=setTimeout(rebuildPrint,100);
 });
 window.addEventListener('resize',fitPrintDialog);
 $('showPrint3D').addEventListener('click',()=>buildPrintMeshes(buildPrintPreview3D));
 $('downloadPrintStl').addEventListener('click',()=>{
   const bed=$('printLayout').value==='bed';
-  buildPrintMeshes(()=>printSave(printCombinedStl(printModel.parts,bed),'Fifteen-Pro-print.stl'));
+  const name=puzzlePrintFileName(cfg.name,'stl');
+  buildPrintMeshes(()=>printSave(printCombinedStl(printModel.parts,bed),name));
 });
 $('printLayout').addEventListener('change',updatePrintPreview);
 $('printReset').addEventListener('click',()=>{
-  for(const [key,value] of Object.entries(printSettingsDefaults)) printForm.elements[key].value=value;
+  printPinHeightEdited=false;
+  for(const [key,value] of Object.entries({...printSettingsDefaults,...printTextDefaults})) printForm.elements[key].value=value;
+  printForm.elements.frameText.value=cfg.name||'';
   rebuildPrint();
 });
 $('downloadPrintKit').addEventListener('click',()=>buildPrintMeshes(()=>{
   try {
-    const files=printModel.parts.map(part=>[part.name+'.stl',printStl(part)]);
+    const parts=printModel.parts, shared=new Map();
+    for(const child of parts)if(child.mountedOn) {
+      const frame=parts.find(part=>part.name===child.mountedOn), b=frame.bounds;
+      const placement={sign:1,offset:[-b[0],-b[1],-b[2]]};
+      shared.set(frame.name,placement);shared.set(child.name,placement);
+    }
+    const files=parts.map(part=>[part.name+'.stl',printStl(part,shared.get(part.name))]);
     printSave(printZip(files),'Fifteen-Pro-print.zip');
   } catch(error) {
     console.error(error);$('printStatus').textContent=tr('printFailed');
@@ -11881,8 +12517,8 @@ $('downloadPrintStep').addEventListener('click',()=>{
   if(!printModel)return;
   try {
     const step=makeFifteenPrintStep(printModel.parts,cfg.name,$('printLayout').value==='bed');
-    printSave(new Blob([step],{type:'model/step'}),'Fifteen-Pro-print.step');
-    if(printModel.parts.some(part=>!part.profile || part.cuts.some(cut=>cut.glyph)))
+    printSave(new Blob([step],{type:'model/step'}),puzzlePrintFileName(cfg.name,'step'));
+    if(printModel.parts.some(part=>part.cuts.some(cut=>cut.glyph&&!cut.engrave)))
       $('printStatus').textContent=tr('printStepGlyph');
   } catch(error) {
     if(error.message==='step-geometry') $('printStatus').textContent=tr('printStepLimited');
@@ -12096,7 +12732,7 @@ function snapshotForFramePaste(clip,index){
 function snapshotTile(t) {
   return {
     color: t.color, upColor: t.upColor,
-    body: t.body, cr: t.cr, sq: t.sq, star: t.star, starTilt: !!t.starTilt, bodyShiftDir:t.bodyShiftDir, bodyShift:t.bodyShift||0, screw:!!t.screw, screwCr:t.screwCr||0.30, screwDir:t.screwDir==null?-1:t.screwDir, screwShift:t.screwShift||0, arrow:!!t.arrow, arrowSides:(t.arrowSides||[1,0,0,0]).slice(), arrowLength:t.arrowLength,arrowShift:t.arrowShift,arrowThick:t.arrowThick,arrowHead:t.arrowHead,
+    body: t.body, cr: t.cr, sq: t.sq, star: t.star, starTilt: !!t.starTilt, bodyShiftDir:t.bodyShiftDir, bodyShift:t.bodyShift||0, screw:!!t.screw, screwCr:t.screwCr||0.30, screwDir:t.screwDir==null?-1:t.screwDir, screwShift:t.screwShift||0, arrow:!!t.arrow, arrowSides:(t.arrowSides||[1,0,0,0]).slice(), arrowLength:t.arrowLength,arrowShift:t.arrowShift,arrowThick:t.arrowThick,arrowHead:t.arrowHead,arrowSharpness:arrowSharpnessOf(t),
     thick: t.thick, ch: t.ch.slice(), cut: t.cut,
     bars: t.bars, bl: t.bl, barShift: t.barShift || 0, barWidth: t.barWidth,
     bars2: t.bars2, bl2: t.bl2, bar2Shift: t.bar2Shift || 0,
@@ -12118,7 +12754,7 @@ function restoreTile(t, snap) {
   t.starTilt=!!snap.starTilt;
   t.bodyShiftDir=snap.bodyShiftDir==null?-1:snap.bodyShiftDir;t.bodyShift=snap.bodyShift||0;
   t.screw=!!snap.screw;t.screwCr=snap.screwCr||0.30;t.screwDir=snap.screwDir==null?-1:snap.screwDir;t.screwShift=snap.screwShift||0;
-  t.arrow=!!snap.arrow;t.arrowSides=(snap.arrowSides||[1,0,0,0]).slice();t.arrowLength=snap.arrowLength||.8;t.arrowShift=snap.arrowShift||0;t.arrowThick=snap.arrowThick||.25;t.arrowHead=snap.arrowHead||.5;
+  t.arrow=!!snap.arrow;t.arrowSides=(snap.arrowSides||[1,0,0,0]).slice();t.arrowLength=snap.arrowLength||.8;t.arrowShift=snap.arrowShift||0;t.arrowThick=snap.arrowThick||.25;t.arrowHead=snap.arrowHead||.5;t.arrowSharpness=arrowSharpnessOf(snap);
   t.thick = snap.thick;
   t.ch = snap.ch.slice();
   t.cut = snap.cut;
@@ -12389,7 +13025,7 @@ $('adjustmentStep').addEventListener('input', function() {
 $('arrowClear').addEventListener('click',function(){var c=curTile();if(!c)return;c.t.arrow=false;syncUpper(c.t);afterEdit(c.id);});
 $('arrowSides').addEventListener('click',function(e){var b=e.target.closest('[data-arrow-side]'),c=curTile();if(!b||!c)return;
  if(!Array.isArray(c.t.arrowSides))c.t.arrowSides=[1,0,0,0];var i=+b.dataset.arrowSide;c.t.arrowSides[i]=c.t.arrowSides[i]?0:1;afterEdit(c.id);});
-[['arrowLengthRange','arrowLength'],['arrowShiftRange','arrowShift'],['arrowThickRange','arrowThick'],['arrowHeadRange','arrowHead']].forEach(function(p){bindRange(p[0],p[1],100);});
+[['arrowLengthRange','arrowLength'],['arrowShiftRange','arrowShift'],['arrowThickRange','arrowThick'],['arrowHeadRange','arrowHead'],['arrowSharpnessRange','arrowSharpness']].forEach(function(p){bindRange(p[0],p[1],100);});
 bindRange('crRange', 'cr', 200);
 bindRange('screwRange', 'screwCr', 100);
 bindRange('sqRange', 'sq', 100);
